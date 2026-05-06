@@ -4,10 +4,8 @@ use App\Support\UserTeam;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Title;
 use Livewire\Component;
-use Livewire\WithPagination;
 
 new #[Title('Teams')] class extends Component {
-    use WithPagination;
 
     public string $sortField = 'name';
 
@@ -30,27 +28,24 @@ new #[Title('Teams')] class extends Component {
             ->withCount('members')
             ->orderBy($this->sortField, $this->sortDirection)
             ->get()
-            ->map(fn ($team) => new UserTeam(
+            ->map(fn ($team) => with(Auth::user()->teamRole($team), fn ($role) => new UserTeam(
                 id: $team->id,
                 name: $team->name,
                 slug: $team->slug,
                 isPersonal: $team->is_personal,
-                role: Auth::user()->teamRole($team)?->value,
-                roleLabel: Auth::user()->teamRole($team)?->label(),
+                role: $role?->value,
+                roleLabel: $role?->label(),
                 isCurrent: Auth::user()->isCurrentTeam($team),
                 memberCount: $team->members_count,
-            ));
+            )));
     }
 }; ?>
 
 <section class="w-full">
     <div class="flex items-center justify-between">
-        <div>
-            <flux:heading size="xl">{{ __('Teams') }}</flux:heading>
-            <flux:subheading>{{ __('Manage your teams and team memberships') }}</flux:subheading>
-        </div>
+        <flux:heading size="xl" level="1">{{ __('Teams') }}</flux:heading>
 
-        <flux:button variant="primary" icon="plus" :href="route('teams.create')" wire:navigate data-test="teams-new-team-button">
+        <flux:button variant="primary" :href="route('teams.create')" size="sm" wire:navigate data-test="teams-new-team-button">
             {{ __('New team') }}
         </flux:button>
     </div>
@@ -84,7 +79,7 @@ new #[Title('Teams')] class extends Component {
                 @forelse ($this->teams as $team)
                     <flux:table.row :key="$team->slug" data-test="team-row">
                         <flux:table.cell variant="strong">
-                            <span class="font-medium">{{ $team->name }}</span>
+                            {{ $team->name }}
                         </flux:table.cell>
 
                         <flux:table.cell>

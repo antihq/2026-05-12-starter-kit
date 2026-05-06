@@ -26,8 +26,6 @@ new class extends Component
 
     public array $availableRoles = [];
 
-    public bool $isCurrentTeam = false;
-
     public function mount(Team $team): void
     {
         $this->teamModel = $team;
@@ -113,8 +111,6 @@ new class extends Component
             ])->toArray();
 
         $this->availableRoles = TeamRole::assignable();
-
-        $this->isCurrentTeam = $user->isCurrentTeam($team);
     }
 
     public function render()

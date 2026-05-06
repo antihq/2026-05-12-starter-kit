@@ -27,7 +27,7 @@ $classes = Flux::classes()
         'in-data-scrolled-right:first:after:inset-shadow-[8px_0px_8px_-8px_rgba(0,0,0,0.05)]',
         'in-data-scrolled-left:last:after:inset-shadow-[-8px_0px_8px_-8px_rgba(0,0,0,0.05)]',
     ]: '')
-    ->add('not-in-[tr:first-child]:border-t border-b-zinc-950/5 dark:border-b-white/5')
+    ->add('not-in-[tr:first-child]:border-t border-t-zinc-950/5 dark:border-t-white/5')
     ;
 @endphp
 

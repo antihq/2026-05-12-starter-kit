@@ -20,7 +20,7 @@ test('teams can be created', function () {
 
     $this->actingAs($user);
 
-    Livewire::test('pages::teams.index')
+    Livewire::test('pages::teams.create')
         ->set('name', 'Test Team')
         ->call('createTeam')
         ->assertHasNoErrors();
@@ -40,7 +40,7 @@ test('team slug uses next available suffix', function () {
 
     $this->actingAs($user);
 
-    Livewire::test('pages::teams.index')
+    Livewire::test('pages::teams.create')
         ->set('name', 'Acme')
         ->call('createTeam')
         ->assertHasNoErrors();
@@ -266,4 +266,66 @@ test('guests cannot access teams', function () {
     $response = $this->get(route('teams.index'));
 
     $response->assertRedirect(route('login'));
+});
+
+test('teams create page can be rendered', function () {
+    $user = User::factory()->create();
+
+    $response = $this
+        ->actingAs($user)
+        ->get(route('teams.create'));
+
+    $response->assertOk();
+});
+
+test('creating a team redirects to edit page', function () {
+    $user = User::factory()->create();
+
+    $this->actingAs($user);
+
+    Livewire::test('pages::teams.create')
+        ->set('name', 'Redirect Test Team')
+        ->call('createTeam')
+        ->assertHasNoErrors()
+        ->assertRedirect(route('teams.edit', Team::where('name', 'Redirect Test Team')->first()->slug));
+});
+
+test('toUserTeams includes member count', function () {
+    $user = User::factory()->create();
+    $team = Team::factory()->create();
+
+    $team->members()->attach($user, ['role' => TeamRole::Owner->value]);
+
+    $secondMember = User::factory()->create();
+    $team->members()->attach($secondMember, ['role' => TeamRole::Member->value]);
+
+    $userTeam = $user->toUserTeams(includeCurrent: true)->first(
+        fn ($t) => $t->id === $team->id,
+    );
+
+    expect($userTeam)->not->toBeNull();
+    expect($userTeam->memberCount)->toBe(2);
+});
+
+test('toUserTeams includes current team with isCurrent flag when requested', function () {
+    $user = User::factory()->create();
+    $personalTeam = $user->personalTeam();
+
+    $userTeam = $user->toUserTeams(includeCurrent: true)->first(
+        fn ($t) => $t->id === $personalTeam->id,
+    );
+
+    expect($userTeam)->not->toBeNull();
+    expect($userTeam->isCurrent)->toBeTrue();
+});
+
+test('toUserTeams excludes current team when not requested', function () {
+    $user = User::factory()->create();
+    $personalTeam = $user->personalTeam();
+
+    $userTeam = $user->toUserTeams(includeCurrent: false)->first(
+        fn ($t) => $t->id === $personalTeam->id,
+    );
+
+    expect($userTeam)->toBeNull();
 });
