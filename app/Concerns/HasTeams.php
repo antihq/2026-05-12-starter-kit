@@ -136,6 +136,7 @@ trait HasTeams
     public function toUserTeams(bool $includeCurrent = false): Collection
     {
         return $this->teams()
+            ->withCount('members')
             ->get()
             ->map(fn (Team $team) => ! $includeCurrent && $this->isCurrentTeam($team) ? null : $this->toUserTeam($team))
             ->filter()
@@ -157,6 +158,7 @@ trait HasTeams
             role: $role?->value,
             roleLabel: $role?->label(),
             isCurrent: $this->isCurrentTeam($team),
+            memberCount: $team->members_count ?? null,
         );
     }
 
