@@ -3,7 +3,7 @@
     <head>
         @include('partials.head')
     </head>
-    <body class="min-h-screen bg-white dark:bg-zinc-800 antialiased">
+    <body class="min-h-screen bg-white dark:bg-zinc-800 antialiased text-zinc-950 dark:text-white">
         <flux:header>
             <flux:navbar class="-ml-2.5">
                 <flux:navbar.item :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
@@ -15,7 +15,7 @@
                 <flux:navbar.item :href="route('security.edit')" wire:navigate>
                     {{ __('Security') }}
                 </flux:navbar.item>
-                <flux:navbar.item :href="route('teams.index')" wire:navigate>
+                <flux:navbar.item :href="route('teams.index')" :current="request()->routeIs('teams.*')" wire:navigate>
                     {{ __('Teams') }}
                 </flux:navbar.item>
                 <flux:navbar.item :href="route('appearance.edit')" wire:navigate>
