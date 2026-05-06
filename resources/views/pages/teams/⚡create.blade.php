@@ -4,7 +4,6 @@ use App\Actions\Teams\CreateTeam;
 use App\Enums\TeamPermission;
 use App\Rules\TeamName;
 use Flux\Flux;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Title;
@@ -12,24 +11,6 @@ use Livewire\Component;
 
 new #[Title('Create Team')] class extends Component {
     public string $name = '';
-
-    public array $existingTeams = [];
-
-    public function mount(): void
-    {
-        $this->existingTeams = Auth::user()
-            ->teams()
-            ->withCount('members')
-            ->get()
-            ->map(fn ($team) => [
-                'name' => $team->name,
-                'role' => Auth::user()->teamRole($team)?->label(),
-                'is_personal' => $team->is_personal,
-                'member_count' => $team->members_count,
-            ])
-            ->values()
-            ->all();
-    }
 
     #[Computed]
     public function slugPreview(): string
@@ -71,48 +52,18 @@ new #[Title('Create Team')] class extends Component {
 <section class="w-full">
     <div>
         <flux:heading size="xl" level="1">{{ __('Create a new team') }}</flux:heading>
-        <p class="mt-1 text-sm max-w-prose">
+        <p class="mt-2 text-sm max-w-prose">
             {{ __('Teams are shared workspaces with role-based permissions. Each team has its own members, invitations, and settings.') }}
         </p>
 
-        @if(count($existingTeams) > 0)
-            <flux:heading class="mt-6" level="2">{{ __('Your teams') }}</flux:heading>
-
-            <flux:table class="mt-2">
-                <flux:table.columns>
-                    <flux:table.column>{{ __('Team') }}</flux:table.column>
-                    <flux:table.column>{{ __('Type') }}</flux:table.column>
-                    <flux:table.column>{{ __('Members') }}</flux:table.column>
-                    <flux:table.column>{{ __('Your Role') }}</flux:table.column>
-                </flux:table.columns>
-
-                <flux:table.rows>
-                    @foreach($existingTeams as $team)
-                        <flux:table.row>
-                            <flux:table.cell variant="strong">{{ $team['name'] }}</flux:table.cell>
-                            <flux:table.cell>
-                                @if($team['is_personal'])
-                                    <flux:badge color="zinc" size="sm" inset="top bottom">{{ __('Personal') }}</flux:badge>
-                                @else
-                                    {{ __('Team') }}
-                                @endif
-                            </flux:table.cell>
-                            <flux:table.cell class="tabular-nums">{{ $team['member_count'] }}</flux:table.cell>
-                            <flux:table.cell>{{ $team['role'] }}</flux:table.cell>
-                        </flux:table.row>
-                    @endforeach
-                </flux:table.rows>
-            </flux:table>
-        @endif
-
-        <form wire:submit="createTeam" class="mt-6 space-y-6">
+        <form wire:submit="createTeam" class="mt-6 space-y-5">
             <div class="max-w-md">
                 <flux:input wire:model.live.debounce.300ms="name" :label="__('Team name')" type="text" size="sm" required autofocus data-test="create-team-name" />
 
-                <div class="mt-2 flex items-center justify-between px-1">
+                <div class="mt-2 flex items-center justify-between">
                     @if($this->name !== '')
-                        <p class="text-sm">
-                            <x-code>{{ $this->slugPreview }}</x-code>
+                        <p class="text-sm mono">
+                            {{ $this->slugPreview }}
                         </p>
                     @else
                         <p class="text-sm">
@@ -124,12 +75,6 @@ new #[Title('Create Team')] class extends Component {
                         {{ $this->nameLength }}/255
                     </p>
                 </div>
-
-                @error('name')
-                    <flux:text size="sm" class="mt-1 px-1 text-red-500">
-                        <span class="font-medium">{{ __('Validation error:') }}</span> {{ $message }}
-                    </flux:text>
-                @enderror
             </div>
 
             <flux:button variant="primary" type="submit" data-test="create-team-submit" size="sm">
@@ -137,7 +82,7 @@ new #[Title('Create Team')] class extends Component {
             </flux:button>
         </form>
 
-        <flux:heading class="mt-6" level="2">
+        <flux:heading class="mt-10" level="2">
             {{ __('What happens on creation') }}
         </flux:heading>
 
@@ -151,7 +96,9 @@ new #[Title('Create Team')] class extends Component {
             <x-description.details>
                 <div class="max-w-prose">
                     {{ __('You are assigned the Owner role with all permissions:') }}
-                    <x-code>{{ implode(', ', $this->ownerPermissions) }}</x-code>
+                    @foreach($this->ownerPermissions as $permission)
+                        <x-code>{{ $permission }}</x-code>{{ $loop->last ? '' : ',' }}
+                    @endforeach
                 </div>
             </x-description.details>
 
