@@ -19,8 +19,8 @@
 }
 @layer theme {
     .dark {
-        --color-accent: var(--color-blue-500);
-        --color-accent-content: var(--color-blue-500);
+        --color-accent: var(--color-blue-600);
+        --color-accent-content: var(--color-blue-600);
         --color-accent-foreground: var(--color-white);
     }
 }

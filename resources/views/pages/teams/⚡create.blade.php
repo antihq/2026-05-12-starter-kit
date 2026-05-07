@@ -94,12 +94,10 @@ new #[Title('Create Team')] class extends Component {
 
             <x-description.term>{{ __('Role assigned') }}</x-description.term>
             <x-description.details>
-                <div class="max-w-prose">
-                    {{ __('You are assigned the Owner role with all permissions:') }}
-                    @foreach($this->ownerPermissions as $permission)
-                        <x-code>{{ $permission }}</x-code>{{ $loop->last ? '' : ',' }}
-                    @endforeach
-                </div>
+                {{ __('You are assigned the Owner role with all permissions:') }}
+                @foreach($this->ownerPermissions as $permission)
+                    <x-code>{{ $permission }}</x-code>{{ $loop->last ? '' : ',' }}
+                @endforeach
             </x-description.details>
 
             <x-description.term>{{ __('Active team') }}</x-description.term>

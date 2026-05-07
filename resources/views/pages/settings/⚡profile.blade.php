@@ -1,6 +1,8 @@
 <?php
 
+use App\Concerns\PasswordValidationRules;
 use App\Concerns\ProfileValidationRules;
+use App\Livewire\Actions\Logout;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Flux\Flux;
 use Illuminate\Support\Facades\Auth;
@@ -9,23 +11,22 @@ use Livewire\Attributes\Title;
 use Livewire\Component;
 
 new #[Title('Profile settings')] class extends Component {
+    use PasswordValidationRules;
     use ProfileValidationRules;
 
     public string $name = '';
     public string $email = '';
+    public string $originalEmail = '';
+    public string $password = '';
 
-    /**
-     * Mount the component.
-     */
     public function mount(): void
     {
-        $this->name = Auth::user()->name;
-        $this->email = Auth::user()->email;
+        $user = Auth::user();
+        $this->name = $user->name;
+        $this->email = $user->email;
+        $this->originalEmail = $user->email;
     }
 
-    /**
-     * Update the profile information for the currently authenticated user.
-     */
     public function updateProfileInformation(): void
     {
         $user = Auth::user();
@@ -40,12 +41,11 @@ new #[Title('Profile settings')] class extends Component {
 
         $user->save();
 
+        $this->originalEmail = $this->email;
+
         Flux::toast(variant: 'success', text: __('Profile updated.'));
     }
 
-    /**
-     * Send an email verification notification to the current user.
-     */
     public function resendVerificationNotification(): void
     {
         $user = Auth::user();
@@ -68,48 +68,107 @@ new #[Title('Profile settings')] class extends Component {
     }
 
     #[Computed]
+    public function emailChanged(): bool
+    {
+        return $this->email !== $this->originalEmail;
+    }
+
+    #[Computed]
+    public function emailVerifiedStatus(): string
+    {
+        $user = Auth::user();
+
+        if ($user instanceof MustVerifyEmail && $user->hasVerifiedEmail()) {
+            return __('Verified :date', ['date' => $user->email_verified_at->format('M j, Y')]);
+        }
+
+        return __('Not verified');
+    }
+
+    #[Computed]
     public function showDeleteUser(): bool
     {
         return ! Auth::user() instanceof MustVerifyEmail
             || (Auth::user() instanceof MustVerifyEmail && Auth::user()->hasVerifiedEmail());
     }
+
+    public function deleteUser(Logout $logout): void
+    {
+        $this->validate([
+            'password' => $this->currentPasswordRules(),
+        ]);
+
+        tap(Auth::user(), $logout(...))->delete();
+
+        $this->redirect('/', navigate: true);
+    }
 }; ?>
 
 <section class="w-full">
-    @include('partials.settings-heading')
+    <flux:heading size="xl" level="1">{{ __('Profile settings') }}</flux:heading>
 
-    <flux:heading class="sr-only">{{ __('Profile settings') }}</flux:heading>
+    <form wire:submit="updateProfileInformation" class="mt-6 space-y-5">
+        <flux:field>
+            <flux:label badge="Required">{{ __('Name') }}</flux:label>
+            <flux:input wire:model="name" type="text" size="sm" required autofocus autocomplete="name" class="max-w-lg" />
+            <flux:error name="name" />
+            <flux:description>{{ __('255 characters maximum.') }}</flux:description>
+        </flux:field>
 
-    <x-pages::settings.layout :heading="__('Profile')" :subheading="__('Update your name and email address')">
-        <form wire:submit="updateProfileInformation" class="my-6 w-full space-y-6">
-            <flux:input wire:model="name" :label="__('Name')" type="text" required autofocus autocomplete="name" />
+        <flux:field>
+            <flux:label badge="Required">{{ __('Email') }}</flux:label>
+            <flux:input wire:model="email" type="email" size="sm" required autocomplete="email" class="max-w-lg" />
+            <flux:error name="email" />
+            <flux:description>{{ __('Must be unique across all accounts.') }}</flux:description>
 
-            <div>
-                <flux:input wire:model="email" :label="__('Email')" type="email" required autocomplete="email" />
+            @if ($this->emailChanged && Auth::user() instanceof MustVerifyEmail && Auth::user()->hasVerifiedEmail())
+                <p class="text-sm text-amber-600 mt-2">
+                    Changing your email address will require re-verification.
+                </p>
+            @endif
 
-                @if ($this->hasUnverifiedEmail)
-                    <div>
-                        <flux:text class="mt-4">
-                            {{ __('Your email address is unverified.') }}
+            @if ($this->hasUnverifiedEmail)
+                <flux:text class="mt-2">
+                    {{ __('Your email address is unverified.') }}
+                    <flux:link class="cursor-pointer" wire:click.prevent="resendVerificationNotification">
+                        {{ __('Resend verification email.') }}
+                    </flux:link>
+                </flux:text>
+            @endif
+        </flux:field>
 
-                            <flux:link class="text-sm cursor-pointer" wire:click.prevent="resendVerificationNotification">
-                                {{ __('Click here to re-send the verification email.') }}
-                            </flux:link>
-                        </flux:text>
+        <flux:button size="sm" variant="primary" type="submit" data-test="update-profile-button">
+            {{ __('Save') }}
+        </flux:button>
+    </form>
 
-                    </div>
-                @endif
-            </div>
+    <div class="mt-10">
+        <flux:heading>{{ __('Account') }}</flux:heading>
+        <flux:separator class="mt-2" />
+        <x-description.list>
+            <x-description.term>{{ __('Email') }}</x-description.term>
+            <x-description.details>{{ $this->emailVerifiedStatus }}</x-description.details>
 
-            <div class="flex items-center gap-4">
-                <flux:button variant="primary" type="submit" data-test="update-profile-button">
-                    {{ __('Save') }}
+            <x-description.term>{{ __('User ID') }}</x-description.term>
+            <x-description.details>{{ Auth::user()->id }}</x-description.details>
+        </x-description.list>
+    </div>
+
+    @if ($this->showDeleteUser)
+        <div class="mt-10">
+            <flux:heading>{{ __('Delete account') }}</flux:heading>
+
+            <form wire:submit="deleteUser" class="mt-4 space-y-5">
+                <flux:field>
+                    <flux:label badge="Required">{{ __('Confirm password') }}</flux:label>
+                    <flux:input wire:model="password" type="password" size="sm" required viewable class="max-w-lg" />
+                    <flux:error name="password" />
+                </flux:field>
+
+                <flux:button size="sm" variant="danger" type="submit" data-test="delete-user-button">
+                    {{ __('Delete account') }}
                 </flux:button>
-            </div>
-        </form>
-
-        @if ($this->showDeleteUser)
-            <livewire:pages::settings.delete-user-form />
-        @endif
-    </x-pages::settings.layout>
+            </form>
+        </div>
+    @endif
 </section>
