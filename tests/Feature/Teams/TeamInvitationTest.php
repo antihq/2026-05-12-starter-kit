@@ -17,7 +17,7 @@ test('team invitations can be created', function () {
 
     $this->actingAs($owner);
 
-    Livewire::test('pages::teams.invite-member-modal', ['team' => $team])
+    Livewire::test('pages::teams.invite', ['team' => $team])
         ->set('inviteEmail', 'invited@example.com')
         ->set('inviteRole', TeamRole::Member->value)
         ->call('createInvitation')
@@ -40,7 +40,7 @@ test('team invitations cannot be created by members', function () {
 
     $this->actingAs($member);
 
-    Livewire::test('pages::teams.invite-member-modal', ['team' => $team])
+    Livewire::test('pages::teams.invite', ['team' => $team])
         ->set('inviteEmail', 'invited@example.com')
         ->set('inviteRole', TeamRole::Member->value)
         ->call('createInvitation')
@@ -60,13 +60,73 @@ test('team invitations can be cancelled by owner', function () {
 
     $this->actingAs($owner);
 
-    Livewire::test('pages::teams.cancel-invitation-modal', ['team' => $team])
-        ->set('invitationCode', $invitation->code)
-        ->call('cancelInvitation')
+    Livewire::test('pages::teams.edit', ['team' => $team])
+        ->call('cancelInvitation', $invitation->code)
         ->assertHasNoErrors();
 
     $this->assertDatabaseMissing('team_invitations', [
         'id' => $invitation->id,
+    ]);
+});
+
+test('team invitations cannot be cancelled by members', function () {
+    $owner = User::factory()->create();
+    $member = User::factory()->create();
+    $team = Team::factory()->create();
+
+    $team->members()->attach($owner, ['role' => TeamRole::Owner->value]);
+    $team->members()->attach($member, ['role' => TeamRole::Member->value]);
+
+    $invitation = TeamInvitation::factory()->create([
+        'team_id' => $team->id,
+        'invited_by' => $owner->id,
+    ]);
+
+    $this->actingAs($member);
+
+    Livewire::test('pages::teams.edit', ['team' => $team])
+        ->call('cancelInvitation', $invitation->code)
+        ->assertForbidden();
+
+    $this->assertDatabaseHas('team_invitations', [
+        'id' => $invitation->id,
+    ]);
+});
+
+test('invite page can be rendered', function () {
+    $owner = User::factory()->create();
+    $team = Team::factory()->create();
+
+    $team->members()->attach($owner, ['role' => TeamRole::Owner->value]);
+
+    $this->actingAs($owner);
+
+    $response = $this
+        ->get(route('teams.invite', $team));
+
+    $response->assertOk();
+});
+
+test('invitation creation redirects to team edit page', function () {
+    Notification::fake();
+
+    $owner = User::factory()->create();
+    $team = Team::factory()->create();
+
+    $team->members()->attach($owner, ['role' => TeamRole::Owner->value]);
+
+    $this->actingAs($owner);
+
+    Livewire::test('pages::teams.invite', ['team' => $team])
+        ->set('inviteEmail', 'invited@example.com')
+        ->set('inviteRole', TeamRole::Member->value)
+        ->call('createInvitation')
+        ->assertHasNoErrors()
+        ->assertRedirect(route('teams.edit', $team));
+
+    $this->assertDatabaseHas('team_invitations', [
+        'team_id' => $team->id,
+        'email' => 'invited@example.com',
     ]);
 });
 

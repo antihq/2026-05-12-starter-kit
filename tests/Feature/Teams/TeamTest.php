@@ -106,8 +106,8 @@ test('teams can be deleted by owners', function () {
 
     $this->actingAs($user);
 
-    Livewire::test('pages::teams.delete-team-modal', ['team' => $team])
-        ->set('deleteName', $team->name)
+    Livewire::test('pages::teams.edit', ['team' => $team])
+        ->set('deleteTeamName', $team->name)
         ->call('deleteTeam')
         ->assertHasNoErrors();
 
@@ -124,10 +124,10 @@ test('team deletion requires name confirmation', function () {
 
     $this->actingAs($user);
 
-    Livewire::test('pages::teams.delete-team-modal', ['team' => $team])
-        ->set('deleteName', 'Wrong Name')
+    Livewire::test('pages::teams.edit', ['team' => $team])
+        ->set('deleteTeamName', 'Wrong Name')
         ->call('deleteTeam')
-        ->assertHasErrors(['deleteName']);
+        ->assertHasErrors(['deleteTeamName']);
 
     $this->assertDatabaseHas('teams', [
         'id' => $team->id,
@@ -151,8 +151,8 @@ test('deleting current team switches to alphabetically first remaining team', fu
 
     $this->actingAs($user);
 
-    Livewire::test('pages::teams.delete-team-modal', ['team' => $zuluTeam])
-        ->set('deleteName', $zuluTeam->name)
+    Livewire::test('pages::teams.edit', ['team' => $zuluTeam])
+        ->set('deleteTeamName', $zuluTeam->name)
         ->call('deleteTeam')
         ->assertHasNoErrors();
 
@@ -173,8 +173,8 @@ test('deleting current team falls back to personal team when alphabetically firs
 
     $this->actingAs($user);
 
-    Livewire::test('pages::teams.delete-team-modal', ['team' => $team])
-        ->set('deleteName', $team->name)
+    Livewire::test('pages::teams.edit', ['team' => $team])
+        ->set('deleteTeamName', $team->name)
         ->call('deleteTeam')
         ->assertHasNoErrors();
 
@@ -195,8 +195,8 @@ test('deleting non current team leaves current team unchanged', function () {
 
     $this->actingAs($user);
 
-    Livewire::test('pages::teams.delete-team-modal', ['team' => $team])
-        ->set('deleteName', $team->name)
+    Livewire::test('pages::teams.edit', ['team' => $team])
+        ->set('deleteTeamName', $team->name)
         ->call('deleteTeam')
         ->assertHasNoErrors();
 
@@ -220,8 +220,8 @@ test('deleting team switches other affected users to their personal team', funct
 
     $this->actingAs($owner);
 
-    Livewire::test('pages::teams.delete-team-modal', ['team' => $team])
-        ->set('deleteName', $team->name)
+    Livewire::test('pages::teams.edit', ['team' => $team])
+        ->set('deleteTeamName', $team->name)
         ->call('deleteTeam')
         ->assertHasNoErrors();
 
@@ -235,8 +235,8 @@ test('personal teams cannot be deleted', function () {
 
     $this->actingAs($user);
 
-    Livewire::test('pages::teams.delete-team-modal', ['team' => $personalTeam])
-        ->set('deleteName', $personalTeam->name)
+    Livewire::test('pages::teams.edit', ['team' => $personalTeam])
+        ->set('deleteTeamName', $personalTeam->name)
         ->call('deleteTeam')
         ->assertForbidden();
 
@@ -256,8 +256,8 @@ test('teams cannot be deleted by non owners', function () {
 
     $this->actingAs($member);
 
-    Livewire::test('pages::teams.delete-team-modal', ['team' => $team])
-        ->set('deleteName', $team->name)
+    Livewire::test('pages::teams.edit', ['team' => $team])
+        ->set('deleteTeamName', $team->name)
         ->call('deleteTeam')
         ->assertForbidden();
 });

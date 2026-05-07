@@ -126,3 +126,23 @@ test('security page shows setup link when two factor disabled', function () {
         ->assertDontSee('Disable 2FA')
         ->assertDontSee('View recovery codes');
 });
+
+test('security page shows recovery codes remaining when two factor enabled', function () {
+    $user = User::factory()->withTwoFactor()->create();
+
+    $this->actingAs($user);
+
+    $component = Livewire::test('pages::settings.security');
+
+    $component->assertSet('recoveryCodesRemaining', 1);
+});
+
+test('security page does not show recovery codes remaining when two factor disabled', function () {
+    $user = User::factory()->create();
+
+    $this->actingAs($user)
+        ->withSession(['auth.password_confirmed_at' => time()])
+        ->get(route('security.edit'))
+        ->assertOk()
+        ->assertDontSee('Recovery codes remaining');
+});

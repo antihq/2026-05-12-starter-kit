@@ -51,5 +51,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::middleware(EnsureTeamMembership::class)->group(function () {
         Route::livewire('settings/teams/{team}', 'pages::teams.edit')->name('teams.edit');
+        Route::livewire('settings/teams/{team}/invite', 'pages::teams.invite')->name('teams.invite');
     });
 });
