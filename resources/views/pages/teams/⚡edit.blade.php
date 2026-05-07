@@ -27,6 +27,8 @@ new class extends Component
 
     public array $availableRoles = [];
 
+    public array $memberRoles = [];
+
     public function mount(Team $team): void
     {
         $this->teamModel = $team;
@@ -58,6 +60,11 @@ new class extends Component
         Flux::toast(variant: 'success', text: __('Team updated.'));
 
         $this->redirectRoute('teams.edit', ['team' => $this->teamModel->fresh()->slug], navigate: true);
+    }
+
+    public function updatedMemberRoles($value, $key): void
+    {
+        $this->updateMember((int) $key, $value);
     }
 
     public function updateMember(int $userId, string $role): void
@@ -172,6 +179,10 @@ new class extends Component
             ])->toArray();
 
         $this->availableRoles = TeamRole::assignable();
+
+        $this->memberRoles = $team->members()->get()->mapWithKeys(fn ($m) => [
+            $m->id => $m->pivot->role->value,
+        ])->toArray();
     }
 
     public function render()
@@ -245,23 +256,16 @@ new class extends Component
 
                         <flux:table.cell>
                             @if ($member['role'] !== 'owner' && $this->permissions->canUpdateMember)
-                                <flux:dropdown position="bottom" align="start">
-                                    <flux:button variant="outline" size="sm" icon:trailing="chevron-down" data-test="member-role-trigger">
-                                        {{ $member['role_label'] }}
-                                    </flux:button>
-                                    <flux:menu>
-                                        @foreach ($availableRoles as $role)
-                                            <flux:menu.item
-                                                as="button"
-                                                type="button"
-                                                wire:click="updateMember({{ $member['id'] }}, '{{ $role['value'] }}')"
-                                                data-test="member-role-option"
-                                            >
-                                                {{ $role['label'] }}
-                                            </flux:menu.item>
-                                        @endforeach
-                                    </flux:menu>
-                                </flux:dropdown>
+                                <flux:select
+                                    wire:model.live="memberRoles.{{ $member['id'] }}"
+                                    size="sm"
+                                    class="w-fit"
+                                    data-test="member-role-select"
+                                >
+                                    @foreach ($availableRoles as $role)
+                                        <flux:select.option value="{{ $role['value'] }}">{{ $role['label'] }}</flux:select.option>
+                                    @endforeach
+                                </flux:select>
                             @else
                                 <flux:badge color="zinc" size="sm" inset="top bottom">{{ $member['role_label'] }}</flux:badge>
                             @endif
@@ -269,16 +273,14 @@ new class extends Component
 
                         <flux:table.cell align="end">
                             @if ($member['role'] !== 'owner' && $this->permissions->canRemoveMember)
-                                <flux:tooltip :content="__('Remove member')">
-                                    <flux:button
-                                        variant="ghost"
-                                        size="sm"
-                                        icon="x-mark"
-                                        wire:click="removeMember({{ $member['id'] }})"
-                                        wire:confirm="Are you sure you want to remove {{ $member['name'] }} from this team?"
-                                        data-test="member-remove-button"
-                                    />
-                                </flux:tooltip>
+                                <flux:button
+                                    size="sm"
+                                    wire:click="removeMember({{ $member['id'] }})"
+                                    wire:confirm="Are you sure you want to remove {{ $member['name'] }} from this team?"
+                                    data-test="member-remove-button"
+                                >
+                                    {{ __('Remove') }}
+                                </flux:button>
                             @endif
                         </flux:table.cell>
                     </flux:table.row>
