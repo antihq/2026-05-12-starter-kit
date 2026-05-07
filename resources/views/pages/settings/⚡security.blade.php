@@ -68,10 +68,10 @@ new #[Title('Security settings')] class extends Component {
     public function passwordRulesDescription(): array
     {
         return [
-            __('Minimum 8 characters.'),
-            __('At least one uppercase letter.'),
-            __('At least one lowercase letter.'),
-            __('At least one number.'),
+            __('Minimum 8 characters'),
+            __('at least one uppercase letter'),
+            __('at least one lowercase letter'),
+            __('at least one number'),
         ];
     }
 
@@ -109,9 +109,7 @@ new #[Title('Security settings')] class extends Component {
             <flux:input wire:model="password" type="password" size="sm" required autocomplete="new-password" viewable class="max-w-lg" />
             <flux:error name="password" />
             <flux:description>
-                @foreach ($this->passwordRulesDescription as $rule)
-                    {{ $rule }}{{ !$loop->last ? ', ' : '.' }}
-                @endforeach
+                {{ implode(', ', $this->passwordRulesDescription) . '.' }}
             </flux:description>
         </flux:field>
 
