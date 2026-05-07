@@ -13,7 +13,7 @@ $orientation ??= $vertical ? 'vertical' : 'horizontal';
 
 $classes = Flux::classes('border-0 [print-color-adjust:exact]')
     ->add(match ($variant) {
-        'subtle' => 'bg-zinc-950/5 dark:bg-white/10',
+        'subtle' => 'bg-zinc-950/5 dark:bg-white/5',
         default => 'bg-zinc-950/10 dark:bg-white/10',
     })
     ->add(match ($orientation) {

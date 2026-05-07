@@ -11,11 +11,14 @@ use Livewire\Attributes\Computed;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-new #[Title('Security settings')] class extends Component {
+new #[Title('Security')] class extends Component
+{
     use PasswordValidationRules;
 
     public string $current_password = '';
+
     public string $password = '';
+
     public string $password_confirmation = '';
 
     public bool $canManageTwoFactor;
@@ -88,16 +91,17 @@ new #[Title('Security settings')] class extends Component {
             $codes = json_decode(decrypt($user->two_factor_recovery_codes), true);
 
             return count($codes);
-        } catch (\Throwable) {
+        } catch (Throwable) {
             return 0;
         }
     }
 }; ?>
 
 <section class="w-full">
-    <flux:heading size="xl" level="1">{{ __('Security settings') }}</flux:heading>
+    <flux:heading size="xl" level="1">{{ __('Security') }}</flux:heading>
 
-    <form wire:submit="updatePassword" class="mt-6 space-y-5">
+    <flux:heading class="mt-10">{{ __('Update password') }}</flux:heading>
+    <form wire:submit="updatePassword" class="mt-4 space-y-5">
         <flux:field>
             <flux:label badge="Required">{{ __('Current password') }}</flux:label>
             <flux:input wire:model="current_password" type="password" size="sm" required autocomplete="current-password" viewable class="max-w-lg" />
@@ -152,7 +156,9 @@ new #[Title('Security settings')] class extends Component {
             </x-description.list>
         </div>
 
-        <div class="mt-10" wire:cloak>
+        <flux:separator variant="subtle" />
+
+        <div class="mt-5">
             @if ($twoFactorEnabled)
                 <div class="flex items-center gap-3">
                     <flux:button variant="danger" wire:click="disable" size="sm">

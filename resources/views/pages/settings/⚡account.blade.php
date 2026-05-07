@@ -3,20 +3,24 @@
 use App\Concerns\PasswordValidationRules;
 use App\Concerns\ProfileValidationRules;
 use App\Livewire\Actions\Logout;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Flux\Flux;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-new #[Title('Profile settings')] class extends Component {
+new #[Title('Account')] class extends Component
+{
     use PasswordValidationRules;
     use ProfileValidationRules;
 
     public string $name = '';
+
     public string $email = '';
+
     public string $originalEmail = '';
+
     public string $password = '';
 
     public function mount(): void
@@ -111,9 +115,18 @@ new #[Title('Profile settings')] class extends Component {
 }; ?>
 
 <section class="w-full">
-    <flux:heading size="xl" level="1">{{ __('Profile settings') }}</flux:heading>
+    <flux:heading size="xl" level="1">{{ __('Account') }}</flux:heading>
+    <flux:separator class="mt-2" />
+    <x-description.list>
+        <x-description.term>{{ __('Email') }}</x-description.term>
+        <x-description.details>{{ $this->emailVerifiedStatus }}</x-description.details>
 
-    <form wire:submit="updateProfileInformation" class="mt-6 space-y-5">
+        <x-description.term>{{ __('Active sessions') }}</x-description.term>
+        <x-description.details>{{ $this->activeSessionsCount }}</x-description.details>
+    </x-description.list>
+
+    <flux:heading class="mt-10">{{ __('Update profile') }}</flux:heading>
+    <form wire:submit="updateProfileInformation" class="mt-4 space-y-5">
         <flux:field>
             <flux:label badge="Required">{{ __('Name') }}</flux:label>
             <flux:input wire:model="name" type="text" size="sm" required autofocus autocomplete="name" class="max-w-lg" />
@@ -148,33 +161,19 @@ new #[Title('Profile settings')] class extends Component {
         </flux:button>
     </form>
 
-    <div class="mt-10">
-        <flux:heading>{{ __('Account') }}</flux:heading>
-        <flux:separator class="mt-2" />
-        <x-description.list>
-            <x-description.term>{{ __('Email') }}</x-description.term>
-            <x-description.details>{{ $this->emailVerifiedStatus }}</x-description.details>
-
-            <x-description.term>{{ __('Active sessions') }}</x-description.term>
-            <x-description.details>{{ $this->activeSessionsCount }}</x-description.details>
-        </x-description.list>
-    </div>
-
     @if ($this->showDeleteUser)
-        <div class="mt-10">
-            <flux:heading>{{ __('Delete account') }}</flux:heading>
+        <flux:heading class="mt-10">{{ __('Delete account') }}</flux:heading>
 
-            <form wire:submit="deleteUser" class="mt-4 space-y-5">
-                <flux:field>
-                    <flux:label badge="Required">{{ __('Confirm password') }}</flux:label>
-                    <flux:input wire:model="password" type="password" size="sm" required viewable class="max-w-lg" />
-                    <flux:error name="password" />
-                </flux:field>
+        <form wire:submit="deleteUser" class="mt-4 space-y-5">
+            <flux:field>
+                <flux:label badge="Required">{{ __('Confirm password') }}</flux:label>
+                <flux:input wire:model="password" type="password" size="sm" required viewable class="max-w-lg" />
+                <flux:error name="password" />
+            </flux:field>
 
-                <flux:button size="sm" variant="danger" type="submit" data-test="delete-user-button">
-                    {{ __('Delete account') }}
-                </flux:button>
-            </form>
-        </div>
+            <flux:button size="sm" variant="danger" type="submit" data-test="delete-user-button">
+                {{ __('Delete account') }}
+            </flux:button>
+        </form>
     @endif
 </section>

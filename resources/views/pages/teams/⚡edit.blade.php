@@ -191,9 +191,27 @@ new class extends Component
 
 <section class="w-full">
     <flux:heading size="xl" level="1">{{ __('Team settings') }}</flux:heading>
+    <flux:separator class="mt-2" />
+    <x-description.list>
+        <x-description.term>{{ __('Slug') }}</x-description.term>
+        <x-description.details>{{ $teamModel->slug }}</x-description.details>
+
+        <x-description.term>{{ __('Type') }}</x-description.term>
+        <x-description.details>{{ $teamModel->is_personal ? __('Personal') : __('Team') }}</x-description.details>
+
+        <x-description.term>{{ __('Owner') }}</x-description.term>
+        <x-description.details>{{ collect($members)->firstWhere('role', 'owner')['name'] ?? '—' }}</x-description.details>
+
+        <x-description.term>{{ __('Members') }}</x-description.term>
+        <x-description.details>{{ count($members) }}</x-description.details>
+
+        <x-description.term>{{ __('Pending invitations') }}</x-description.term>
+        <x-description.details>{{ count($invitations) }}</x-description.details>
+    </x-description.list>
 
     @if ($this->permissions->canUpdateTeam)
-        <form wire:submit="updateTeam" class="mt-6 space-y-5">
+        <flux:heading class="mt-10">{{ __('Update team') }}</flux:heading>
+        <form wire:submit="updateTeam" class="mt-4 space-y-5">
             <flux:field>
                 <flux:label badge="Required">{{ __('Team name') }}</flux:label>
                 <flux:input wire:model="teamName" type="text" size="sm" required data-test="team-name-input" class="max-w-lg" />
@@ -207,116 +225,87 @@ new class extends Component
         </form>
     @endif
 
-    <div class="mt-10">
-        <flux:heading>{{ __('Team') }}</flux:heading>
-        <flux:separator class="mt-2" />
-        <x-description.list>
-            <x-description.term>{{ __('Slug') }}</x-description.term>
-            <x-description.details>{{ $teamModel->slug }}</x-description.details>
+    <flux:heading class="mt-10">{{ __('Members') }}</flux:heading>
 
-            <x-description.term>{{ __('Type') }}</x-description.term>
-            <x-description.details>{{ $teamModel->is_personal ? __('Personal') : __('Team') }}</x-description.details>
+    <div class="mt-4">
+        <flux:table>
+            <flux:table.columns>
+                <flux:table.column>{{ __('Name') }}</flux:table.column>
+                <flux:table.column>{{ __('Email') }}</flux:table.column>
+                <flux:table.column>{{ __('Role') }}</flux:table.column>
+                <flux:table.column align="end">{{ __('Actions') }}</flux:table.column>
+            </flux:table.columns>
 
-            <x-description.term>{{ __('Owner') }}</x-description.term>
-            <x-description.details>{{ collect($members)->firstWhere('role', 'owner')['name'] ?? '—' }}</x-description.details>
-        </x-description.list>
+            <flux:table.rows>
+                @foreach ($members as $member)
+                    <flux:table.row :key="$member['id']" data-test="member-row">
+                        <flux:table.cell variant="strong">{{ $member['name'] }}</flux:table.cell>
+
+                        <flux:table.cell>{{ $member['email'] }}</flux:table.cell>
+
+                        <flux:table.cell>
+                            @if ($member['role'] !== 'owner' && $this->permissions->canUpdateMember)
+                                <flux:dropdown position="bottom" align="start">
+                                    <flux:button variant="outline" size="sm" icon:trailing="chevron-down" data-test="member-role-trigger">
+                                        {{ $member['role_label'] }}
+                                    </flux:button>
+                                    <flux:menu>
+                                        @foreach ($availableRoles as $role)
+                                            <flux:menu.item
+                                                as="button"
+                                                type="button"
+                                                wire:click="updateMember({{ $member['id'] }}, '{{ $role['value'] }}')"
+                                                data-test="member-role-option"
+                                            >
+                                                {{ $role['label'] }}
+                                            </flux:menu.item>
+                                        @endforeach
+                                    </flux:menu>
+                                </flux:dropdown>
+                            @else
+                                <flux:badge color="zinc" size="sm" inset="top bottom">{{ $member['role_label'] }}</flux:badge>
+                            @endif
+                        </flux:table.cell>
+
+                        <flux:table.cell align="end">
+                            @if ($member['role'] !== 'owner' && $this->permissions->canRemoveMember)
+                                <flux:tooltip :content="__('Remove member')">
+                                    <flux:button
+                                        variant="ghost"
+                                        size="sm"
+                                        icon="x-mark"
+                                        wire:click="removeMember({{ $member['id'] }})"
+                                        wire:confirm="Are you sure you want to remove {{ $member['name'] }} from this team?"
+                                        data-test="member-remove-button"
+                                    />
+                                </flux:tooltip>
+                            @endif
+                        </flux:table.cell>
+                    </flux:table.row>
+                @endforeach
+            </flux:table.rows>
+        </flux:table>
     </div>
 
-    <div class="mt-10">
-        <div class="flex items-center justify-between">
-            <flux:heading>{{ __('Members') }}</flux:heading>
-
-            @if ($this->permissions->canCreateInvitation)
-                <flux:button variant="primary" size="sm" :href="route('teams.invite', $teamModel)" wire:navigate data-test="invite-member-button">
-                    {{ __('Invite member') }}
-                </flux:button>
-            @endif
-        </div>
-
-        <div class="mt-4">
-            <flux:table>
-                <flux:table.columns>
-                    <flux:table.column>{{ __('Name') }}</flux:table.column>
-                    <flux:table.column>{{ __('Email') }}</flux:table.column>
-                    <flux:table.column>{{ __('Role') }}</flux:table.column>
-                    <flux:table.column align="end">{{ __('Actions') }}</flux:table.column>
-                </flux:table.columns>
-
-                <flux:table.rows>
-                    @foreach ($members as $member)
-                        <flux:table.row :key="$member['id']" data-test="member-row">
-                            <flux:table.cell variant="strong">{{ $member['name'] }}</flux:table.cell>
-
-                            <flux:table.cell>{{ $member['email'] }}</flux:table.cell>
-
-                            <flux:table.cell>
-                                @if ($member['role'] !== 'owner' && $this->permissions->canUpdateMember)
-                                    <flux:dropdown position="bottom" align="start">
-                                        <flux:button variant="outline" size="sm" icon:trailing="chevron-down" data-test="member-role-trigger">
-                                            {{ $member['role_label'] }}
-                                        </flux:button>
-                                        <flux:menu>
-                                            @foreach ($availableRoles as $role)
-                                                <flux:menu.item
-                                                    as="button"
-                                                    type="button"
-                                                    wire:click="updateMember({{ $member['id'] }}, '{{ $role['value'] }}')"
-                                                    data-test="member-role-option"
-                                                >
-                                                    {{ $role['label'] }}
-                                                </flux:menu.item>
-                                            @endforeach
-                                        </flux:menu>
-                                    </flux:dropdown>
-                                @else
-                                    <flux:badge color="zinc" size="sm" inset="top bottom">{{ $member['role_label'] }}</flux:badge>
-                                @endif
-                            </flux:table.cell>
-
-                            <flux:table.cell align="end">
-                                @if ($member['role'] !== 'owner' && $this->permissions->canRemoveMember)
-                                    <flux:tooltip :content="__('Remove member')">
-                                        <flux:button
-                                            variant="ghost"
-                                            size="sm"
-                                            icon="x-mark"
-                                            wire:click="removeMember({{ $member['id'] }})"
-                                            wire:confirm="Are you sure you want to remove {{ $member['name'] }} from this team?"
-                                            data-test="member-remove-button"
-                                        />
-                                    </flux:tooltip>
-                                @endif
-                            </flux:table.cell>
-                        </flux:table.row>
-                    @endforeach
-                </flux:table.rows>
-            </flux:table>
-        </div>
-    </div>
-
-    @if (count($invitations) > 0)
+    @if ($this->permissions->canCreateInvitation || count($invitations) > 0)
         <div class="mt-10">
-            <flux:heading>{{ __('Pending invitations') }}</flux:heading>
-            <flux:separator class="mt-2" />
+            <flux:heading>{{ __('Invitations') }}</flux:heading>
 
-            <div class="mt-4">
-                <flux:table>
+            @if (count($invitations) > 0)
+                <flux:table class="mt-4">
                     <flux:table.columns>
                         <flux:table.column>{{ __('Email') }}</flux:table.column>
                         <flux:table.column>{{ __('Role') }}</flux:table.column>
                         <flux:table.column align="end">{{ __('Actions') }}</flux:table.column>
                     </flux:table.columns>
-
-                    <flux:table.rows>
+                 <flux:table.rows>
                         @foreach ($invitations as $invitation)
                             <flux:table.row :key="$invitation['code']" data-test="invitation-row">
                                 <flux:table.cell>{{ $invitation['email'] }}</flux:table.cell>
-
-                                <flux:table.cell>
+                             <flux:table.cell>
                                     <flux:badge color="zinc" size="sm" inset="top bottom">{{ $invitation['role_label'] }}</flux:badge>
                                 </flux:table.cell>
-
-                                <flux:table.cell align="end">
+                             <flux:table.cell align="end">
                                     @if ($this->permissions->canCancelInvitation)
                                         <flux:button
                                             size="sm"
@@ -332,26 +321,35 @@ new class extends Component
                         @endforeach
                     </flux:table.rows>
                 </flux:table>
-            </div>
+
+                <flux:separator variant="subtle" />
+            @endif
+
+            @if ($this->permissions->canCreateInvitation)
+                <flux:button class="mt-5" variant="primary" size="sm" :href="route('teams.invite', $teamModel)" wire:navigate data-test="invite-member-button">
+                    {{ __('Invite member') }}
+                </flux:button>
+            @endif
         </div>
     @endif
 
     @if ($this->permissions->canDeleteTeam && ! $teamModel->is_personal)
-        <div class="mt-10">
-            <flux:heading>{{ __('Delete team') }}</flux:heading>
-            <flux:separator class="mt-2" />
+        <flux:heading class="mt-10">{{ __('Delete team') }}</flux:heading>
 
-            <form wire:submit="deleteTeam" class="mt-4 space-y-5">
-                <flux:field>
-                    <flux:label badge="Required">{{ __('Type ":name" to confirm', ['name' => $teamModel->name]) }}</flux:label>
-                    <flux:input wire:model="deleteTeamName" type="text" size="sm" required class="max-w-lg" data-test="delete-team-name" />
-                    <flux:error name="deleteTeamName" />
-                </flux:field>
+        <form wire:submit="deleteTeam" class="mt-4 space-y-5">
+            <flux:field>
+                <flux:label badge="Required">{{ __('Type ":name" to confirm', ['name' => $teamModel->name]) }}</flux:label>
+                <flux:input wire:model="deleteTeamName" type="text" size="sm" required class="max-w-lg" data-test="delete-team-name" />
+                <flux:error name="deleteTeamName" />
+            </flux:field>
 
-                <flux:button size="sm" variant="danger" type="submit" data-test="delete-team-button">
-                    {{ __('Delete team') }}
-                </flux:button>
-            </form>
-        </div>
+            <flux:button size="sm" variant="danger" type="submit" data-test="delete-team-button">
+                {{ __('Delete team') }}
+            </flux:button>
+        </form>
     @endif
+
+    <flux:button class="mt-10" icon="arrow-left" :href="route('teams.index')" wire:navigate size="sm">
+        {{ __('Back to teams') }}
+    </flux:button>
 </section>

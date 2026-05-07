@@ -111,7 +111,7 @@ new #[Title('Invite team member')] class extends Component {
             <x-description.details>{{ __('Pending invitations can be cancelled from the team settings page.') }}</x-description.details>
         </x-description.list>
 
-        <flux:button class="mt-6" icon="arrow-left" :href="route('teams.edit', $team)" wire:navigate size="sm">
+        <flux:button class="mt-10" icon="arrow-left" :href="route('teams.edit', $team)" wire:navigate size="sm">
             {{ __('Back to team settings') }}
         </flux:button>
     </div>

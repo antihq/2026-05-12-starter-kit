@@ -3,26 +3,26 @@
 use App\Models\User;
 use Livewire\Livewire;
 
-test('profile page is displayed', function () {
+test('account page is displayed', function () {
     $this->actingAs($user = User::factory()->create());
 
-    $this->get(route('profile.edit'))->assertOk();
+    $this->get(route('account.edit'))->assertOk();
 });
 
-test('profile page shows active sessions count', function () {
+test('account page shows active sessions count', function () {
     $this->actingAs($user = User::factory()->create());
 
-    $this->get(route('profile.edit'))
+    $this->get(route('account.edit'))
         ->assertOk()
         ->assertSee('Active sessions');
 });
 
-test('profile information can be updated', function () {
+test('account information can be updated', function () {
     $user = User::factory()->create();
 
     $this->actingAs($user);
 
-    $response = Livewire::test('pages::settings.profile')
+    $response = Livewire::test('pages::settings.account')
         ->set('name', 'Test User')
         ->set('email', 'test@example.com')
         ->call('updateProfileInformation');
@@ -41,7 +41,7 @@ test('email verification status is unchanged when email address is unchanged', f
 
     $this->actingAs($user);
 
-    $response = Livewire::test('pages::settings.profile')
+    $response = Livewire::test('pages::settings.account')
         ->set('name', 'Test User')
         ->set('email', $user->email)
         ->call('updateProfileInformation');
@@ -56,7 +56,7 @@ test('user can delete their account', function () {
 
     $this->actingAs($user);
 
-    $response = Livewire::test('pages::settings.profile')
+    $response = Livewire::test('pages::settings.account')
         ->set('password', 'password')
         ->call('deleteUser');
 
@@ -73,7 +73,7 @@ test('correct password must be provided to delete account', function () {
 
     $this->actingAs($user);
 
-    $response = Livewire::test('pages::settings.profile')
+    $response = Livewire::test('pages::settings.account')
         ->set('password', 'wrong-password')
         ->call('deleteUser');
 

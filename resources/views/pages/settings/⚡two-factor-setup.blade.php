@@ -158,7 +158,7 @@ new #[Title('Set up two-factor authentication')] class extends Component {
             <x-description.details>{{ __('You will receive recovery codes to regain access if you lose your authenticator device. Store them in a secure password manager.') }}</x-description.details>
         </x-description.list>
 
-        <flux:button class="mt-6" icon="arrow-left" :href="route('security.edit')" wire:navigate size="sm">
+        <flux:button class="mt-10" icon="arrow-left" :href="route('security.edit')" wire:navigate size="sm">
             {{ __('Back to security') }}
         </flux:button>
     </div>
