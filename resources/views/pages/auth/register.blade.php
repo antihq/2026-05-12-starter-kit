@@ -1,67 +1,82 @@
-<x-layouts::auth :title="__('Register')">
-    <div class="flex flex-col gap-6">
-        <x-auth-header :title="__('Create an account')" :description="__('Enter your details below to create your account')" />
+<x-layouts::guest :title="__('Register')">
+    <section class="w-full">
+        <div class="mx-auto max-w-md">
+            <flux:heading size="xl" level="1">{{ __('Create an account') }}</flux:heading>
 
-        <!-- Session Status -->
-        <x-auth-session-status class="text-center" :status="session('status')" />
+            @if (session('status'))
+                <flux:text color="green" class="mt-4 font-medium">{{ session('status') }}</flux:text>
+            @endif
 
-        <form method="POST" action="{{ route('register.store') }}" class="flex flex-col gap-6">
-            @csrf
-            <!-- Name -->
-            <flux:input
-                name="name"
-                :label="__('Name')"
-                :value="old('name')"
-                type="text"
-                required
-                autofocus
-                autocomplete="name"
-                :placeholder="__('Full name')"
-            />
+            <form method="POST" action="{{ route('register.store') }}" class="mt-4 space-y-5">
+                @csrf
 
-            <!-- Email Address -->
-            <flux:input
-                name="email"
-                :label="__('Email address')"
-                :value="old('email')"
-                type="email"
-                required
-                autocomplete="email"
-                placeholder="email@example.com"
-            />
+                <flux:field>
+                    <flux:label>{{ __('Name') }}</flux:label>
+                    <flux:input
+                        name="name"
+                        :value="old('name')"
+                        type="text"
+                        size="sm"
+                        required
+                        autofocus
+                        autocomplete="name"
+                        :placeholder="__('Full name')"
+                        class="max-w-lg"
+                    />
+                    <flux:error name="name" />
+                    <flux:description>{{ __('255 characters maximum.') }}</flux:description>
+                </flux:field>
 
-            <!-- Password -->
-            <flux:input
-                name="password"
-                :label="__('Password')"
-                type="password"
-                required
-                autocomplete="new-password"
-                :placeholder="__('Password')"
-                viewable
-            />
+                <flux:field>
+                    <flux:label>{{ __('Email address') }}</flux:label>
+                    <flux:input
+                        name="email"
+                        :value="old('email')"
+                        type="email"
+                        size="sm"
+                        required
+                        autocomplete="email"
+                        placeholder="email@example.com"
+                        class="max-w-lg"
+                    />
+                    <flux:error name="email" />
+                    <flux:description>{{ __('Must be unique across all accounts.') }}</flux:description>
+                </flux:field>
 
-            <!-- Confirm Password -->
-            <flux:input
-                name="password_confirmation"
-                :label="__('Confirm password')"
-                type="password"
-                required
-                autocomplete="new-password"
-                :placeholder="__('Confirm password')"
-                viewable
-            />
+                <flux:field>
+                    <flux:label>{{ __('Password') }}</flux:label>
+                    <flux:input
+                        name="password"
+                        type="password"
+                        size="sm"
+                        required
+                        autocomplete="new-password"
+                        viewable
+                        class="max-w-lg"
+                    />
+                    <flux:error name="password" />
+                </flux:field>
 
-            <div class="flex items-center justify-end">
-                <flux:button type="submit" variant="primary" class="w-full" data-test="register-user-button">
+                <flux:field>
+                    <flux:label>{{ __('Confirm password') }}</flux:label>
+                    <flux:input
+                        name="password_confirmation"
+                        type="password"
+                        size="sm"
+                        required
+                        autocomplete="new-password"
+                        viewable
+                        class="max-w-lg"
+                    />
+                    <flux:error name="password_confirmation" />
+                    <flux:description>{{ __('Must match the password above.') }}</flux:description>
+                </flux:field>
+
+                <flux:button type="submit" variant="primary" size="sm" data-test="register-user-button">
                     {{ __('Create account') }}
                 </flux:button>
-            </div>
-        </form>
+            </form>
 
-        <div class="space-x-1 rtl:space-x-reverse text-center text-sm text-zinc-600 dark:text-zinc-400">
-            <span>{{ __('Already have an account?') }}</span>
-            <flux:link :href="route('login')" wire:navigate>{{ __('Log in') }}</flux:link>
         </div>
-    </div>
-</x-layouts::auth>
+    </section>
+</x-layouts::guest>

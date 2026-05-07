@@ -70,14 +70,14 @@ new #[Title('Invite team member')] class extends Component {
 
         <form wire:submit="createInvitation" class="mt-6 space-y-5">
             <flux:field>
-                <flux:label badge="Required">{{ __('Email address') }}</flux:label>
+                <flux:label>{{ __('Email address') }}</flux:label>
                 <flux:input wire:model="inviteEmail" type="email" size="sm" required autofocus autocomplete="email" class="max-w-lg" data-test="invite-email" />
                 <flux:error name="inviteEmail" />
                 <flux:description>{{ __('Must be unique. Existing team members cannot be invited.') }}</flux:description>
             </flux:field>
 
             <flux:field>
-                <flux:label badge="Required">{{ __('Role') }}</flux:label>
+                <flux:label>{{ __('Role') }}</flux:label>
                 <flux:select wire:model="inviteRole" size="sm" class="max-w-lg" data-test="invite-role">
                     @foreach ($this->availableRoles as $role)
                         <flux:select.option value="{{ $role['value'] }}">{{ $role['label'] }}</flux:select.option>

@@ -3,6 +3,7 @@
 use App\Models\User;
 use Laravel\Fortify\Features;
 use Livewire\Livewire;
+use PragmaRX\Google2FA\Google2FA;
 
 beforeEach(function () {
     $this->skipUnlessFortifyHas(Features::twoFactorAuthentication());
@@ -80,7 +81,7 @@ test('two factor confirmation succeeds with valid code', function () {
     $user->refresh();
     $secret = decrypt($user->two_factor_secret);
 
-    $totp = (new PragmaRX\Google2FA\Google2FA);
+    $totp = (new Google2FA);
     $validCode = $totp->getCurrentOtp($secret);
 
     $component = Livewire::test('pages::settings.two-factor-setup')

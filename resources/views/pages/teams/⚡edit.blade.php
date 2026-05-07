@@ -224,7 +224,7 @@ new class extends Component
         <flux:heading class="mt-10">{{ __('Update team') }}</flux:heading>
         <form wire:submit="updateTeam" class="mt-4 space-y-5">
             <flux:field>
-                <flux:label badge="Required">{{ __('Team name') }}</flux:label>
+                <flux:label>{{ __('Team name') }}</flux:label>
                 <flux:input wire:model="teamName" type="text" size="sm" required data-test="team-name-input" class="max-w-lg" />
                 <flux:error name="teamName" />
                 <flux:description>{{ __('255 characters maximum.') }}</flux:description>
@@ -340,7 +340,7 @@ new class extends Component
 
         <form wire:submit="deleteTeam" class="mt-4 space-y-5">
             <flux:field>
-                <flux:label badge="Required">{{ __('Type ":name" to confirm', ['name' => $teamModel->name]) }}</flux:label>
+                <flux:label>{{ __('Type ":name" to confirm', ['name' => $teamModel->name]) }}</flux:label>
                 <flux:input wire:model="deleteTeamName" type="text" size="sm" required class="max-w-lg" data-test="delete-team-name" />
                 <flux:error name="deleteTeamName" />
             </flux:field>

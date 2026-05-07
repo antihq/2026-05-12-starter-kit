@@ -2,7 +2,8 @@
 
 use App\Http\Middleware\EnsureTeamMembership;
 use Illuminate\Support\Facades\Route;
-Route::redirect('/', '/login')->name('home');
+
+Route::view('/', 'pages::auth.login')->name('home');
 
 Route::prefix('{current_team}')
     ->middleware(['auth', 'verified', EnsureTeamMembership::class])

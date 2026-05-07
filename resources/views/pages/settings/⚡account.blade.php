@@ -128,14 +128,14 @@ new #[Title('Account')] class extends Component
     <flux:heading class="mt-10">{{ __('Update profile') }}</flux:heading>
     <form wire:submit="updateProfileInformation" class="mt-4 space-y-5">
         <flux:field>
-            <flux:label badge="Required">{{ __('Name') }}</flux:label>
+                    <flux:label>{{ __('Name') }}</flux:label>
             <flux:input wire:model="name" type="text" size="sm" required autofocus autocomplete="name" class="max-w-lg" />
             <flux:error name="name" />
             <flux:description>{{ __('255 characters maximum.') }}</flux:description>
         </flux:field>
 
         <flux:field>
-            <flux:label badge="Required">{{ __('Email') }}</flux:label>
+                    <flux:label>{{ __('Email') }}</flux:label>
             <flux:input wire:model="email" type="email" size="sm" required autocomplete="email" class="max-w-lg" />
             <flux:error name="email" />
             <flux:description>{{ __('Must be unique across all accounts.') }}</flux:description>
@@ -166,7 +166,7 @@ new #[Title('Account')] class extends Component
 
         <form wire:submit="deleteUser" class="mt-4 space-y-5">
             <flux:field>
-                <flux:label badge="Required">{{ __('Confirm password') }}</flux:label>
+                    <flux:label>{{ __('Confirm password') }}</flux:label>
                 <flux:input wire:model="password" type="password" size="sm" required viewable class="max-w-lg" />
                 <flux:error name="password" />
             </flux:field>

@@ -103,13 +103,13 @@ new #[Title('Security')] class extends Component
     <flux:heading class="mt-10">{{ __('Update password') }}</flux:heading>
     <form wire:submit="updatePassword" class="mt-4 space-y-5">
         <flux:field>
-            <flux:label badge="Required">{{ __('Current password') }}</flux:label>
+            <flux:label>{{ __('Current password') }}</flux:label>
             <flux:input wire:model="current_password" type="password" size="sm" required autocomplete="current-password" viewable class="max-w-lg" />
             <flux:error name="current_password" />
         </flux:field>
 
         <flux:field>
-            <flux:label badge="Required">{{ __('New password') }}</flux:label>
+            <flux:label>{{ __('New password') }}</flux:label>
             <flux:input wire:model="password" type="password" size="sm" required autocomplete="new-password" viewable class="max-w-lg" />
             <flux:error name="password" />
             <flux:description>
@@ -118,7 +118,7 @@ new #[Title('Security')] class extends Component
         </flux:field>
 
         <flux:field>
-            <flux:label badge="Required">{{ __('Confirm password') }}</flux:label>
+            <flux:label>{{ __('Confirm password') }}</flux:label>
             <flux:input wire:model="password_confirmation" type="password" size="sm" required autocomplete="new-password" viewable class="max-w-lg" />
             <flux:error name="password_confirmation" />
             <flux:description>{{ __('Must match the new password.') }}</flux:description>
