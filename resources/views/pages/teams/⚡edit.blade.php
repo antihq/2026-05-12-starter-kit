@@ -156,9 +156,6 @@ new class extends Component
         <flux:heading>{{ __('Team') }}</flux:heading>
         <flux:separator class="mt-2" />
         <x-description.list>
-            <x-description.term>{{ __('Team ID') }}</x-description.term>
-            <x-description.details>{{ $teamData['id'] }}</x-description.details>
-
             <x-description.term>{{ __('Slug') }}</x-description.term>
             <x-description.details>{{ $teamData['slug'] }}</x-description.details>
 
@@ -167,12 +164,6 @@ new class extends Component
 
             <x-description.term>{{ __('Owner') }}</x-description.term>
             <x-description.details>{{ collect($members)->firstWhere('role', 'owner')['name'] ?? '—' }}</x-description.details>
-
-            <x-description.term>{{ __('Members') }}</x-description.term>
-            <x-description.details>{{ count($members) }}</x-description.details>
-
-            <x-description.term>{{ __('Created') }}</x-description.term>
-            <x-description.details>{{ $teamModel->created_at->format('M j, Y') }}</x-description.details>
         </x-description.list>
     </div>
 

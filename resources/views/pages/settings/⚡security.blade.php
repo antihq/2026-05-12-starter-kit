@@ -7,6 +7,7 @@ use Illuminate\Validation\ValidationException;
 use Laravel\Fortify\Actions\DisableTwoFactorAuthentication;
 use Laravel\Fortify\Features;
 use Laravel\Fortify\Fortify;
+use Livewire\Attributes\Computed;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
@@ -62,6 +63,35 @@ new #[Title('Security settings')] class extends Component {
 
         $this->twoFactorEnabled = false;
     }
+
+    #[Computed]
+    public function passwordRulesDescription(): array
+    {
+        return [
+            __('Minimum 8 characters.'),
+            __('At least one uppercase letter.'),
+            __('At least one lowercase letter.'),
+            __('At least one number.'),
+        ];
+    }
+
+    #[Computed]
+    public function recoveryCodesRemaining(): int
+    {
+        $user = auth()->user();
+
+        if (! $user->hasEnabledTwoFactorAuthentication() || ! $user->two_factor_recovery_codes) {
+            return 0;
+        }
+
+        try {
+            $codes = json_decode(decrypt($user->two_factor_recovery_codes), true);
+
+            return count($codes);
+        } catch (\Throwable) {
+            return 0;
+        }
+    }
 }; ?>
 
 <section class="w-full">
@@ -78,7 +108,11 @@ new #[Title('Security settings')] class extends Component {
             <flux:label badge="Required">{{ __('New password') }}</flux:label>
             <flux:input wire:model="password" type="password" size="sm" required autocomplete="new-password" viewable class="max-w-lg" />
             <flux:error name="password" />
-            <flux:description>{{ __('Minimum 8 characters.') }}</flux:description>
+            <flux:description>
+                @foreach ($this->passwordRulesDescription as $rule)
+                    {{ $rule }}{{ !$loop->last ? ', ' : '.' }}
+                @endforeach
+            </flux:description>
         </flux:field>
 
         <flux:field>
@@ -108,6 +142,15 @@ new #[Title('Security settings')] class extends Component {
                         {{ __('Disabled') }}
                     @endif
                 </x-description.details>
+
+                @if ($twoFactorEnabled)
+                    <x-description.term>{{ __('Recovery codes remaining') }}</x-description.term>
+                    <x-description.details>
+                        <span class="{{ $this->recoveryCodesRemaining <= 2 ? 'text-amber-600' : '' }}">
+                            {{ __(':count of 8', ['count' => $this->recoveryCodesRemaining]) }}
+                        </span>
+                    </x-description.details>
+                @endif
             </x-description.list>
         </div>
 

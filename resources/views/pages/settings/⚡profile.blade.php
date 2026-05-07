@@ -92,6 +92,12 @@ new #[Title('Profile settings')] class extends Component {
             || (Auth::user() instanceof MustVerifyEmail && Auth::user()->hasVerifiedEmail());
     }
 
+    #[Computed]
+    public function activeSessionsCount(): int
+    {
+        return Auth::user()->activeSessionsCount();
+    }
+
     public function deleteUser(Logout $logout): void
     {
         $this->validate([
@@ -149,8 +155,8 @@ new #[Title('Profile settings')] class extends Component {
             <x-description.term>{{ __('Email') }}</x-description.term>
             <x-description.details>{{ $this->emailVerifiedStatus }}</x-description.details>
 
-            <x-description.term>{{ __('User ID') }}</x-description.term>
-            <x-description.details>{{ Auth::user()->id }}</x-description.details>
+            <x-description.term>{{ __('Active sessions') }}</x-description.term>
+            <x-description.details>{{ $this->activeSessionsCount }}</x-description.details>
         </x-description.list>
     </div>
 

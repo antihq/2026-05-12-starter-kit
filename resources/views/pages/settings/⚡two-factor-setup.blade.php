@@ -156,9 +156,6 @@ new #[Title('Set up two-factor authentication')] class extends Component {
 
             <x-description.term>{{ __('Recovery codes') }}</x-description.term>
             <x-description.details>{{ __('You will receive recovery codes to regain access if you lose your authenticator device. Store them in a secure password manager.') }}</x-description.details>
-
-            <x-description.term>{{ __('Disable') }}</x-description.term>
-            <x-description.details>{{ __('You can disable two-factor authentication at any time from the security settings page.') }}</x-description.details>
         </x-description.list>
 
         <flux:button class="mt-6" icon="arrow-left" :href="route('security.edit')" wire:navigate size="sm">

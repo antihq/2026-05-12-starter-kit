@@ -18,6 +18,7 @@ use BaconQrCode\Renderer\RendererStyle\Fill;
 use BaconQrCode\Renderer\RendererStyle\RendererStyle;
 use BaconQrCode\Writer;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 
 #[Fillable(['name', 'email', 'password', 'current_team_id'])]
@@ -63,5 +64,13 @@ class User extends Authenticatable
         ))->writeString($url ?? $this->twoFactorQrCodeUrl());
 
         return trim(substr($svg, strpos($svg, "\n") + 1));
+    }
+
+    public function activeSessionsCount(): int
+    {
+        return DB::table('sessions')
+            ->where('user_id', $this->id)
+            ->where('last_activity', '>=', now()->subDays(config('session.lifetime', 120))->timestamp)
+            ->count();
     }
 }

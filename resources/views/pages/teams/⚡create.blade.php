@@ -86,12 +86,9 @@ new #[Title('Create Team')] class extends Component {
             {{ __('What happens on creation') }}
         </flux:heading>
 
-        <x-description.list class="mt-2">
-            <x-description.term>{{ __('Team record') }}</x-description.term>
-            <x-description.details>
-                {{ __('A team record is created with the name and auto-generated slug shown above.') }}
-            </x-description.details>
+        <flux:separator class="mt-2" />
 
+        <x-description.list>
             <x-description.term>{{ __('Role assigned') }}</x-description.term>
             <x-description.details>
                 {{ __('You are assigned the Owner role with all permissions:') }}
@@ -102,9 +99,6 @@ new #[Title('Create Team')] class extends Component {
 
             <x-description.term>{{ __('Active team') }}</x-description.term>
             <x-description.details>{{ __('This team becomes your active team across the application.') }}</x-description.details>
-
-            <x-description.term>{{ __('Redirect') }}</x-description.term>
-            <x-description.details>{{ __('You are redirected to team settings where you can invite members.') }}</x-description.details>
         </x-description.list>
 
         <flux:button class="mt-6" icon="arrow-left" :href="route('teams.index')" wire:navigate data-test="create-team-back" size="sm">
