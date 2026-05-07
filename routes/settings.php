@@ -24,6 +24,28 @@ Route::middleware(['auth', 'verified'])->group(function () {
         )
         ->name('security.edit');
 
+    Route::livewire('settings/security/2fa/setup', 'pages::settings.two-factor-setup')
+        ->middleware(
+            when(
+                Features::canManageTwoFactorAuthentication()
+                && Features::optionEnabled(Features::twoFactorAuthentication(), 'confirmPassword'),
+                ['password.confirm'],
+                [],
+            ),
+        )
+        ->name('two-factor.setup');
+
+    Route::livewire('settings/security/2fa/recovery-codes', 'pages::settings.two-factor-recovery-codes')
+        ->middleware(
+            when(
+                Features::canManageTwoFactorAuthentication()
+                && Features::optionEnabled(Features::twoFactorAuthentication(), 'confirmPassword'),
+                ['password.confirm'],
+                [],
+            ),
+        )
+        ->name('recovery-codes.show');
+
     Route::livewire('settings/teams', 'pages::teams.index')->name('teams.index');
     Route::livewire('settings/teams/create', 'pages::teams.create')->name('teams.create');
 

@@ -22,7 +22,7 @@ test('security settings page can be rendered', function () {
         ->get(route('security.edit'))
         ->assertOk()
         ->assertSee('Two-factor authentication')
-        ->assertSee('Enable 2FA');
+        ->assertSee('Set up two-factor authentication');
 });
 
 test('security settings page requires password confirmation when enabled', function () {
@@ -101,4 +101,28 @@ test('correct password must be provided to update password', function () {
         ->call('updatePassword');
 
     $response->assertHasErrors(['current_password']);
+});
+
+test('security page shows disable and recovery codes links when two factor enabled', function () {
+    $user = User::factory()->withTwoFactor()->create();
+
+    $this->actingAs($user)
+        ->withSession(['auth.password_confirmed_at' => time()])
+        ->get(route('security.edit'))
+        ->assertOk()
+        ->assertSee('Disable 2FA')
+        ->assertSee('View recovery codes')
+        ->assertDontSee('Set up two-factor authentication');
+});
+
+test('security page shows setup link when two factor disabled', function () {
+    $user = User::factory()->create();
+
+    $this->actingAs($user)
+        ->withSession(['auth.password_confirmed_at' => time()])
+        ->get(route('security.edit'))
+        ->assertOk()
+        ->assertSee('Set up two-factor authentication')
+        ->assertDontSee('Disable 2FA')
+        ->assertDontSee('View recovery codes');
 });
