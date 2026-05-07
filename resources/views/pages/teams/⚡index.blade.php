@@ -51,6 +51,8 @@ new #[Title('Teams')] class extends Component {
                 :sorted="$sortField === 'name'"
                 :direction="$sortField === 'name' ? $sortDirection : null"
                 wire:click="sortBy('name')"
+                sticky
+                class="bg-white dark:bg-zinc-900"
             >
                 {{ __('Name') }}
             </flux:table.column>
@@ -71,7 +73,7 @@ new #[Title('Teams')] class extends Component {
         <flux:table.rows>
             @foreach ($this->teams as $team)
                 <flux:table.row :key="$team->slug" data-test="team-row">
-                    <flux:table.cell variant="strong">
+                    <flux:table.cell variant="strong" sticky class="bg-white dark:bg-zinc-900">
                         {{ $team->name }}
                     </flux:table.cell>
 

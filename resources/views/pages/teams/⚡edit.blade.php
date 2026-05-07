@@ -241,7 +241,7 @@ new class extends Component
     <div class="mt-4">
         <flux:table>
             <flux:table.columns>
-                <flux:table.column>{{ __('Name') }}</flux:table.column>
+                <flux:table.column sticky class="bg-white dark:bg-zinc-900">{{ __('Name') }}</flux:table.column>
                 <flux:table.column>{{ __('Email') }}</flux:table.column>
                 <flux:table.column>{{ __('Role') }}</flux:table.column>
                 <flux:table.column align="end">{{ __('Actions') }}</flux:table.column>
@@ -250,7 +250,7 @@ new class extends Component
             <flux:table.rows>
                 @foreach ($members as $member)
                     <flux:table.row :key="$member['id']" data-test="member-row">
-                        <flux:table.cell variant="strong">{{ $member['name'] }}</flux:table.cell>
+                        <flux:table.cell variant="strong" sticky class="bg-white dark:bg-zinc-900">{{ $member['name'] }}</flux:table.cell>
 
                         <flux:table.cell>{{ $member['email'] }}</flux:table.cell>
 
@@ -296,14 +296,14 @@ new class extends Component
             @if (count($invitations) > 0)
                 <flux:table class="mt-4">
                     <flux:table.columns>
-                        <flux:table.column>{{ __('Email') }}</flux:table.column>
+                        <flux:table.column sticky class="bg-white dark:bg-zinc-900">{{ __('Email') }}</flux:table.column>
                         <flux:table.column>{{ __('Role') }}</flux:table.column>
                         <flux:table.column align="end">{{ __('Actions') }}</flux:table.column>
                     </flux:table.columns>
                  <flux:table.rows>
                         @foreach ($invitations as $invitation)
                             <flux:table.row :key="$invitation['code']" data-test="invitation-row">
-                                <flux:table.cell>{{ $invitation['email'] }}</flux:table.cell>
+                                <flux:table.cell sticky class="bg-white dark:bg-zinc-900">{{ $invitation['email'] }}</flux:table.cell>
                              <flux:table.cell>
                                     <flux:badge color="zinc" size="sm" inset="top bottom">{{ $invitation['role_label'] }}</flux:badge>
                                 </flux:table.cell>
