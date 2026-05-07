@@ -21,7 +21,7 @@ if ($sticky) {
 
 <header {{ $attributes->class($classes) }} data-flux-header>
     @if ($container)
-        <div class="mx-auto w-full h-full [:where(&)]:max-w-7xl px-4 flex items-center">
+        <div class="mx-auto w-full h-full [:where(&)]:max-w-6xl px-4 flex items-center">
             {{ $slot }}
         </div>
     @else

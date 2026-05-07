@@ -6,7 +6,7 @@
 
 @php
 $classes = Flux::classes('[grid-area:main]')
-    ->add('p-4')
+    ->add('px-4 py-6')
     ->add($container ? 'mx-auto w-full [:where(&)]:max-w-6xl' : '')
     ;
 @endphp

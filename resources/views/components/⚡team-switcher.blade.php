@@ -80,7 +80,7 @@ new class extends Component {
 }; ?>
 
 <div>
-    <flux:select wire:model.live="selectedTeam" size="sm" data-test="team-switcher">
+    <flux:select wire:model.live="selectedTeam" size="sm" data-test="team-switcher" class="w-fit">
         @foreach ($this->teams() as $team)
             <flux:select.option value="{{ $team->slug }}">{{ $team->name }}</flux:select.option>
         @endforeach
