@@ -26,10 +26,18 @@
             >
                 <div x-show="!showRecoveryInput">
                     <flux:heading size="xl" level="1">{{ __('Authentication code') }}</flux:heading>
+                    <p class="mt-2 text-sm">{{ __('Your account requires two-factor verification. Enter the code from your authenticator app to proceed.') }}</p>
+                    <flux:button type="button" size="sm" class="mt-3" @click="toggleInput()">
+                        {{ __('Use a recovery code instead') }}
+                    </flux:button>
                 </div>
 
                 <div x-show="showRecoveryInput">
                     <flux:heading size="xl" level="1">{{ __('Recovery code') }}</flux:heading>
+                    <p class="mt-2 text-sm">{{ __('Your account requires two-factor verification. Enter one of your saved recovery codes to proceed.') }}</p>
+                    <flux:button type="button" size="sm" class="mt-3" @click="toggleInput()">
+                        {{ __('Use an authenticator code instead') }}
+                    </flux:button>
                 </div>
 
                 <form method="POST" action="{{ route('two-factor.login.store') }}" class="mt-4 space-y-5">
@@ -37,17 +45,14 @@
 
                     <div x-show="!showRecoveryInput">
                         <flux:field>
-                            <flux:label>{{ __('OTP Code') }}</flux:label>
-                            <div class="flex items-center justify-center">
-                                <flux:otp
-                                    x-model="code"
-                                    length="6"
-                                    name="code"
-                                    class="mx-auto"
-                                 />
-                            </div>
+                            <flux:label>{{ __('Authenticator Code') }}</flux:label>
+                            <flux:otp
+                                x-model="code"
+                                length="6"
+                                name="code"
+                             />
                             <flux:error name="code" />
-                            <flux:description>{{ __('6 digits from your authenticator app.') }}</flux:description>
+                            <flux:description>{{ __('Enter the 6-digit code from your authenticator app (Google Authenticator, 1Password, etc.).') }}</flux:description>
                         </flux:field>
                     </div>
 
@@ -69,20 +74,12 @@
                     </div>
 
                     <flux:button variant="primary" type="submit" size="sm">
-                        {{ __('Continue') }}
+                        {{ __('Verify') }}
                     </flux:button>
-
-                    <div class="space-x-0.5 text-sm leading-5">
-                        <span class="opacity-50">{{ __('or you can') }}</span>
-                        <div class="inline font-medium underline cursor-pointer opacity-80">
-                            <span x-show="!showRecoveryInput" @click="toggleInput()">{{ __('login using a recovery code') }}</span>
-                            <span x-show="showRecoveryInput" @click="toggleInput()">{{ __('login using an authentication code') }}</span>
-                        </div>
-                    </div>
                 </form>
 
                 <flux:button class="mt-10" icon="arrow-left" :href="route('login')" size="sm">
-                    {{ __('Cancel') }}
+                    {{ __('Back to sign in') }}
                 </flux:button>
             </div>
         </div>
