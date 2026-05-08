@@ -1,12 +1,17 @@
 <x-layouts::guest title="Welcome">
-    <div class="grid gap-12 lg:grid-cols-[1fr_380px]">
+    <flux:heading size="xl" level="1">{{ config('app.name', 'Laravel Teams Starter Kit') }}</flux:heading>
+
+    <div class="grid gap-x-12 gap-y-8 lg:grid-cols-[1fr_380px] mt-2">
         <div>
-            <flux:heading size="xl" level="1">{{ config('app.name', 'Laravel Teams Starter Kit') }}</flux:heading>
-            <p class="mt-2 text-sm">
+            <p class="text-sm">
                 Laravel starter kit with authentication, multi-team management, role-based permissions, and user settings. Built on Livewire, Flux Pro, and Tailwind CSS.
             </p>
 
-            <flux:heading class="mt-5">Authentication</flux:heading>
+            <div class="mt-5">
+                <flux:button variant="primary" :href="route('register')" size="sm" wire:navigate>Create account</flux:button>
+            </div>
+
+            <flux:heading class="mt-10">Authentication</flux:heading>
             <flux:separator class="mt-2" />
             <x-description.list>
                 <x-description.term>Password reset</x-description.term>
@@ -51,10 +56,6 @@
                 <x-description.term>Stack</x-description.term>
                 <x-description.details>Laravel 13, Livewire 4, Flux Pro, Tailwind CSS 4, Vite 8</x-description.details>
             </x-description.list>
-
-            <div class="mt-10">
-                <flux:button variant="primary" :href="route('register')" size="sm" wire:navigate>Create account</flux:button>
-            </div>
         </div>
 
         <div>
