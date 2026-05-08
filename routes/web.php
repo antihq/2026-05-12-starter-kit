@@ -3,7 +3,7 @@
 use App\Http\Middleware\EnsureTeamMembership;
 use Illuminate\Support\Facades\Route;
 
-Route::view('/', 'pages::auth.login')->name('home');
+Route::view('/', 'pages::home')->name('home')->middleware('guest');
 
 Route::prefix('{current_team}')
     ->middleware(['auth', 'verified', EnsureTeamMembership::class])
