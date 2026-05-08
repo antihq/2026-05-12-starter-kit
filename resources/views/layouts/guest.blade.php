@@ -17,20 +17,20 @@
                 @guest
                     @if (Route::has('login'))
                         <flux:navbar.item :href="route('login')" wire:navigate>
-                            {{ __('Log in') }}
+                            Sign in
                         </flux:navbar.item>
                     @endif
 
                     @if (Route::has('register'))
                         <flux:navbar.item :href="route('register')" wire:navigate>
-                            {{ __('Register') }}
+                            Create account
                         </flux:navbar.item>
                     @endif
                 @endguest
 
                 @auth
                     <flux:navbar.item :href="route('dashboard')" wire:navigate>
-                        {{ __('Dashboard') }}
+                        Dashboard
                     </flux:navbar.item>
                 @endauth
             </flux:navbar>

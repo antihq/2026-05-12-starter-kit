@@ -7,19 +7,19 @@
         <flux:header class="overflow-x-auto overflow-y-hidden" container>
             <flux:navbar class="-ml-2.5">
                 <flux:navbar.item :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
-                    {{ __('Dashboard') }}
+                    Dashboard
                 </flux:navbar.item>
                 <flux:navbar.item :href="route('account.edit')" wire:navigate>
-                    {{ __('Account') }}
+                    Account
                 </flux:navbar.item>
                 <flux:navbar.item :href="route('security.edit')" wire:navigate>
-                    {{ __('Security') }}
+                    Security
                 </flux:navbar.item>
                 <flux:navbar.item :href="route('teams.index')" :current="request()->routeIs('teams.*')" wire:navigate>
-                    {{ __('Teams') }}
+                    Teams
                 </flux:navbar.item>
                 <flux:navbar.item :href="route('appearance.edit')" wire:navigate>
-                    {{ __('Appearance') }}
+                    Appearance
                 </flux:navbar.item>
             </flux:navbar>
 
@@ -39,7 +39,7 @@
                 <form method="POST" action="{{ route('logout') }}" class="-mr-2.5 ">
                     @csrf
                     <flux:navbar.item type="submit">
-                        {{ __('Log out') }}
+                        Sign out
                     </flux:navbar.item>
                 </form>
             </div>

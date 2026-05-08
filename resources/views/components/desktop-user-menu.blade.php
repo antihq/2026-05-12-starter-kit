@@ -26,7 +26,7 @@
         <flux:menu.separator />
         <flux:menu.radio.group>
             <flux:menu.item :href="route('account.edit')" icon="cog" wire:navigate>
-                {{ __('Settings') }}
+                Settings
             </flux:menu.item>
             <form method="POST" action="{{ route('logout') }}" class="w-full">
                 @csrf
@@ -37,7 +37,7 @@
                     class="w-full cursor-pointer"
                     data-test="logout-button"
                 >
-                    {{ __('Log out') }}
+                    Sign out
                 </flux:menu.item>
             </form>
         </flux:menu.radio.group>

@@ -1,7 +1,7 @@
-<x-layouts::guest :title="__('Register')">
+<x-layouts::guest title="Create account">
     <section class="w-full">
         <div class="mx-auto max-w-md">
-            <flux:heading size="xl" level="1">{{ __('Create an account') }}</flux:heading>
+            <flux:heading size="xl" level="1">Create an account</flux:heading>
 
             @if (session('status'))
                 <flux:text color="green" class="mt-4 font-medium">{{ session('status') }}</flux:text>
@@ -11,7 +11,7 @@
                 @csrf
 
                 <flux:field>
-                    <flux:label>{{ __('Name') }}</flux:label>
+                    <flux:label>Name</flux:label>
                     <flux:input
                         name="name"
                         :value="old('name')"
@@ -20,15 +20,15 @@
                         required
                         autofocus
                         autocomplete="name"
-                        :placeholder="__('Full name')"
+                        placeholder="Full name"
                         class="max-w-lg"
                     />
                     <flux:error name="name" />
-                    <flux:description>{{ __('255 characters maximum.') }}</flux:description>
+                    <flux:description>255 characters maximum.</flux:description>
                 </flux:field>
 
                 <flux:field>
-                    <flux:label>{{ __('Email address') }}</flux:label>
+                    <flux:label>Email address</flux:label>
                     <flux:input
                         name="email"
                         :value="old('email')"
@@ -40,11 +40,11 @@
                         class="max-w-lg"
                     />
                     <flux:error name="email" />
-                    <flux:description>{{ __('Must be unique across all accounts.') }}</flux:description>
+                    <flux:description>Must be unique across all accounts.</flux:description>
                 </flux:field>
 
                 <flux:field>
-                    <flux:label>{{ __('Password') }}</flux:label>
+                    <flux:label>Password</flux:label>
                     <flux:input
                         name="password"
                         type="password"
@@ -58,7 +58,7 @@
                 </flux:field>
 
                 <flux:field>
-                    <flux:label>{{ __('Confirm password') }}</flux:label>
+                    <flux:label>Confirm password</flux:label>
                     <flux:input
                         name="password_confirmation"
                         type="password"
@@ -69,11 +69,11 @@
                         class="max-w-lg"
                     />
                     <flux:error name="password_confirmation" />
-                    <flux:description>{{ __('Must match the password above.') }}</flux:description>
+                    <flux:description>Must match the password above.</flux:description>
                 </flux:field>
 
                 <flux:button type="submit" variant="primary" size="sm" data-test="register-user-button">
-                    {{ __('Create account') }}
+                    Create account
                 </flux:button>
             </form>
 

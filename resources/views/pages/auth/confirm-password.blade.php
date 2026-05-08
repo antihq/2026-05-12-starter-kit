@@ -1,8 +1,8 @@
-<x-layouts::guest :title="__('Confirm password')">
+<x-layouts::guest title="Confirm password">
     <section class="w-full">
         <div class="mx-auto max-w-md">
-            <flux:heading size="xl" level="1">{{ __('Confirm password') }}</flux:heading>
-            <p class="mt-2 text-sm max-w-prose">{{ __('This is a secure area. Re-enter your password to continue.') }}</p>
+            <flux:heading size="xl" level="1">Confirm password</flux:heading>
+            <p class="mt-2 text-sm max-w-prose">This is a secure area. Re-enter your password to continue.</p>
 
             @if (session('status'))
                 <flux:text color="green" class="mt-4 font-medium">{{ session('status') }}</flux:text>
@@ -12,7 +12,7 @@
                 @csrf
 
                 <flux:field>
-                    <flux:label>{{ __('Password') }}</flux:label>
+                    <flux:label>Password</flux:label>
                     <flux:input
                         name="password"
                         type="password"
@@ -26,7 +26,7 @@
                 </flux:field>
 
                 <flux:button variant="primary" type="submit" size="sm" data-test="confirm-password-button">
-                    {{ __('Confirm') }}
+                    Confirm
                 </flux:button>
             </form>
         </div>

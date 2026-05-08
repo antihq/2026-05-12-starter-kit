@@ -47,7 +47,7 @@ new #[Title('Account')] class extends Component
 
         $this->originalEmail = $this->email;
 
-        Flux::toast(variant: 'success', text: __('Profile updated.'));
+        Flux::toast(variant: 'success', text: 'Profile updated.');
     }
 
     public function resendVerificationNotification(): void
@@ -62,7 +62,7 @@ new #[Title('Account')] class extends Component
 
         $user->sendEmailVerificationNotification();
 
-        Flux::toast(text: __('A new verification link has been sent to your email address.'));
+        Flux::toast(text: 'A new verification link has been sent to your email address.');
     }
 
     #[Computed]
@@ -83,10 +83,10 @@ new #[Title('Account')] class extends Component
         $user = Auth::user();
 
         if ($user instanceof MustVerifyEmail && $user->hasVerifiedEmail()) {
-            return __('Verified :date', ['date' => $user->email_verified_at->format('M j, Y')]);
+            return 'Verified ' . $user->email_verified_at->format('M j, Y');
         }
 
-        return __('Not verified');
+        return 'Not verified';
     }
 
     #[Computed]
@@ -115,30 +115,30 @@ new #[Title('Account')] class extends Component
 }; ?>
 
 <section class="w-full">
-    <flux:heading size="xl" level="1">{{ __('Account') }}</flux:heading>
+    <flux:heading size="xl" level="1">Account</flux:heading>
     <flux:separator class="mt-2" />
     <x-description.list>
-        <x-description.term>{{ __('Email') }}</x-description.term>
+        <x-description.term>Email</x-description.term>
         <x-description.details>{{ $this->emailVerifiedStatus }}</x-description.details>
 
-        <x-description.term>{{ __('Active sessions') }}</x-description.term>
+        <x-description.term>Active sessions</x-description.term>
         <x-description.details>{{ $this->activeSessionsCount }}</x-description.details>
     </x-description.list>
 
-    <flux:heading class="mt-10">{{ __('Update profile') }}</flux:heading>
+    <flux:heading class="mt-10">Update profile</flux:heading>
     <form wire:submit="updateProfileInformation" class="mt-4 space-y-5">
         <flux:field>
-                    <flux:label>{{ __('Name') }}</flux:label>
+                    <flux:label>Name</flux:label>
             <flux:input wire:model="name" type="text" size="sm" required autofocus autocomplete="name" class="max-w-lg" />
             <flux:error name="name" />
-            <flux:description>{{ __('255 characters maximum.') }}</flux:description>
+            <flux:description>255 characters maximum.</flux:description>
         </flux:field>
 
         <flux:field>
-                    <flux:label>{{ __('Email') }}</flux:label>
+                    <flux:label>Email</flux:label>
             <flux:input wire:model="email" type="email" size="sm" required autocomplete="email" class="max-w-lg" />
             <flux:error name="email" />
-            <flux:description>{{ __('Must be unique across all accounts.') }}</flux:description>
+            <flux:description>Must be unique across all accounts.</flux:description>
 
             @if ($this->emailChanged && Auth::user() instanceof MustVerifyEmail && Auth::user()->hasVerifiedEmail())
                 <p class="text-sm text-amber-600 mt-2">
@@ -148,31 +148,31 @@ new #[Title('Account')] class extends Component
 
             @if ($this->hasUnverifiedEmail)
                 <flux:text class="mt-2">
-                    {{ __('Your email address is unverified.') }}
+                    Your email address is unverified.
                     <flux:link class="cursor-pointer" wire:click.prevent="resendVerificationNotification">
-                        {{ __('Resend verification email.') }}
+                        Resend verification email.
                     </flux:link>
                 </flux:text>
             @endif
         </flux:field>
 
         <flux:button size="sm" variant="primary" type="submit" data-test="update-profile-button">
-            {{ __('Save') }}
+            Save
         </flux:button>
     </form>
 
     @if ($this->showDeleteUser)
-        <flux:heading class="mt-10">{{ __('Delete account') }}</flux:heading>
+        <flux:heading class="mt-10">Delete account</flux:heading>
 
         <form wire:submit="deleteUser" class="mt-4 space-y-5">
             <flux:field>
-                    <flux:label>{{ __('Confirm password') }}</flux:label>
+                    <flux:label>Confirm password</flux:label>
                 <flux:input wire:model="password" type="password" size="sm" required viewable class="max-w-lg" />
                 <flux:error name="password" />
             </flux:field>
 
             <flux:button size="sm" variant="danger" type="submit" data-test="delete-user-button">
-                {{ __('Delete account') }}
+                Delete account
             </flux:button>
         </form>
     @endif

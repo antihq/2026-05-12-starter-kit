@@ -57,7 +57,7 @@ new #[Title('Security')] class extends Component
 
         $this->reset('current_password', 'password', 'password_confirmation');
 
-        Flux::toast(variant: 'success', text: __('Password updated.'));
+        Flux::toast(variant: 'success', text: 'Password updated.');
     }
 
     public function disable(DisableTwoFactorAuthentication $disableTwoFactorAuthentication): void
@@ -71,10 +71,10 @@ new #[Title('Security')] class extends Component
     public function passwordRulesDescription(): array
     {
         return [
-            __('Minimum 8 characters'),
-            __('at least one uppercase letter'),
-            __('at least one lowercase letter'),
-            __('at least one number'),
+            'Minimum 8 characters',
+            'at least one uppercase letter',
+            'at least one lowercase letter',
+            'at least one number',
         ];
     }
 
@@ -98,18 +98,18 @@ new #[Title('Security')] class extends Component
 }; ?>
 
 <section class="w-full">
-    <flux:heading size="xl" level="1">{{ __('Security') }}</flux:heading>
+    <flux:heading size="xl" level="1">Security</flux:heading>
 
-    <flux:heading class="mt-10">{{ __('Update password') }}</flux:heading>
+    <flux:heading class="mt-10">Update password</flux:heading>
     <form wire:submit="updatePassword" class="mt-4 space-y-5">
         <flux:field>
-            <flux:label>{{ __('Current password') }}</flux:label>
+            <flux:label>Current password</flux:label>
             <flux:input wire:model="current_password" type="password" size="sm" required autocomplete="current-password" viewable class="max-w-lg" />
             <flux:error name="current_password" />
         </flux:field>
 
         <flux:field>
-            <flux:label>{{ __('New password') }}</flux:label>
+            <flux:label>New password</flux:label>
             <flux:input wire:model="password" type="password" size="sm" required autocomplete="new-password" viewable class="max-w-lg" />
             <flux:error name="password" />
             <flux:description>
@@ -118,38 +118,38 @@ new #[Title('Security')] class extends Component
         </flux:field>
 
         <flux:field>
-            <flux:label>{{ __('Confirm password') }}</flux:label>
+            <flux:label>Confirm password</flux:label>
             <flux:input wire:model="password_confirmation" type="password" size="sm" required autocomplete="new-password" viewable class="max-w-lg" />
             <flux:error name="password_confirmation" />
-            <flux:description>{{ __('Must match the new password.') }}</flux:description>
+            <flux:description>Must match the new password.</flux:description>
         </flux:field>
 
         <flux:button size="sm" variant="primary" type="submit" data-test="update-password-button">
-            {{ __('Save') }}
+            Save
         </flux:button>
     </form>
 
     @if ($canManageTwoFactor)
         <div class="mt-10">
-            <flux:heading>{{ __('Two-factor authentication') }}</flux:heading>
+            <flux:heading>Two-factor authentication</flux:heading>
             <flux:separator class="mt-2" />
             <x-description.list>
-                <x-description.term>{{ __('Status') }}</x-description.term>
+                <x-description.term>Status</x-description.term>
                 <x-description.details>
                     @if ($twoFactorEnabled && Auth::user()->two_factor_confirmed_at)
-                        {{ __('Confirmed :date', ['date' => Auth::user()->two_factor_confirmed_at->format('M j, Y')]) }}
+                        Confirmed {{ Auth::user()->two_factor_confirmed_at->format('M j, Y') }}
                     @elseif ($twoFactorEnabled)
-                        {{ __('Enabled') }}
+                        Enabled
                     @else
-                        {{ __('Disabled') }}
+                        Disabled
                     @endif
                 </x-description.details>
 
                 @if ($twoFactorEnabled)
-                    <x-description.term>{{ __('Recovery codes remaining') }}</x-description.term>
+                    <x-description.term>Recovery codes remaining</x-description.term>
                     <x-description.details>
                         <span class="{{ $this->recoveryCodesRemaining <= 2 ? 'text-amber-600' : '' }}">
-                            {{ __(':count of 8', ['count' => $this->recoveryCodesRemaining]) }}
+                            {{ $this->recoveryCodesRemaining . ' of 8' }}
                         </span>
                     </x-description.details>
                 @endif
@@ -162,16 +162,16 @@ new #[Title('Security')] class extends Component
             @if ($twoFactorEnabled)
                 <div class="flex items-center gap-3">
                     <flux:button variant="danger" wire:click="disable" size="sm">
-                        {{ __('Disable 2FA') }}
+                        Disable 2FA
                     </flux:button>
 
                     <flux:button variant="outline" :href="route('recovery-codes.show')" size="sm" wire:navigate>
-                        {{ __('View recovery codes') }}
+                        View recovery codes
                     </flux:button>
                 </div>
             @else
                 <flux:button variant="primary" :href="route('two-factor.setup')" size="sm" wire:navigate>
-                    {{ __('Set up two-factor authentication') }}
+                    Set up two-factor authentication
                 </flux:button>
             @endif
         </div>

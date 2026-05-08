@@ -57,7 +57,7 @@ new class extends Component
 
         $this->populateTeamData();
 
-        Flux::toast(variant: 'success', text: __('Team updated.'));
+        Flux::toast(variant: 'success', text: 'Team updated.');
 
         $this->redirectRoute('teams.edit', ['team' => $this->teamModel->fresh()->slug], navigate: true);
     }
@@ -82,7 +82,7 @@ new class extends Component
 
         $this->populateTeamData();
 
-        Flux::toast(variant: 'success', text: __('Member role updated.'));
+        Flux::toast(variant: 'success', text: 'Member role updated.');
     }
 
     public function removeMember(int $userId): void
@@ -101,7 +101,7 @@ new class extends Component
 
         $this->populateTeamData();
 
-        Flux::toast(variant: 'success', text: __('Member removed.'));
+        Flux::toast(variant: 'success', text: 'Member removed.');
     }
 
     public function cancelInvitation(string $code): void
@@ -114,7 +114,7 @@ new class extends Component
 
         $this->populateTeamData();
 
-        Flux::toast(variant: 'success', text: __('Invitation cancelled.'));
+        Flux::toast(variant: 'success', text: 'Invitation cancelled.');
     }
 
     public function deleteTeam(): void
@@ -126,7 +126,7 @@ new class extends Component
         ]);
 
         if ($validated['deleteTeamName'] !== $this->teamModel->name) {
-            $this->addError('deleteTeamName', __('The team name does not match.'));
+            $this->addError('deleteTeamName', 'The team name does not match.');
 
             return;
         }
@@ -188,8 +188,8 @@ new class extends Component
     public function render()
     {
         $title = $this->permissions->canUpdateTeam
-            ? __('Team settings — :name', ['name' => $this->teamModel->name])
-            : __('View team — :name', ['name' => $this->teamModel->name]);
+            ? 'Team settings — ' . $this->teamModel->name
+            : 'View team — ' . $this->teamModel->name;
 
         return $this->view()->title($title);
     }
@@ -201,50 +201,50 @@ new class extends Component
 }; ?>
 
 <section class="w-full">
-    <flux:heading size="xl" level="1">{{ __('Team settings') }}</flux:heading>
+    <flux:heading size="xl" level="1">Team settings</flux:heading>
     <flux:separator class="mt-2" />
     <x-description.list>
-        <x-description.term>{{ __('Slug') }}</x-description.term>
+        <x-description.term>Slug</x-description.term>
         <x-description.details>{{ $teamModel->slug }}</x-description.details>
 
-        <x-description.term>{{ __('Type') }}</x-description.term>
-        <x-description.details>{{ $teamModel->is_personal ? __('Personal') : __('Team') }}</x-description.details>
+        <x-description.term>Type</x-description.term>
+        <x-description.details>{{ $teamModel->is_personal ? 'Personal' : 'Team' }}</x-description.details>
 
-        <x-description.term>{{ __('Owner') }}</x-description.term>
+        <x-description.term>Owner</x-description.term>
         <x-description.details>{{ collect($members)->firstWhere('role', 'owner')['name'] ?? '—' }}</x-description.details>
 
-        <x-description.term>{{ __('Members') }}</x-description.term>
+        <x-description.term>Members</x-description.term>
         <x-description.details>{{ count($members) }}</x-description.details>
 
-        <x-description.term>{{ __('Pending invitations') }}</x-description.term>
+        <x-description.term>Pending invitations</x-description.term>
         <x-description.details>{{ count($invitations) }}</x-description.details>
     </x-description.list>
 
     @if ($this->permissions->canUpdateTeam)
-        <flux:heading class="mt-10">{{ __('Update team') }}</flux:heading>
+        <flux:heading class="mt-10">Update team</flux:heading>
         <form wire:submit="updateTeam" class="mt-4 space-y-5">
             <flux:field>
-                <flux:label>{{ __('Team name') }}</flux:label>
+                <flux:label>Team name</flux:label>
                 <flux:input wire:model="teamName" type="text" size="sm" required data-test="team-name-input" class="max-w-lg" />
                 <flux:error name="teamName" />
-                <flux:description>{{ __('255 characters maximum.') }}</flux:description>
+                <flux:description>255 characters maximum.</flux:description>
             </flux:field>
 
             <flux:button size="sm" variant="primary" type="submit" data-test="team-save-button">
-                {{ __('Save') }}
+                Save
             </flux:button>
         </form>
     @endif
 
-    <flux:heading class="mt-10">{{ __('Members') }}</flux:heading>
+    <flux:heading class="mt-10">Members</flux:heading>
 
     <div class="mt-4">
         <flux:table>
             <flux:table.columns>
-                <flux:table.column sticky class="bg-white dark:bg-zinc-900">{{ __('Name') }}</flux:table.column>
-                <flux:table.column>{{ __('Email') }}</flux:table.column>
-                <flux:table.column>{{ __('Role') }}</flux:table.column>
-                <flux:table.column align="end">{{ __('Actions') }}</flux:table.column>
+                <flux:table.column sticky class="bg-white dark:bg-zinc-900">Name</flux:table.column>
+                <flux:table.column>Email</flux:table.column>
+                <flux:table.column>Role</flux:table.column>
+                <flux:table.column align="end">Actions</flux:table.column>
             </flux:table.columns>
 
             <flux:table.rows>
@@ -279,7 +279,7 @@ new class extends Component
                                     wire:confirm="Are you sure you want to remove {{ $member['name'] }} from this team?"
                                     data-test="member-remove-button"
                                 >
-                                    {{ __('Remove') }}
+                                    Remove
                                 </flux:button>
                             @endif
                         </flux:table.cell>
@@ -291,14 +291,14 @@ new class extends Component
 
     @if ($this->permissions->canCreateInvitation || count($invitations) > 0)
         <div class="mt-10">
-            <flux:heading>{{ __('Invitations') }}</flux:heading>
+            <flux:heading>Invitations</flux:heading>
 
             @if (count($invitations) > 0)
                 <flux:table class="mt-4">
                     <flux:table.columns>
-                        <flux:table.column sticky class="bg-white dark:bg-zinc-900">{{ __('Email') }}</flux:table.column>
-                        <flux:table.column>{{ __('Role') }}</flux:table.column>
-                        <flux:table.column align="end">{{ __('Actions') }}</flux:table.column>
+                        <flux:table.column sticky class="bg-white dark:bg-zinc-900">Email</flux:table.column>
+                        <flux:table.column>Role</flux:table.column>
+                        <flux:table.column align="end">Actions</flux:table.column>
                     </flux:table.columns>
                  <flux:table.rows>
                         @foreach ($invitations as $invitation)
@@ -315,7 +315,7 @@ new class extends Component
                                             wire:confirm="Are you sure you want to cancel the invitation for {{ $invitation['email'] }}?"
                                             data-test="invitation-cancel-button"
                                         >
-                                            {{ __('Cancel') }}
+                                            Cancel
                                         </flux:button>
                                     @endif
                                 </flux:table.cell>
@@ -329,29 +329,29 @@ new class extends Component
 
             @if ($this->permissions->canCreateInvitation)
                 <flux:button class="mt-5" variant="primary" size="sm" :href="route('teams.invite', $teamModel)" wire:navigate data-test="invite-member-button">
-                    {{ __('Invite member') }}
+                    Invite member
                 </flux:button>
             @endif
         </div>
     @endif
 
     @if ($this->permissions->canDeleteTeam && ! $teamModel->is_personal)
-        <flux:heading class="mt-10">{{ __('Delete team') }}</flux:heading>
+        <flux:heading class="mt-10">Delete team</flux:heading>
 
         <form wire:submit="deleteTeam" class="mt-4 space-y-5">
             <flux:field>
-                <flux:label>{{ __('Type ":name" to confirm', ['name' => $teamModel->name]) }}</flux:label>
+                <flux:label>Type "{{ $teamModel->name }}" to confirm</flux:label>
                 <flux:input wire:model="deleteTeamName" type="text" size="sm" required class="max-w-lg" data-test="delete-team-name" />
                 <flux:error name="deleteTeamName" />
             </flux:field>
 
             <flux:button size="sm" variant="danger" type="submit" data-test="delete-team-button">
-                {{ __('Delete team') }}
+                Delete team
             </flux:button>
         </form>
     @endif
 
     <flux:button class="mt-10" icon="arrow-left" :href="route('teams.index')" wire:navigate size="sm">
-        {{ __('Back to teams') }}
+        Back to teams
     </flux:button>
 </section>

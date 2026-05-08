@@ -43,7 +43,7 @@ new #[Title('Create Team')] class extends Component {
 
         $this->reset('name');
 
-        Flux::toast(variant: 'success', text: __('Team created.'));
+        Flux::toast(variant: 'success', text: 'Team created.');
 
         $this->redirectRoute('teams.edit', ['team' => $team->slug], navigate: true);
     }
@@ -51,14 +51,14 @@ new #[Title('Create Team')] class extends Component {
 
 <section class="w-full">
     <div>
-        <flux:heading size="xl" level="1">{{ __('Create a new team') }}</flux:heading>
+        <flux:heading size="xl" level="1">Create a new team</flux:heading>
         <p class="mt-2 text-sm max-w-prose">
-            {{ __('Teams are shared workspaces with role-based permissions. Each team has its own members, invitations, and settings.') }}
+            Teams are shared workspaces with role-based permissions. Each team has its own members, invitations, and settings.
         </p>
 
         <form wire:submit="createTeam" class="mt-6 space-y-5">
             <div class="max-w-md">
-                <flux:input wire:model.live.debounce.300ms="name" :label="__('Team name')" type="text" size="sm" required autofocus data-test="create-team-name" />
+                <flux:input wire:model.live.debounce.300ms="name" label="Team name" type="text" size="sm" required autofocus data-test="create-team-name" />
 
                 <div class="mt-2 flex items-center justify-between">
                     @if($this->name !== '')
@@ -67,7 +67,7 @@ new #[Title('Create Team')] class extends Component {
                         </p>
                     @else
                         <p class="text-sm">
-                            {{ __('Slug preview will appear here') }}
+                            Slug preview will appear here
                         </p>
                     @endif
 
@@ -78,31 +78,31 @@ new #[Title('Create Team')] class extends Component {
             </div>
 
             <flux:button variant="primary" type="submit" data-test="create-team-submit" size="sm">
-                {{ __('Create team') }}
+                Create team
             </flux:button>
         </form>
 
         <flux:heading class="mt-10" level="2">
-            {{ __('What happens on creation') }}
+            What happens on creation
         </flux:heading>
 
         <flux:separator class="mt-2" />
 
         <x-description.list>
-            <x-description.term>{{ __('Role assigned') }}</x-description.term>
+            <x-description.term>Role assigned</x-description.term>
             <x-description.details>
-                {{ __('You are assigned the Owner role with all permissions:') }}
+                You are assigned the Owner role with all permissions:
                 @foreach($this->ownerPermissions as $permission)
                     <x-code>{{ $permission }}</x-code>{{ $loop->last ? '' : ',' }}
                 @endforeach
             </x-description.details>
 
-            <x-description.term>{{ __('Active team') }}</x-description.term>
-            <x-description.details>{{ __('This team becomes your active team across the application.') }}</x-description.details>
+            <x-description.term>Active team</x-description.term>
+            <x-description.details>This team becomes your active team across the application.</x-description.details>
         </x-description.list>
 
         <flux:button class="mt-6" icon="arrow-left" :href="route('teams.index')" wire:navigate data-test="create-team-back" size="sm">
-            {{ __('Back to teams') }}
+            Back to teams
         </flux:button>
     </div>
 </section>

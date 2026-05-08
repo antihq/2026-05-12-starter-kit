@@ -45,7 +45,7 @@ new #[Title('Invite team member')] class extends Component {
 
         $this->reset('inviteEmail', 'inviteRole');
 
-        Flux::toast(variant: 'success', text: __('Invitation sent.'));
+        Flux::toast(variant: 'success', text: 'Invitation sent.');
 
         $this->redirectRoute('teams.edit', ['team' => $this->team->slug], navigate: true);
     }
@@ -57,27 +57,27 @@ new #[Title('Invite team member')] class extends Component {
 
     public function render()
     {
-        return $this->view()->title(__('Invite team member — :team', ['team' => $this->team->name]));
+        return $this->view()->title('Invite team member — ' . $this->team->name);
     }
 }; ?>
 
 <section class="w-full">
     <div>
-        <flux:heading size="xl" level="1">{{ __('Invite team member') }}</flux:heading>
+        <flux:heading size="xl" level="1">Invite team member</flux:heading>
         <p class="mt-2 text-sm max-w-prose">
-            {{ __('Send an invitation to join :team. The invitation will expire in 3 days.', ['team' => $this->team->name]) }}
+            Send an invitation to join {{ $this->team->name }}. The invitation will expire in 3 days.
         </p>
 
         <form wire:submit="createInvitation" class="mt-6 space-y-5">
             <flux:field>
-                <flux:label>{{ __('Email address') }}</flux:label>
+                <flux:label>Email address</flux:label>
                 <flux:input wire:model="inviteEmail" type="email" size="sm" required autofocus autocomplete="email" class="max-w-lg" data-test="invite-email" />
                 <flux:error name="inviteEmail" />
-                <flux:description>{{ __('Must be unique. Existing team members cannot be invited.') }}</flux:description>
+                <flux:description>Must be unique. Existing team members cannot be invited.</flux:description>
             </flux:field>
 
             <flux:field>
-                <flux:label>{{ __('Role') }}</flux:label>
+                <flux:label>Role</flux:label>
                 <flux:select wire:model="inviteRole" size="sm" class="max-w-lg" data-test="invite-role">
                     @foreach ($this->availableRoles as $role)
                         <flux:select.option value="{{ $role['value'] }}">{{ $role['label'] }}</flux:select.option>
@@ -87,32 +87,32 @@ new #[Title('Invite team member')] class extends Component {
             </flux:field>
 
             <flux:button size="sm" variant="primary" type="submit" data-test="invite-submit">
-                {{ __('Send invitation') }}
+                Send invitation
             </flux:button>
         </form>
 
         <flux:heading class="mt-10" level="2">
-            {{ __('What happens when you invite') }}
+            What happens when you invite
         </flux:heading>
 
         <flux:separator class="mt-2" />
 
         <x-description.list>
-            <x-description.term>{{ __('Invitation sent') }}</x-description.term>
-            <x-description.details>{{ __('An email is sent to the address above with a link to accept the invitation.') }}</x-description.details>
+            <x-description.term>Invitation sent</x-description.term>
+            <x-description.details>An email is sent to the address above with a link to accept the invitation.</x-description.details>
 
-            <x-description.term>{{ __('Expires') }}</x-description.term>
-            <x-description.details>{{ __('The invitation expires in 3 days. After that, a new invitation must be sent.') }}</x-description.details>
+            <x-description.term>Expires</x-description.term>
+            <x-description.details>The invitation expires in 3 days. After that, a new invitation must be sent.</x-description.details>
 
-            <x-description.term>{{ __('Role change') }}</x-description.term>
-            <x-description.details>{{ __('The role can be changed after the member accepts the invitation from the team settings page.') }}</x-description.details>
+            <x-description.term>Role change</x-description.term>
+            <x-description.details>The role can be changed after the member accepts the invitation from the team settings page.</x-description.details>
 
-            <x-description.term>{{ __('Cancel') }}</x-description.term>
-            <x-description.details>{{ __('Pending invitations can be cancelled from the team settings page.') }}</x-description.details>
+            <x-description.term>Cancel</x-description.term>
+            <x-description.details>Pending invitations can be cancelled from the team settings page.</x-description.details>
         </x-description.list>
 
         <flux:button class="mt-10" icon="arrow-left" :href="route('teams.edit', $team)" wire:navigate size="sm">
-            {{ __('Back to team settings') }}
+            Back to team settings
         </flux:button>
     </div>
 </section>

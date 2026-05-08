@@ -42,7 +42,7 @@ new #[Title('Teams')] class extends Component {
 }; ?>
 
 <section class="w-full">
-    <flux:heading size="xl" level="1">{{ __('Teams') }}</flux:heading>
+    <flux:heading size="xl" level="1">Teams</flux:heading>
 
     <flux:table class="mt-6">
         <flux:table.columns>
@@ -54,20 +54,20 @@ new #[Title('Teams')] class extends Component {
                 sticky
                 class="bg-white dark:bg-zinc-900"
             >
-                {{ __('Name') }}
+                Name
             </flux:table.column>
-            <flux:table.column>{{ __('Type') }}</flux:table.column>
+            <flux:table.column>Type</flux:table.column>
             <flux:table.column
                 sortable
                 :sorted="$sortField === 'members_count'"
                 :direction="$sortField === 'members_count' ? $sortDirection : null"
                 wire:click="sortBy('members_count')"
             >
-                {{ __('Members') }}
+                Members
             </flux:table.column>
-            <flux:table.column>{{ __('Your Role') }}</flux:table.column>
-            <flux:table.column>{{ __('Current') }}</flux:table.column>
-            <flux:table.column align="end">{{ __('Actions') }}</flux:table.column>
+            <flux:table.column>Your Role</flux:table.column>
+            <flux:table.column>Current</flux:table.column>
+            <flux:table.column align="end">Actions</flux:table.column>
         </flux:table.columns>
 
         <flux:table.rows>
@@ -79,9 +79,9 @@ new #[Title('Teams')] class extends Component {
 
                     <flux:table.cell>
                         @if ($team->isPersonal)
-                            <flux:badge color="zinc" size="sm" inset="top bottom">{{ __('Personal') }}</flux:badge>
+                            <flux:badge color="zinc" size="sm" inset="top bottom">Personal</flux:badge>
                         @else
-                            {{ __('Team') }}
+                            Team
                         @endif
                     </flux:table.cell>
 
@@ -95,7 +95,7 @@ new #[Title('Teams')] class extends Component {
 
                     <flux:table.cell>
                         @if ($team->isCurrent)
-                            <flux:badge color="green" size="sm" inset="top bottom">{{ __('Active') }}</flux:badge>
+                            <flux:badge color="green" size="sm" inset="top bottom">Active</flux:badge>
                         @else
                             <span class="text-zinc-400">—</span>
                         @endif
@@ -109,7 +109,7 @@ new #[Title('Teams')] class extends Component {
                             :data-test="$team->role === 'member' ? 'team-view-button' : 'team-edit-button'"
                             inset="top bottom"
                         >
-                            {{ $team->role === 'member' ? __('View') : __('Edit') }}
+                            {{ $team->role === 'member' ? 'View' : 'Edit' }}
                         </flux:button>
                     </flux:table.cell>
                 </flux:table.row>
@@ -120,6 +120,6 @@ new #[Title('Teams')] class extends Component {
     <flux:separator variant="subtle" />
 
     <flux:button variant="primary" :href="route('teams.create')" size="sm" wire:navigate data-test="teams-new-team-button" class="mt-5">
-        {{ __('New team') }}
+        New team
     </flux:button>
 </section>

@@ -66,9 +66,9 @@ new #[Title('Set up two-factor authentication')] class extends Component {
 
 <section class="w-full">
     <div>
-        <flux:heading size="xl" level="1">{{ __('Set up two-factor authentication') }}</flux:heading>
+        <flux:heading size="xl" level="1">Set up two-factor authentication</flux:heading>
         <p class="mt-2 text-sm max-w-prose">
-            {{ __('Two-factor authentication requires a code from your phone during sign in, making it significantly harder for anyone to access your account without both your password and your device.') }}
+            Two-factor authentication requires a code from your phone during sign in, making it significantly harder for anyone to access your account without both your password and your device.
         </p>
 
         <div class="mt-6">
@@ -77,10 +77,10 @@ new #[Title('Set up two-factor authentication')] class extends Component {
             @enderror
 
             <flux:heading level="2">
-                {{ __('Step 1 — Add your account') }}
+                Step 1 — Add your account
             </flux:heading>
             <p class="text-sm max-w-prose mt-1">
-                {{ __('Scan the QR code below, or enter the setup key manually in your authenticator app.') }}
+                Scan the QR code below, or enter the setup key manually in your authenticator app.
             </p>
 
             <div class="mt-6 space-y-5">
@@ -94,7 +94,7 @@ new #[Title('Set up two-factor authentication')] class extends Component {
                     variant="filled"
                     copyable
                     icon="key"
-                    :label="__('Manual setup key')"
+                    label="Manual setup key"
                     class="max-w-lg"
                     input:class="font-mono"
                     size="sm"
@@ -103,15 +103,15 @@ new #[Title('Set up two-factor authentication')] class extends Component {
 
             @if ($requiresConfirmation)
                 <flux:heading level="2" class="mt-6">
-                    {{ __('Step 2 — Confirm setup') }}
+                    Step 2 — Confirm setup
                 </flux:heading>
                 <p class="text-sm max-w-prose mt-1">
-                    {{ __('Enter the 6-digit code from your authenticator app to complete setup.') }}
+                    Enter the 6-digit code from your authenticator app to complete setup.
                 </p>
 
                 <div class="mt-6 space-y-5">
                     <flux:field>
-                        <flux:label>{{ __('Authentication code') }}</flux:label>
+                        <flux:label>Authentication code</flux:label>
                         <flux:otp
                             name="code"
                             wire:model="code"
@@ -126,7 +126,7 @@ new #[Title('Set up two-factor authentication')] class extends Component {
                         x-bind:disabled="$wire.code.length < 6"
                         size="sm"
                     >
-                        {{ __('Confirm') }}
+                        Confirm
                     </flux:button>
                 </div>
             @else
@@ -138,28 +138,28 @@ new #[Title('Set up two-factor authentication')] class extends Component {
                         :href="route('security.edit')"
                         wire:navigate
                     >
-                        {{ __('Enable') }}
+                        Enable
                     </flux:button>
                 </div>
             @endif
         </div>
 
         <flux:heading class="mt-10" level="2">
-            {{ __('What happens after enabling') }}
+            What happens after enabling
         </flux:heading>
 
         <flux:separator class="mt-2" />
 
         <x-description.list>
-            <x-description.term>{{ __('Sign-in') }}</x-description.term>
-            <x-description.details>{{ __('You will be prompted for a 6-digit code from your authenticator app during sign-in, in addition to your password.') }}</x-description.details>
+            <x-description.term>Sign-in</x-description.term>
+            <x-description.details>You will be prompted for a 6-digit code from your authenticator app during sign-in, in addition to your password.</x-description.details>
 
-            <x-description.term>{{ __('Recovery codes') }}</x-description.term>
-            <x-description.details>{{ __('You will receive recovery codes to regain access if you lose your authenticator device. Store them in a secure password manager.') }}</x-description.details>
+            <x-description.term>Recovery codes</x-description.term>
+            <x-description.details>You will receive recovery codes to regain access if you lose your authenticator device. Store them in a secure password manager.</x-description.details>
         </x-description.list>
 
         <flux:button class="mt-10" icon="arrow-left" :href="route('security.edit')" wire:navigate size="sm">
-            {{ __('Back to security') }}
+            Back to security
         </flux:button>
     </div>
 </section>
