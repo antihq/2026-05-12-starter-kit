@@ -67,7 +67,6 @@
                                 autocomplete="one-time-code"
                                 x-model="recovery_code"
                                 size="sm"
-                                class="max-w-lg"
                             />
                             <flux:error name="recovery_code" />
                         </flux:field>

@@ -8,7 +8,7 @@ Route::view('/', 'pages::home')->name('home')->middleware('guest');
 Route::prefix('{current_team}')
     ->middleware(['auth', 'verified', EnsureTeamMembership::class])
     ->group(function () {
-        Route::view('dashboard', 'dashboard')->name('dashboard');
+        Route::view('dashboard', 'pages::dashboard')->name('dashboard');
     });
 
 Route::middleware(['auth'])->group(function () {

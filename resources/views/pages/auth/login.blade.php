@@ -21,7 +21,6 @@
                         autofocus
                         autocomplete="email"
                         placeholder="email@example.com"
-                        class="max-w-lg"
                     />
                     <flux:error name="email" />
                 </flux:field>
@@ -35,7 +34,6 @@
                         required
                         autocomplete="current-password"
                         viewable
-                        class="max-w-lg"
                     />
                     <flux:error name="password" />
                     @if (Route::has('password.request'))

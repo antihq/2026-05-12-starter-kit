@@ -16,9 +16,9 @@
             <x-description.list>
                 <x-description.term>Password reset</x-description.term>
                 <x-description.details>Reset link sent by email</x-description.details>
-             <x-description.term>Email verification</x-description.term>
+                <x-description.term>Email verification</x-description.term>
                 <x-description.details>Verification link with resend</x-description.details>
-             <x-description.term>Two-factor auth</x-description.term>
+                <x-description.term>Two-factor auth</x-description.term>
                 <x-description.details>Time-based one-time passwords via authenticator app, setup by QR code, 8 single-use recovery codes</x-description.details>
             </x-description.list>
 
@@ -27,15 +27,15 @@
             <x-description.list>
                 <x-description.term>Multi-team</x-description.term>
                 <x-description.details>Multiple teams per user, personal team created on registration</x-description.details>
-             <x-description.term>Roles</x-description.term>
+                <x-description.term>Roles</x-description.term>
                 <x-description.details>Owner, Admin, Member — each with a defined set of permissions</x-description.details>
-             <x-description.term>Team switching</x-description.term>
+                <x-description.term>Team switching</x-description.term>
                 <x-description.details>Nav bar dropdown, updates URL to new team context</x-description.details>
-             <x-description.term>Invitations</x-description.term>
+                <x-description.term>Invitations</x-description.term>
                 <x-description.details>Sent by email with role assignment, expire after 3 days</x-description.details>
-             <x-description.term>Member management</x-description.term>
+                <x-description.term>Member management</x-description.term>
                 <x-description.details>Add, change role, or remove members</x-description.details>
-             <x-description.term>Team deletion</x-description.term>
+                <x-description.term>Team deletion</x-description.term>
                 <x-description.details>Requires typing the team name; personal teams cannot be deleted</x-description.details>
             </x-description.list>
 
@@ -44,9 +44,9 @@
             <x-description.list>
                 <x-description.term>Account</x-description.term>
                 <x-description.details>Update name and email, re-verify on email change, delete account with password confirmation</x-description.details>
-             <x-description.term>Appearance</x-description.term>
+                <x-description.term>Appearance</x-description.term>
                 <x-description.details>Light, dark, or match system preference — saved per user</x-description.details>
-             <x-description.term>Security</x-description.term>
+                <x-description.term>Security</x-description.term>
                 <x-description.details>Change password, enable and disable 2FA, view and regenerate recovery codes</x-description.details>
             </x-description.list>
 
@@ -99,7 +99,7 @@
 
                 <flux:checkbox name="remember" label="Remember me" :checked="old('remember')" />
 
-                <flux:button variant="primary" type="submit" size="sm" data-test="login-button">
+                <flux:button variant="primary" type="submit" size="sm" data-test="home-login-button">
                     Sign in
                 </flux:button>
             </form>

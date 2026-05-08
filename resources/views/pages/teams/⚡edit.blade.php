@@ -300,14 +300,15 @@ new class extends Component
                         <flux:table.column>Role</flux:table.column>
                         <flux:table.column align="end">Actions</flux:table.column>
                     </flux:table.columns>
-                 <flux:table.rows>
+
+                    <flux:table.rows>
                         @foreach ($invitations as $invitation)
                             <flux:table.row :key="$invitation['code']" data-test="invitation-row">
                                 <flux:table.cell sticky class="bg-white dark:bg-zinc-900">{{ $invitation['email'] }}</flux:table.cell>
-                             <flux:table.cell>
+                                <flux:table.cell>
                                     <flux:badge color="zinc" size="sm" inset="top bottom">{{ $invitation['role_label'] }}</flux:badge>
                                 </flux:table.cell>
-                             <flux:table.cell align="end">
+                                <flux:table.cell align="end">
                                     @if ($this->permissions->canCancelInvitation)
                                         <flux:button
                                             size="sm"

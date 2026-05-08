@@ -20,7 +20,6 @@
                         required
                         autofocus
                         placeholder="email@example.com"
-                        class="max-w-lg"
                     />
                     <flux:error name="email" />
                 </flux:field>

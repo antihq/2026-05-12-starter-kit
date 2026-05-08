@@ -21,7 +21,6 @@
                         autofocus
                         autocomplete="name"
                         placeholder="Full name"
-                        class="max-w-lg"
                     />
                     <flux:error name="name" />
                     <flux:description>255 characters maximum.</flux:description>
@@ -37,7 +36,6 @@
                         required
                         autocomplete="email"
                         placeholder="email@example.com"
-                        class="max-w-lg"
                     />
                     <flux:error name="email" />
                     <flux:description>Must be unique across all accounts.</flux:description>
@@ -52,7 +50,6 @@
                         required
                         autocomplete="new-password"
                         viewable
-                        class="max-w-lg"
                     />
                     <flux:error name="password" />
                 </flux:field>
@@ -66,7 +63,6 @@
                         required
                         autocomplete="new-password"
                         viewable
-                        class="max-w-lg"
                     />
                     <flux:error name="password_confirmation" />
                     <flux:description>Must match the password above.</flux:description>

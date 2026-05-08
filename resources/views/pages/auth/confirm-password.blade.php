@@ -20,7 +20,6 @@
                         required
                         autocomplete="current-password"
                         viewable
-                        class="max-w-lg"
                     />
                     <flux:error name="password" />
                 </flux:field>

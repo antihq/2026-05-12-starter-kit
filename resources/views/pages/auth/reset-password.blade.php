@@ -20,7 +20,6 @@
                         size="sm"
                         required
                         autocomplete="email"
-                        class="max-w-lg"
                     />
                     <flux:error name="email" />
                 </flux:field>
@@ -34,7 +33,6 @@
                         required
                         autocomplete="new-password"
                         viewable
-                        class="max-w-lg"
                     />
                     <flux:error name="password" />
                 </flux:field>
@@ -48,7 +46,6 @@
                         required
                         autocomplete="new-password"
                         viewable
-                        class="max-w-lg"
                     />
                     <flux:error name="password_confirmation" />
                     <flux:description>Must match the new password above.</flux:description>
