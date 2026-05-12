@@ -26,16 +26,16 @@
             >
                 <div x-show="!showRecoveryInput">
                     <flux:heading size="xl" level="1">Authentication code</flux:heading>
-                    <p class="mt-2 text-sm">Your account requires two-factor verification. Enter the code from your authenticator app to proceed.</p>
-                    <flux:button type="button" size="sm" class="mt-3" @click="toggleInput()">
+                    <p class="mt-2 text-sm">Enter the 6-digit code from your authenticator app.</p>
+                    <flux:button type="button" class="mt-3" @click="toggleInput()">
                         Use a recovery code instead
                     </flux:button>
                 </div>
 
                 <div x-show="showRecoveryInput">
                     <flux:heading size="xl" level="1">Recovery code</flux:heading>
-                    <p class="mt-2 text-sm">Your account requires two-factor verification. Enter one of your saved recovery codes to proceed.</p>
-                    <flux:button type="button" size="sm" class="mt-3" @click="toggleInput()">
+                    <p class="mt-2 text-sm">Enter one of your saved recovery codes.</p>
+                    <flux:button type="button" class="mt-3" @click="toggleInput()">
                         Use an authenticator code instead
                     </flux:button>
                 </div>
@@ -45,14 +45,13 @@
 
                     <div x-show="!showRecoveryInput">
                         <flux:field>
-                            <flux:label>Authenticator Code</flux:label>
+                            <flux:label>Code</flux:label>
                             <flux:otp
                                 x-model="code"
                                 length="6"
                                 name="code"
                              />
                             <flux:error name="code" />
-                            <flux:description>Enter the 6-digit code from your authenticator app (Google Authenticator, 1Password, etc.).</flux:description>
                         </flux:field>
                     </div>
 
@@ -66,18 +65,17 @@
                                 x-bind:required="showRecoveryInput"
                                 autocomplete="one-time-code"
                                 x-model="recovery_code"
-                                size="sm"
                             />
                             <flux:error name="recovery_code" />
                         </flux:field>
                     </div>
 
-                    <flux:button variant="primary" type="submit" size="sm">
+                    <flux:button variant="primary" type="submit">
                         Verify
                     </flux:button>
                 </form>
 
-                <flux:button class="mt-10" icon="arrow-left" :href="route('login')" size="sm">
+                <flux:button class="mt-10" icon="arrow-left" :href="route('login')">
                     Back to sign in
                 </flux:button>
             </div>

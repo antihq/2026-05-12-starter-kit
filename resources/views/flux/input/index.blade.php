@@ -90,16 +90,16 @@ $inputLoadingClasses = Flux::classes()
     ;
 
 $classes = Flux::classes()
-    ->add('w-full border rounded-lg block disabled:shadow-none dark:shadow-none')
+    ->add('w-full border rounded-lg block disabled:shadow-none dark:shadow-none disabled:opacity-50 dark:disabled:opacity-50 focus:outline-hidden sm:focus:border-transparent sm:focus:ring-2 sm:focus:ring-blue-500 sm:focus:ring-inset')
     ->add('appearance-none') // Without this, input[type="date"] on mobile doesn't respect w-full...
     ->add(match ($size) {
-        default => 'text-base sm:text-sm py-2 h-10 leading-[1.375rem]', // This makes the height of the input 40px (same as buttons and such...)
+        default => 'h-11 sm:h-9 text-base/6 sm:text-sm/6',
         'sm' => 'text-sm py-1.5 h-8 leading-[1.125rem]',
         'xs' => 'text-xs py-1.5 h-6 leading-[1.125rem]',
     })
     ->add(match ($hasLeadingIcon) {
-        true => 'ps-10',
-        false => 'ps-3',
+        true => 'ps-10 sm:ps-9',
+        false => 'ps-3.5 sm:ps-3',
     })
     ->add(match ($countOfTrailingIcons) {
         // Make sure there's enough padding on the right side of the input to account for all the icons...
@@ -120,7 +120,7 @@ $classes = Flux::classes()
         'filled'  => 'text-zinc-950 placeholder-zinc-500 disabled:placeholder-zinc-400 dark:text-white dark:placeholder-white/60 dark:disabled:placeholder-white/40',
     })
     ->add(match ($variant) { // Border...
-        'outline' => 'shadow-xs border-zinc-200 border-b-zinc-300/80 disabled:border-b-zinc-200 dark:border-white/10 dark:disabled:border-white/5',
+        'outline' => 'shadow-xs border-zinc-300/80 border-b-zinc-400/60 dark:border-white/10 dark:disabled:border-white/5',
         'filled'  => 'border-0',
     })
     ->add(match ($variant) { // Invalid...

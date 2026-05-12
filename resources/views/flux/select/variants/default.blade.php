@@ -12,9 +12,9 @@ $invalid ??= ($name && $errors->has($name));
 
 $classes = Flux::classes()
     ->add('appearance-none') // Strip the browser's default <select> styles...
-    ->add('[:where(&)]:w-full ps-3 pe-10 block')
+    ->add('[:where(&)]:w-full ps-3.5 sm:ps-3 pe-10 block disabled:opacity-50 dark:disabled:opacity-50 focus:outline-hidden sm:focus:border-transparent sm:focus:ring-2 sm:focus:ring-blue-500 sm:focus:ring-inset')
     ->add(match ($size) {
-        default => 'h-10 py-2 text-base sm:text-sm leading-[1.375rem] rounded-lg',
+        default => 'h-11 sm:h-9 text-base/6 sm:text-sm/6 rounded-lg',
         'sm' => 'h-8 py-1.5 text-sm leading-[1.125rem] rounded-md',
         'xs' => 'h-6 text-xs leading-[1.125rem] rounded-md',
     })
@@ -28,7 +28,7 @@ $classes = Flux::classes()
     ->add('disabled:shadow-none')
     ->add($invalid
         ? 'border border-red-500'
-        : 'border border-zinc-200 border-b-zinc-300/80 dark:border-white/10'
+        : 'border border-zinc-300/80 border-b-zinc-400/60 dark:border-white/10'
     )
     ;
 @endphp

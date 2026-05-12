@@ -12,12 +12,11 @@
                 <input type="hidden" name="token" value="{{ request()->route('token') }}">
 
                 <flux:field>
-                    <flux:label>Email</flux:label>
+                    <flux:label>Email address</flux:label>
                     <flux:input
                         name="email"
                         value="{{ request('email') }}"
                         type="email"
-                        size="sm"
                         required
                         autocomplete="email"
                     />
@@ -29,7 +28,6 @@
                     <flux:input
                         name="password"
                         type="password"
-                        size="sm"
                         required
                         autocomplete="new-password"
                         viewable
@@ -42,21 +40,19 @@
                     <flux:input
                         name="password_confirmation"
                         type="password"
-                        size="sm"
                         required
                         autocomplete="new-password"
                         viewable
                     />
                     <flux:error name="password_confirmation" />
-                    <flux:description>Must match the new password above.</flux:description>
                 </flux:field>
 
-                <flux:button type="submit" variant="primary" size="sm" data-test="reset-password-button">
+                <flux:button type="submit" variant="primary" data-test="reset-password-button">
                     Reset password
                 </flux:button>
             </form>
 
-            <flux:button class="mt-10" icon="arrow-left" :href="route('login')" wire:navigate size="sm">
+            <flux:button class="mt-10" icon="arrow-left" :href="route('login')" wire:navigate>
                 Back to sign in
             </flux:button>
         </div>

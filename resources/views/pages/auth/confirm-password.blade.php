@@ -2,7 +2,6 @@
     <section class="w-full">
         <div class="mx-auto max-w-md">
             <flux:heading size="xl" level="1">Confirm password</flux:heading>
-            <p class="mt-2 text-sm max-w-prose">This is a secure area. Re-enter your password to continue.</p>
 
             @if (session('status'))
                 <flux:text color="green" class="mt-4 font-medium">{{ session('status') }}</flux:text>
@@ -16,7 +15,6 @@
                     <flux:input
                         name="password"
                         type="password"
-                        size="sm"
                         required
                         autocomplete="current-password"
                         viewable
@@ -24,7 +22,7 @@
                     <flux:error name="password" />
                 </flux:field>
 
-                <flux:button variant="primary" type="submit" size="sm" data-test="confirm-password-button">
+                <flux:button variant="primary" type="submit" data-test="confirm-password-button">
                     Confirm
                 </flux:button>
             </form>

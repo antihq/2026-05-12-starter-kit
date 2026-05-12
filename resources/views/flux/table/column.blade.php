@@ -10,9 +10,9 @@
 
 @php
 $classes = Flux::classes()
-    ->add('p-2 first:ps-1 last:pe-1')
-    ->add('text-start text-sm font-medium text-zinc-950 dark:text-white')
-    ->add('border-b border-b-zinc-950/10 dark:border-b-white/10')
+    ->add('py-2 px-4 first:ps-2 sm:first:ps-1 last:pe-2 sm:last:pe-1 max-sm:in-data-bleed:first:ps-6 max-sm:in-data-bleed:last:pe-6')
+    ->add('text-start text-sm/6 font-medium text-zinc-500 dark:text-zinc-400')
+    ->add('border-b border-zinc-950/10 dark:border-b-white/10')
     ->add(match($align) {
         'center' => 'group/center-align',
         'end' => 'group/end-align',
