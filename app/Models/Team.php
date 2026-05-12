@@ -77,24 +77,6 @@ class Team extends Model
         return $this->hasMany(TeamInvitation::class);
     }
 
-    /** @return HasMany<Project, $this> */
-    public function projects(): HasMany
-    {
-        return $this->hasMany(Project::class);
-    }
-
-    /** @return HasMany<Channel, $this> */
-    public function channels(): HasMany
-    {
-        return $this->hasMany(Channel::class);
-    }
-
-    /** @return HasMany<Event, $this> */
-    public function events(): HasMany
-    {
-        return $this->hasMany(Event::class);
-    }
-
     /**
      * Get the attributes that should be cast.
      *
