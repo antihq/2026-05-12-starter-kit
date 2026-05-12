@@ -54,6 +54,6 @@
                     Reset password
                 </flux:button>
             </form>
-</div>
+        </div>
     </section>
 </x-layouts::guest>
