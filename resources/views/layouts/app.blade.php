@@ -15,15 +15,6 @@
                 <flux:sidebar.item :href="route('dashboard')" :current="request()->routeIs('dashboard')" :accent="false" wire:navigate>
                     Dashboard
                 </flux:sidebar.item>
-                <flux:sidebar.item :href="route('projects.index')" :current="request()->routeIs('projects.*')" :accent="false" wire:navigate>
-                    Projects
-                </flux:sidebar.item>
-                <flux:sidebar.item :href="route('channels.index')" :current="request()->routeIs('channels.*')" :accent="false" wire:navigate>
-                    Channels
-                </flux:sidebar.item>
-                <flux:sidebar.item :href="route('events.index')" :current="request()->routeIs('events.*')" :accent="false" wire:navigate>
-                    Events
-                </flux:sidebar.item>
             </flux:navbar>
 
             <flux:sidebar.spacer />
