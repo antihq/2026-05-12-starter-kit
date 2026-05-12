@@ -51,16 +51,17 @@ test('team slug uses next available suffix', function () {
     ]);
 });
 
-test('team edit page can be rendered', function () {
+test('team show page can be rendered', function () {
     $user = User::factory()->create();
     $team = Team::factory()->create();
     $team->members()->attach($user, ['role' => TeamRole::Owner->value]);
 
     $response = $this
         ->actingAs($user)
-        ->get(route('teams.edit', $team));
+        ->get(route('teams.show', $team));
 
     $response->assertOk();
+    $response->assertSee($user->name);
 });
 
 test('teams can be updated by owners', function () {
@@ -80,6 +81,21 @@ test('teams can be updated by owners', function () {
         'id' => $team->id,
         'name' => 'Updated Name',
     ]);
+});
+
+test('team update redirects to show page', function () {
+    $user = User::factory()->create();
+    $team = Team::factory()->create(['name' => 'Original Name']);
+
+    $team->members()->attach($user, ['role' => TeamRole::Owner->value]);
+
+    $this->actingAs($user);
+
+    Livewire::test('pages::teams.edit', ['team' => $team])
+        ->set('teamName', 'Updated Name')
+        ->call('updateTeam')
+        ->assertHasNoErrors()
+        ->assertRedirect(route('teams.show', Team::where('name', 'Updated Name')->first()->slug));
 });
 
 test('teams cannot be updated by members', function () {
@@ -106,7 +122,7 @@ test('teams can be deleted by owners', function () {
 
     $this->actingAs($user);
 
-    Livewire::test('pages::teams.edit', ['team' => $team])
+    Livewire::test('pages::teams.delete', ['team' => $team])
         ->set('deleteTeamName', $team->name)
         ->call('deleteTeam')
         ->assertHasNoErrors();
@@ -124,7 +140,7 @@ test('team deletion requires name confirmation', function () {
 
     $this->actingAs($user);
 
-    Livewire::test('pages::teams.edit', ['team' => $team])
+    Livewire::test('pages::teams.delete', ['team' => $team])
         ->set('deleteTeamName', 'Wrong Name')
         ->call('deleteTeam')
         ->assertHasErrors(['deleteTeamName']);
@@ -151,7 +167,7 @@ test('deleting current team switches to alphabetically first remaining team', fu
 
     $this->actingAs($user);
 
-    Livewire::test('pages::teams.edit', ['team' => $zuluTeam])
+    Livewire::test('pages::teams.delete', ['team' => $zuluTeam])
         ->set('deleteTeamName', $zuluTeam->name)
         ->call('deleteTeam')
         ->assertHasNoErrors();
@@ -173,7 +189,7 @@ test('deleting current team falls back to personal team when alphabetically firs
 
     $this->actingAs($user);
 
-    Livewire::test('pages::teams.edit', ['team' => $team])
+    Livewire::test('pages::teams.delete', ['team' => $team])
         ->set('deleteTeamName', $team->name)
         ->call('deleteTeam')
         ->assertHasNoErrors();
@@ -195,7 +211,7 @@ test('deleting non current team leaves current team unchanged', function () {
 
     $this->actingAs($user);
 
-    Livewire::test('pages::teams.edit', ['team' => $team])
+    Livewire::test('pages::teams.delete', ['team' => $team])
         ->set('deleteTeamName', $team->name)
         ->call('deleteTeam')
         ->assertHasNoErrors();
@@ -220,7 +236,7 @@ test('deleting team switches other affected users to their personal team', funct
 
     $this->actingAs($owner);
 
-    Livewire::test('pages::teams.edit', ['team' => $team])
+    Livewire::test('pages::teams.delete', ['team' => $team])
         ->set('deleteTeamName', $team->name)
         ->call('deleteTeam')
         ->assertHasNoErrors();
@@ -235,7 +251,7 @@ test('personal teams cannot be deleted', function () {
 
     $this->actingAs($user);
 
-    Livewire::test('pages::teams.edit', ['team' => $personalTeam])
+    Livewire::test('pages::teams.delete', ['team' => $personalTeam])
         ->set('deleteTeamName', $personalTeam->name)
         ->call('deleteTeam')
         ->assertForbidden();
@@ -256,7 +272,7 @@ test('teams cannot be deleted by non owners', function () {
 
     $this->actingAs($member);
 
-    Livewire::test('pages::teams.edit', ['team' => $team])
+    Livewire::test('pages::teams.delete', ['team' => $team])
         ->set('deleteTeamName', $team->name)
         ->call('deleteTeam')
         ->assertForbidden();
@@ -278,7 +294,56 @@ test('teams create page can be rendered', function () {
     $response->assertOk();
 });
 
-test('creating a team redirects to edit page', function () {
+test('team delete page can be rendered', function () {
+    $user = User::factory()->create();
+    $team = Team::factory()->create();
+
+    $team->members()->attach($user, ['role' => TeamRole::Owner->value]);
+
+    $response = $this
+        ->actingAs($user)
+        ->get(route('teams.delete', $team));
+
+    $response->assertOk();
+});
+
+test('team show page shows delete button for non-personal teams', function () {
+    $user = User::factory()->create();
+    $team = Team::factory()->create();
+
+    $team->members()->attach($user, ['role' => TeamRole::Owner->value]);
+
+    $this->actingAs($user)
+        ->get(route('teams.show', $team))
+        ->assertOk()
+        ->assertSee('Delete team');
+});
+
+test('team show page hides delete button for personal teams', function () {
+    $user = User::factory()->create();
+    $personalTeam = $user->personalTeam();
+
+    $this->actingAs($user)
+        ->get(route('teams.show', $personalTeam))
+        ->assertOk()
+        ->assertDontSee('Delete team');
+});
+
+test('team show page hides edit button for members', function () {
+    $owner = User::factory()->create();
+    $member = User::factory()->create();
+    $team = Team::factory()->create();
+
+    $team->members()->attach($owner, ['role' => TeamRole::Owner->value]);
+    $team->members()->attach($member, ['role' => TeamRole::Member->value]);
+
+    $this->actingAs($member)
+        ->get(route('teams.show', $team))
+        ->assertOk()
+        ->assertDontSee('Edit');
+});
+
+test('creating a team redirects to show page', function () {
     $user = User::factory()->create();
 
     $this->actingAs($user);
@@ -287,7 +352,7 @@ test('creating a team redirects to edit page', function () {
         ->set('name', 'Redirect Test Team')
         ->call('createTeam')
         ->assertHasNoErrors()
-        ->assertRedirect(route('teams.edit', Team::where('name', 'Redirect Test Team')->first()->slug));
+        ->assertRedirect(route('teams.show', Team::where('name', 'Redirect Test Team')->first()->slug));
 });
 
 test('toUserTeams includes member count', function () {

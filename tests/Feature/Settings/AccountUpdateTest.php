@@ -1,20 +1,102 @@
 <?php
 
+use App\Enums\TeamRole;
+use App\Models\Team;
 use App\Models\User;
 use Livewire\Livewire;
 
-test('account page is displayed', function () {
-    $this->actingAs($user = User::factory()->create());
+test('account show page is displayed', function () {
+    $user = User::factory()->create();
 
-    $this->get(route('account.edit'))->assertOk();
+    $this->actingAs($user);
+
+    $response = $this->get(route('account.show'));
+
+    $response->assertOk();
 });
 
-test('account page shows active sessions count', function () {
-    $this->actingAs($user = User::factory()->create());
+test('account show page shows active sessions count', function () {
+    $user = User::factory()->create();
 
-    $this->get(route('account.edit'))
+    $this->actingAs($user);
+
+    $this->get(route('account.show'))
         ->assertOk()
         ->assertSee('Active sessions');
+});
+
+test('account show page shows registered date', function () {
+    $user = User::factory()->create();
+
+    $this->actingAs($user);
+
+    $this->get(route('account.show'))
+        ->assertOk()
+        ->assertSee('Registered');
+});
+
+test('account show page shows two factor status', function () {
+    $user = User::factory()->create();
+
+    $this->actingAs($user);
+
+    $this->get(route('account.show'))
+        ->assertOk()
+        ->assertSee('Two-factor');
+});
+
+test('account show page shows team count', function () {
+    $user = User::factory()->create();
+
+    $this->actingAs($user);
+
+    $this->get(route('account.show'))
+        ->assertOk()
+        ->assertSee('Teams');
+});
+
+test('account show page shows current team name', function () {
+    $user = User::factory()->create();
+    $team = Team::factory()->create();
+    $team->members()->attach($user, ['role' => TeamRole::Owner->value]);
+    $user->switchTeam($team);
+
+    $this->actingAs($user);
+
+    $this->get(route('account.show'))
+        ->assertOk()
+        ->assertSee($team->name);
+});
+
+test('account show page shows edit button', function () {
+    $user = User::factory()->create();
+
+    $this->actingAs($user);
+
+    $this->get(route('account.show'))
+        ->assertOk()
+        ->assertSee('Edit');
+});
+
+test('account show page links to delete page', function () {
+    $user = User::factory()->create();
+
+    $this->actingAs($user);
+
+    $this->get(route('account.show'))
+        ->assertOk()
+        ->assertSee('Delete account');
+});
+
+test('account edit page can be rendered', function () {
+    $user = User::factory()->create();
+
+    $this->actingAs($user);
+
+    $response = $this
+        ->get(route('account.edit'));
+
+    $response->assertOk();
 });
 
 test('account information can be updated', function () {
@@ -22,7 +104,7 @@ test('account information can be updated', function () {
 
     $this->actingAs($user);
 
-    $response = Livewire::test('pages::settings.account')
+    $response = Livewire::test('pages::account.edit')
         ->set('name', 'Test User')
         ->set('email', 'test@example.com')
         ->call('updateProfileInformation');
@@ -41,7 +123,7 @@ test('email verification status is unchanged when email address is unchanged', f
 
     $this->actingAs($user);
 
-    $response = Livewire::test('pages::settings.account')
+    $response = Livewire::test('pages::account.edit')
         ->set('name', 'Test User')
         ->set('email', $user->email)
         ->call('updateProfileInformation');
@@ -51,12 +133,36 @@ test('email verification status is unchanged when email address is unchanged', f
     expect($user->refresh()->email_verified_at)->not->toBeNull();
 });
 
+test('account update redirects to show page', function () {
+    $user = User::factory()->create();
+
+    $this->actingAs($user);
+
+    Livewire::test('pages::account.edit')
+        ->set('name', 'Test User')
+        ->set('email', 'test@example.com')
+        ->call('updateProfileInformation')
+        ->assertHasNoErrors()
+        ->assertRedirect(route('account.show'));
+});
+
+test('account delete page can be rendered', function () {
+    $user = User::factory()->create();
+
+    $this->actingAs($user);
+
+    $response = $this
+        ->get(route('account.delete'));
+
+    $response->assertOk();
+});
+
 test('user can delete their account', function () {
     $user = User::factory()->create();
 
     $this->actingAs($user);
 
-    $response = Livewire::test('pages::settings.account')
+    $response = Livewire::test('pages::account.delete')
         ->set('password', 'password')
         ->call('deleteUser');
 
@@ -73,7 +179,7 @@ test('correct password must be provided to delete account', function () {
 
     $this->actingAs($user);
 
-    $response = Livewire::test('pages::settings.account')
+    $response = Livewire::test('pages::account.delete')
         ->set('password', 'wrong-password')
         ->call('deleteUser');
 

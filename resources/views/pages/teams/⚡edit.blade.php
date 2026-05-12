@@ -1,16 +1,10 @@
 <?php
 
-use App\Enums\TeamRole;
 use App\Models\Team;
-use App\Models\User;
 use App\Rules\TeamName;
-use App\Support\TeamPermissions;
 use Flux\Flux;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
 use Livewire\Component;
 
 new class extends Component
@@ -19,22 +13,10 @@ new class extends Component
 
     public string $teamName = '';
 
-    public string $deleteTeamName = '';
-
-    public array $members = [];
-
-    public array $invitations = [];
-
-    public array $availableRoles = [];
-
-    public array $memberRoles = [];
-
     public function mount(Team $team): void
     {
         $this->teamModel = $team;
         $this->teamName = $team->name;
-
-        $this->populateTeamData();
     }
 
     public function updateTeam(): void
@@ -55,304 +37,29 @@ new class extends Component
 
         $this->teamModel = $team;
 
-        $this->populateTeamData();
-
         Flux::toast(variant: 'success', text: 'Team updated.');
 
-        $this->redirectRoute('teams.edit', ['team' => $this->teamModel->fresh()->slug], navigate: true);
-    }
-
-    public function updatedMemberRoles($value, $key): void
-    {
-        $this->updateMember((int) $key, $value);
-    }
-
-    public function updateMember(int $userId, string $role): void
-    {
-        Gate::authorize('updateMember', $this->teamModel);
-
-        $validated = Validator::make(['role' => $role], [
-            'role' => ['required', 'string', Rule::enum(TeamRole::class)],
-        ])->validate();
-
-        $this->teamModel->memberships()
-            ->where('user_id', $userId)
-            ->firstOrFail()
-            ->update(['role' => TeamRole::from($validated['role'])]);
-
-        $this->populateTeamData();
-
-        Flux::toast(variant: 'success', text: 'Member role updated.');
-    }
-
-    public function removeMember(int $userId): void
-    {
-        Gate::authorize('removeMember', $this->teamModel);
-
-        $user = User::findOrFail($userId);
-
-        $this->teamModel->memberships()
-            ->where('user_id', $user->id)
-            ->delete();
-
-        if ($user->isCurrentTeam($this->teamModel)) {
-            $user->switchTeam($user->personalTeam());
-        }
-
-        $this->populateTeamData();
-
-        Flux::toast(variant: 'success', text: 'Member removed.');
-    }
-
-    public function cancelInvitation(string $code): void
-    {
-        Gate::authorize('cancelInvitation', $this->teamModel);
-
-        $invitation = $this->teamModel->invitations()->where('code', $code)->firstOrFail();
-
-        $invitation->delete();
-
-        $this->populateTeamData();
-
-        Flux::toast(variant: 'success', text: 'Invitation cancelled.');
-    }
-
-    public function deleteTeam(): void
-    {
-        Gate::authorize('delete', $this->teamModel);
-
-        $validated = $this->validate([
-            'deleteTeamName' => ['required', 'string'],
-        ]);
-
-        if ($validated['deleteTeamName'] !== $this->teamModel->name) {
-            $this->addError('deleteTeamName', 'The team name does not match.');
-
-            return;
-        }
-
-        $user = Auth::user();
-
-        $fallbackTeam = $user->isCurrentTeam($this->teamModel)
-            ? $user->fallbackTeam($this->teamModel)
-            : null;
-
-        DB::transaction(function () use ($user) {
-            User::where('current_team_id', $this->teamModel->id)
-                ->where('id', '!=', $user->id)
-                ->each(fn (User $affectedUser) => $affectedUser->switchTeam($affectedUser->personalTeam()));
-
-            $this->teamModel->invitations()->delete();
-            $this->teamModel->memberships()->delete();
-            $this->teamModel->delete();
-        });
-
-        if ($fallbackTeam) {
-            $user->switchTeam($fallbackTeam);
-        }
-
-        $this->redirectRoute('teams.index', navigate: true);
-    }
-
-    private function populateTeamData(): void
-    {
-        $team = $this->teamModel->fresh();
-
-        $this->teamName = $team->name;
-
-        $this->members = $team->members()->get()->map(fn ($member) => [
-            'id' => $member->id,
-            'name' => $member->name,
-            'email' => $member->email,
-            'role' => $member->pivot->role->value,
-            'role_label' => $member->pivot->role?->label(),
-        ])->toArray();
-
-        $this->invitations = $team->invitations()
-            ->whereNull('accepted_at')
-            ->get()
-            ->map(fn ($invitation) => [
-                'code' => $invitation->code,
-                'email' => $invitation->email,
-                'role' => $invitation->role->value,
-                'role_label' => $invitation->role->label(),
-            ])->toArray();
-
-        $this->availableRoles = TeamRole::assignable();
-
-        $this->memberRoles = $team->members()->get()->mapWithKeys(fn ($m) => [
-            $m->id => $m->pivot->role->value,
-        ])->toArray();
+        $this->redirectRoute('teams.show', ['team' => $this->teamModel->fresh()->slug], navigate: true);
     }
 
     public function render()
     {
-        $title = $this->permissions->canUpdateTeam
-            ? 'Team settings — ' . $this->teamModel->name
-            : 'View team — ' . $this->teamModel->name;
-
-        return $this->view()->title($title);
-    }
-
-    public function getPermissionsProperty(): TeamPermissions
-    {
-        return Auth::user()->toTeamPermissions($this->teamModel);
+        return $this->view()->title('Edit team — ' . $this->teamModel->name);
     }
 }; ?>
 
 <section class="w-full">
-    <flux:heading size="xl" level="1">Team settings</flux:heading>
-    <flux:separator class="mt-2" />
-    <x-description.list>
-        <x-description.term>Slug</x-description.term>
-        <x-description.details>{{ $teamModel->slug }}</x-description.details>
+    <flux:heading size="xl" level="1">Edit team</flux:heading>
 
-        <x-description.term>Type</x-description.term>
-        <x-description.details>{{ $teamModel->is_personal ? 'Personal' : 'Team' }}</x-description.details>
+    <form wire:submit="updateTeam" class="mt-6 space-y-8">
+        <flux:field>
+            <flux:label>Team name</flux:label>
+            <flux:input wire:model="teamName" type="text" required data-test="team-name-input" class="max-w-lg" />
+            <flux:error name="teamName" />
+        </flux:field>
 
-        <x-description.term>Owner</x-description.term>
-        <x-description.details>{{ collect($members)->firstWhere('role', 'owner')['name'] ?? '—' }}</x-description.details>
-
-        <x-description.term>Members</x-description.term>
-        <x-description.details>{{ count($members) }}</x-description.details>
-
-        <x-description.term>Pending invitations</x-description.term>
-        <x-description.details>{{ count($invitations) }}</x-description.details>
-    </x-description.list>
-
-    @if ($this->permissions->canUpdateTeam)
-        <flux:heading class="mt-10">Update team</flux:heading>
-        <form wire:submit="updateTeam" class="mt-4 space-y-5">
-            <flux:field>
-                <flux:label>Team name</flux:label>
-                <flux:input wire:model="teamName" type="text" size="sm" required data-test="team-name-input" class="max-w-lg" />
-                <flux:error name="teamName" />
-                <flux:description>255 characters maximum.</flux:description>
-            </flux:field>
-
-            <flux:button size="sm" variant="primary" type="submit" data-test="team-save-button">
-                Save
-            </flux:button>
-        </form>
-    @endif
-
-    <flux:heading class="mt-10">Members</flux:heading>
-
-    <div class="mt-4">
-        <flux:table>
-            <flux:table.columns>
-                <flux:table.column sticky class="bg-white dark:bg-zinc-900">Name</flux:table.column>
-                <flux:table.column>Email</flux:table.column>
-                <flux:table.column>Role</flux:table.column>
-                <flux:table.column align="end">Actions</flux:table.column>
-            </flux:table.columns>
-
-            <flux:table.rows>
-                @foreach ($members as $member)
-                    <flux:table.row :key="$member['id']" data-test="member-row">
-                        <flux:table.cell variant="strong" sticky class="bg-white dark:bg-zinc-900">{{ $member['name'] }}</flux:table.cell>
-
-                        <flux:table.cell>{{ $member['email'] }}</flux:table.cell>
-
-                        <flux:table.cell>
-                            @if ($member['role'] !== 'owner' && $this->permissions->canUpdateMember)
-                                <flux:select
-                                    wire:model.live="memberRoles.{{ $member['id'] }}"
-                                    size="sm"
-                                    class="w-fit"
-                                    data-test="member-role-select"
-                                >
-                                    @foreach ($availableRoles as $role)
-                                        <flux:select.option value="{{ $role['value'] }}">{{ $role['label'] }}</flux:select.option>
-                                    @endforeach
-                                </flux:select>
-                            @else
-                                <flux:badge color="zinc" size="sm" inset="top bottom">{{ $member['role_label'] }}</flux:badge>
-                            @endif
-                        </flux:table.cell>
-
-                        <flux:table.cell align="end">
-                            @if ($member['role'] !== 'owner' && $this->permissions->canRemoveMember)
-                                <flux:button
-                                    size="sm"
-                                    wire:click="removeMember({{ $member['id'] }})"
-                                    wire:confirm="Are you sure you want to remove {{ $member['name'] }} from this team?"
-                                    data-test="member-remove-button"
-                                >
-                                    Remove
-                                </flux:button>
-                            @endif
-                        </flux:table.cell>
-                    </flux:table.row>
-                @endforeach
-            </flux:table.rows>
-        </flux:table>
-    </div>
-
-    @if ($this->permissions->canCreateInvitation || count($invitations) > 0)
-        <div class="mt-10">
-            <flux:heading>Invitations</flux:heading>
-
-            @if (count($invitations) > 0)
-                <flux:table class="mt-4">
-                    <flux:table.columns>
-                        <flux:table.column sticky class="bg-white dark:bg-zinc-900">Email</flux:table.column>
-                        <flux:table.column>Role</flux:table.column>
-                        <flux:table.column align="end">Actions</flux:table.column>
-                    </flux:table.columns>
-
-                    <flux:table.rows>
-                        @foreach ($invitations as $invitation)
-                            <flux:table.row :key="$invitation['code']" data-test="invitation-row">
-                                <flux:table.cell sticky class="bg-white dark:bg-zinc-900">{{ $invitation['email'] }}</flux:table.cell>
-                                <flux:table.cell>
-                                    <flux:badge color="zinc" size="sm" inset="top bottom">{{ $invitation['role_label'] }}</flux:badge>
-                                </flux:table.cell>
-                                <flux:table.cell align="end">
-                                    @if ($this->permissions->canCancelInvitation)
-                                        <flux:button
-                                            size="sm"
-                                            wire:click="cancelInvitation('{{ $invitation['code'] }}')"
-                                            wire:confirm="Are you sure you want to cancel the invitation for {{ $invitation['email'] }}?"
-                                            data-test="invitation-cancel-button"
-                                        >
-                                            Cancel
-                                        </flux:button>
-                                    @endif
-                                </flux:table.cell>
-                            </flux:table.row>
-                        @endforeach
-                    </flux:table.rows>
-                </flux:table>
-
-                <flux:separator variant="subtle" />
-            @endif
-
-            @if ($this->permissions->canCreateInvitation)
-                <flux:button class="mt-5" variant="primary" size="sm" :href="route('teams.invite', $teamModel)" wire:navigate data-test="invite-member-button">
-                    Invite member
-                </flux:button>
-            @endif
-        </div>
-    @endif
-
-    @if ($this->permissions->canDeleteTeam && ! $teamModel->is_personal)
-        <flux:heading class="mt-10">Delete team</flux:heading>
-
-        <form wire:submit="deleteTeam" class="mt-4 space-y-5">
-            <flux:field>
-                <flux:label>Type "{{ $teamModel->name }}" to confirm</flux:label>
-                <flux:input wire:model="deleteTeamName" type="text" size="sm" required class="max-w-lg" data-test="delete-team-name" />
-                <flux:error name="deleteTeamName" />
-            </flux:field>
-
-            <flux:button size="sm" variant="danger" type="submit" data-test="delete-team-button">
-                Delete team
-            </flux:button>
-        </form>
-    @endif
-
-    <flux:button class="mt-10" icon="arrow-left" :href="route('teams.index')" wire:navigate size="sm">
-        Back to teams
-    </flux:button>
+        <flux:button variant="primary" type="submit" data-test="team-save-button">
+            Save
+        </flux:button>
+    </form>
 </section>

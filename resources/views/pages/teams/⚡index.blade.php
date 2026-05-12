@@ -2,6 +2,7 @@
 
 use App\Support\UserTeam;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\Computed;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
@@ -21,7 +22,8 @@ new #[Title('Teams')] class extends Component {
         }
     }
 
-    public function getTeamsProperty()
+    #[Computed]
+    public function teams()
     {
         return Auth::user()
             ->teams()
@@ -32,7 +34,6 @@ new #[Title('Teams')] class extends Component {
                 id: $team->id,
                 name: $team->name,
                 slug: $team->slug,
-                isPersonal: $team->is_personal,
                 role: $role?->value,
                 roleLabel: $role?->label(),
                 isCurrent: Auth::user()->isCurrentTeam($team),
@@ -42,84 +43,64 @@ new #[Title('Teams')] class extends Component {
 }; ?>
 
 <section class="w-full">
-    <flux:heading size="xl" level="1">Teams</flux:heading>
+    <div class="flex items-end justify-between gap-4">
+        <flux:heading size="xl" level="1">Teams</flux:heading>
+        <flux:button variant="primary" :href="route('teams.create')" wire:navigate data-test="teams-new-team-button">
+            New team
+        </flux:button>
+    </div>
 
-    <flux:table class="mt-6">
-        <flux:table.columns>
-            <flux:table.column
-                sortable
-                :sorted="$sortField === 'name'"
-                :direction="$sortField === 'name' ? $sortDirection : null"
-                wire:click="sortBy('name')"
-                sticky
-                class="bg-white dark:bg-zinc-900"
-            >
-                Name
-            </flux:table.column>
-            <flux:table.column>Type</flux:table.column>
-            <flux:table.column
-                sortable
-                :sorted="$sortField === 'members_count'"
-                :direction="$sortField === 'members_count' ? $sortDirection : null"
-                wire:click="sortBy('members_count')"
-            >
-                Members
-            </flux:table.column>
-            <flux:table.column>Your Role</flux:table.column>
-            <flux:table.column>Current</flux:table.column>
-            <flux:table.column align="end">Actions</flux:table.column>
-        </flux:table.columns>
+    <div class="mt-8">
+        <flux:table bleed>
+            <flux:table.columns>
+                <flux:table.column
+                    sortable
+                    :sorted="$sortField === 'name'"
+                    :direction="$sortField === 'name' ? $sortDirection : null"
+                    wire:click="sortBy('name')"
+                >
+                    Name
+                </flux:table.column>
+                <flux:table.column
+                    sortable
+                    :sorted="$sortField === 'members_count'"
+                    :direction="$sortField === 'members_count' ? $sortDirection : null"
+                    wire:click="sortBy('members_count')"
+                >
+                    Members
+                </flux:table.column>
+                <flux:table.column>Your Role</flux:table.column>
+                <flux:table.column>Current</flux:table.column>
+            </flux:table.columns>
 
-        <flux:table.rows>
-            @foreach ($this->teams as $team)
-                <flux:table.row :key="$team->slug" data-test="team-row">
-                    <flux:table.cell variant="strong" sticky class="bg-white dark:bg-zinc-900">
-                        {{ $team->name }}
-                    </flux:table.cell>
+            <flux:table.rows>
+                @foreach ($this->teams as $team)
+                    <flux:table.row :key="$team->slug" data-test="team-row">
+                        <flux:table.cell class="relative">
+                            <x-table-row-link :href="route('teams.show', $team->slug)" wire:navigate :first="true" aria-label="{{ $team->name }}" />
+                            {{ $team->name }}
+                        </flux:table.cell>
 
-                    <flux:table.cell>
-                        @if ($team->isPersonal)
-                            <flux:badge color="zinc" size="sm" inset="top bottom">Personal</flux:badge>
-                        @else
-                            Team
-                        @endif
-                    </flux:table.cell>
+                        <flux:table.cell class="relative">
+                            <x-table-row-link :href="route('teams.show', $team->slug)" wire:navigate />
+                            {{ number_format($team->memberCount ?? 0) }}
+                        </flux:table.cell>
 
-                    <flux:table.cell>
-                        {{ number_format($team->memberCount ?? 0) }}
-                    </flux:table.cell>
+                        <flux:table.cell class="relative">
+                            <x-table-row-link :href="route('teams.show', $team->slug)" wire:navigate />
+                            {{ $team->roleLabel }}
+                        </flux:table.cell>
 
-                    <flux:table.cell>
-                        {{ $team->roleLabel }}
-                    </flux:table.cell>
+                        <flux:table.cell class="relative">
+                            <x-table-row-link :href="route('teams.show', $team->slug)" wire:navigate />
+                            @if ($team->isCurrent)
+                                <flux:badge color="green" size="sm" inset="top bottom">Active</flux:badge>
+                            @endif
+                        </flux:table.cell>
 
-                    <flux:table.cell>
-                        @if ($team->isCurrent)
-                            <flux:badge color="green" size="sm" inset="top bottom">Active</flux:badge>
-                        @else
-                            <span class="text-zinc-400">—</span>
-                        @endif
-                    </flux:table.cell>
-
-                    <flux:table.cell align="end">
-                        <flux:button
-                            size="sm"
-                            :href="route('teams.edit', $team->slug)"
-                            wire:navigate
-                            :data-test="$team->role === 'member' ? 'team-view-button' : 'team-edit-button'"
-                            inset="top bottom"
-                        >
-                            {{ $team->role === 'member' ? 'View' : 'Edit' }}
-                        </flux:button>
-                    </flux:table.cell>
-                </flux:table.row>
-            @endforeach
-        </flux:table.rows>
-    </flux:table>
-
-    <flux:separator variant="subtle" />
-
-    <flux:button variant="primary" :href="route('teams.create')" size="sm" wire:navigate data-test="teams-new-team-button" class="mt-5">
-        New team
-    </flux:button>
+                    </flux:table.row>
+                @endforeach
+            </flux:table.rows>
+        </flux:table>
+    </div>
 </section>

@@ -39,7 +39,7 @@ test('recovery codes page redirects if two factor not enabled', function () {
     $this->actingAs($user)
         ->withSession(['auth.password_confirmed_at' => time()])
         ->get(route('recovery-codes.show'))
-        ->assertRedirect(route('security.edit'));
+        ->assertRedirect(route('authenticator.show'));
 });
 
 test('recovery codes can be regenerated', function () {
@@ -47,7 +47,7 @@ test('recovery codes can be regenerated', function () {
 
     $this->actingAs($user);
 
-    $component = Livewire::test('pages::settings.two-factor-recovery-codes');
+    $component = Livewire::test('pages::recovery-codes.show');
 
     $originalCodes = $component->get('recoveryCodes');
     expect($originalCodes)->not->toBeEmpty();

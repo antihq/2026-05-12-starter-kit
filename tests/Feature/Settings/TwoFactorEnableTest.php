@@ -14,43 +14,43 @@ beforeEach(function () {
     ]);
 });
 
-test('two factor setup page can be rendered', function () {
+test('authenticator create page can be rendered', function () {
     $user = User::factory()->create();
 
     $this->actingAs($user)
         ->withSession(['auth.password_confirmed_at' => time()])
-        ->get(route('two-factor.setup'))
+        ->get(route('authenticator.create'))
         ->assertOk()
-        ->assertSee('Set up two-factor authentication')
+        ->assertSee('Enable authenticator')
         ->assertSee('Step 1')
         ->assertSee('Manual setup key')
         ->assertSee('Step 2')
         ->assertSee('Confirm');
 });
 
-test('two factor setup page requires password confirmation', function () {
+test('authenticator create page requires password confirmation', function () {
     $user = User::factory()->create();
 
     $this->actingAs($user)
-        ->get(route('two-factor.setup'))
+        ->get(route('authenticator.create'))
         ->assertRedirect(route('password.confirm'));
 });
 
-test('two factor setup page redirects if two factor already enabled', function () {
+test('authenticator create page redirects if two factor already enabled', function () {
     $user = User::factory()->withTwoFactor()->create();
 
     $this->actingAs($user)
         ->withSession(['auth.password_confirmed_at' => time()])
-        ->get(route('two-factor.setup'))
-        ->assertRedirect(route('security.edit'));
+        ->get(route('authenticator.create'))
+        ->assertRedirect(route('authenticator.show'));
 });
 
-test('two factor setup enables two factor and shows qr code on mount', function () {
+test('authenticator create enables two factor and shows qr code on mount', function () {
     $user = User::factory()->create();
 
     $this->actingAs($user);
 
-    $component = Livewire::test('pages::settings.two-factor-setup');
+    $component = Livewire::test('pages::authenticator.create');
 
     $component->assertSet('requiresConfirmation', true)
         ->assertSet('qrCodeSvg', fn ($svg) => str_contains($svg, '<svg'))
@@ -59,24 +59,24 @@ test('two factor setup enables two factor and shows qr code on mount', function 
     expect($user->fresh()->two_factor_secret)->not->toBeNull();
 });
 
-test('two factor confirmation fails with invalid code', function () {
+test('authenticator confirmation fails with invalid code', function () {
     $user = User::factory()->create();
 
     $this->actingAs($user);
 
-    $component = Livewire::test('pages::settings.two-factor-setup')
+    $component = Livewire::test('pages::authenticator.create')
         ->set('code', '000000')
         ->call('confirmTwoFactor');
 
     $component->assertHasErrors(['code']);
 });
 
-test('two factor confirmation succeeds with valid code', function () {
+test('authenticator confirmation succeeds with valid code', function () {
     $user = User::factory()->create();
 
     $this->actingAs($user);
 
-    Livewire::test('pages::settings.two-factor-setup');
+    Livewire::test('pages::authenticator.create');
 
     $user->refresh();
     $secret = decrypt($user->two_factor_secret);
@@ -84,17 +84,17 @@ test('two factor confirmation succeeds with valid code', function () {
     $totp = (new Google2FA);
     $validCode = $totp->getCurrentOtp($secret);
 
-    $component = Livewire::test('pages::settings.two-factor-setup')
+    $component = Livewire::test('pages::authenticator.create')
         ->set('code', $validCode)
         ->call('confirmTwoFactor');
 
     $component->assertHasNoErrors()
-        ->assertRedirect(route('security.edit'));
+        ->assertRedirect(route('authenticator.show'));
 
     expect($user->fresh()->two_factor_confirmed_at)->not->toBeNull();
 });
 
-test('two factor setup page without confirmation shows enable button', function () {
+test('authenticator create page without confirmation shows enable button', function () {
     Features::twoFactorAuthentication([
         'confirm' => false,
         'confirmPassword' => true,
@@ -104,7 +104,7 @@ test('two factor setup page without confirmation shows enable button', function 
 
     $this->actingAs($user)
         ->withSession(['auth.password_confirmed_at' => time()])
-        ->get(route('two-factor.setup'))
+        ->get(route('authenticator.create'))
         ->assertOk()
         ->assertSee('Enable')
         ->assertDontSee('Step 2');

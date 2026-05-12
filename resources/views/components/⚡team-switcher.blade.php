@@ -79,10 +79,35 @@ new class extends Component {
     }
 }; ?>
 
-<div>
-    <flux:select wire:model.live="selectedTeam" size="sm" data-test="team-switcher" class="w-fit">
-        @foreach ($this->teams() as $team)
-            <flux:select.option value="{{ $team->slug }}">{{ $team->name }}</flux:select.option>
-        @endforeach
-    </flux:select>
-</div>
+<flux:dropdown data-test="team-switcher">
+    <button class="h-11 sm:h-9 relative flex items-center gap-3 rounded-lg w-full px-2 py-0 text-start font-medium text-zinc-950 dark:text-white hover:text-zinc-950 dark:hover:text-white dark:hover:bg-white/5 hover:bg-zinc-950/5">
+        <span class="flex-1 text-base/6 sm:text-sm/5 truncate">{{ Auth::user()->currentTeam?->name }}</span>
+        <flux:icon icon="chevron-down" variant="micro" class="size-5 sm:size-4 text-zinc-500 dark:text-zinc-400" />
+    </button>
+
+    <flux:menu class="min-w-80 lg:min-w-64">
+        <flux:menu.item href="{{ route('teams.show', ['team' => Auth::user()->currentTeam?->slug]) }}" wire:navigate>
+            Details
+        </flux:menu.item>
+        <flux:menu.item href="{{ route('teams.members', ['team' => Auth::user()->currentTeam?->slug]) }}" wire:navigate>
+            Members
+        </flux:menu.item>
+        <flux:menu.item href="{{ route('teams.invitations', ['team' => Auth::user()->currentTeam?->slug]) }}" wire:navigate>
+            Invitations
+        </flux:menu.item>
+
+        <flux:menu.separator />
+
+        <flux:menu.radio.group wire:model.live="selectedTeam">
+            @foreach ($this->teams() as $team)
+                <flux:menu.radio value="{{ $team->slug }}">{{ $team->name }}</flux:menu.radio>
+            @endforeach
+        </flux:menu.radio.group>
+
+        <flux:menu.separator />
+
+        <flux:menu.item href="{{ route('teams.create') }}">
+            New team
+        </flux:menu.item>
+    </flux:menu>
+</flux:dropdown>

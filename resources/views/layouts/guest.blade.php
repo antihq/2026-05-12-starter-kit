@@ -4,32 +4,26 @@
         @include('partials.head')
     </head>
     <body class="min-h-screen bg-white dark:bg-zinc-900 antialiased text-zinc-950 dark:text-white">
-        <flux:header class="overflow-x-auto overflow-y-hidden" container>
-            <flux:navbar class="-ml-2.5">
-                <flux:navbar.item :href="route('home')" wire:navigate>
-                    {{ config('app.name', 'Laravel') }}
-                </flux:navbar.item>
-            </flux:navbar>
-
+        <flux:header class="border-b border-zinc-950/5 dark:border-white/5" container>
             <flux:spacer />
 
-            <flux:navbar class="-mr-2.5">
+            <flux:navbar class="-mr-2.5 -mb-px">
                 @guest
                     @if (Route::has('login'))
-                        <flux:navbar.item :href="route('login')" wire:navigate>
+                        <flux:navbar.item :href="route('login')" :accent="false" wire:navigate>
                             Sign in
                         </flux:navbar.item>
                     @endif
 
                     @if (Route::has('register'))
-                        <flux:navbar.item :href="route('register')" wire:navigate>
+                        <flux:navbar.item :href="route('register')" :accent="false" wire:navigate>
                             Create account
                         </flux:navbar.item>
                     @endif
                 @endguest
 
                 @auth
-                    <flux:navbar.item :href="route('dashboard')" wire:navigate>
+                    <flux:navbar.item :href="route('dashboard')" :accent="false" wire:navigate>
                         Dashboard
                     </flux:navbar.item>
                 @endauth
