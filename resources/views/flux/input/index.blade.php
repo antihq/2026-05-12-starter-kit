@@ -90,7 +90,7 @@ $inputLoadingClasses = Flux::classes()
     ;
 
 $classes = Flux::classes()
-    ->add('w-full border rounded-lg block disabled:shadow-none dark:shadow-none disabled:opacity-50 dark:disabled:opacity-50 focus:outline-hidden sm:focus:border-transparent sm:focus:ring-2 sm:focus:ring-blue-500 sm:focus:ring-inset')
+    ->add('w-full border rounded-lg block disabled:shadow-none dark:shadow-none disabled:opacity-50 dark:disabled:opacity-50')
     ->add('appearance-none') // Without this, input[type="date"] on mobile doesn't respect w-full...
     ->add(match ($size) {
         default => 'h-11 sm:h-9 text-base/6 sm:text-sm/6',

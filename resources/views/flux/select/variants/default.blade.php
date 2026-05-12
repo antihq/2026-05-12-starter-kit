@@ -12,7 +12,7 @@ $invalid ??= ($name && $errors->has($name));
 
 $classes = Flux::classes()
     ->add('appearance-none') // Strip the browser's default <select> styles...
-    ->add('[:where(&)]:w-full ps-3.5 sm:ps-3 pe-10 block disabled:opacity-50 dark:disabled:opacity-50 focus:outline-hidden sm:focus:border-transparent sm:focus:ring-2 sm:focus:ring-blue-500 sm:focus:ring-inset')
+    ->add('[:where(&)]:w-full ps-3.5 sm:ps-3 pe-10 block disabled:opacity-50 dark:disabled:opacity-50')
     ->add(match ($size) {
         default => 'h-11 sm:h-9 text-base/6 sm:text-sm/6 rounded-lg',
         'sm' => 'h-8 py-1.5 text-sm leading-[1.125rem] rounded-md',

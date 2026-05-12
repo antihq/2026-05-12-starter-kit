@@ -2,8 +2,9 @@
     <div class="mx-auto max-w-md">
         <flux:badge class="font-mono">{{ config('app.name', 'Laravel Teams Starter Kit') }}</flux:badge>
 
-        <flux:heading level="1" size="xl" class="mt-2">All your Laravel project's events centralized in a single place.</flux:heading>
-
+        <flux:heading level="1" size="xl" class="mt-2">
+            Anti Starter Kit
+        </flux:heading>
 
         <flux:separator class="my-8" />
 

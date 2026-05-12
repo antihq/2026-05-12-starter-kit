@@ -26,21 +26,15 @@
             >
                 <div x-show="!showRecoveryInput">
                     <flux:heading size="xl" level="1">Authentication code</flux:heading>
-                    <p class="mt-2 text-sm">Enter the 6-digit code from your authenticator app.</p>
-                    <flux:button type="button" class="mt-3" @click="toggleInput()">
-                        Use a recovery code instead
-                    </flux:button>
+                    <flux:text class="mt-1">Enter the 6-digit code from your authenticator app.</flux:text>
                 </div>
 
                 <div x-show="showRecoveryInput">
                     <flux:heading size="xl" level="1">Recovery code</flux:heading>
-                    <p class="mt-2 text-sm">Enter one of your saved recovery codes.</p>
-                    <flux:button type="button" class="mt-3" @click="toggleInput()">
-                        Use an authenticator code instead
-                    </flux:button>
+                    <flux:text class="mt-1">Enter one of your saved recovery codes.</flux:text>
                 </div>
 
-                <form method="POST" action="{{ route('two-factor.login.store') }}" class="mt-4 space-y-5">
+                <form method="POST" action="{{ route('two-factor.login.store') }}" class="mt-6 space-y-8">
                     @csrf
 
                     <div x-show="!showRecoveryInput">
@@ -73,11 +67,21 @@
                     <flux:button variant="primary" type="submit">
                         Verify
                     </flux:button>
-                </form>
 
-                <flux:button class="mt-10" icon="arrow-left" :href="route('login')">
-                    Back to sign in
-                </flux:button>
+                    <flux:separator />
+
+                    <div x-show="showRecoveryInput">
+                        <flux:button type="button" @click="toggleInput()">
+                            Use an authenticator code instead
+                        </flux:button>
+                    </div>
+
+                    <div x-show="!showRecoveryInput">
+                        <flux:button type="button" @click="toggleInput()">
+                            Use a recovery code instead
+                        </flux:button>
+                    </div>
+                </form>
             </div>
         </div>
     </section>

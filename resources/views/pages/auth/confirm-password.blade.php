@@ -18,6 +18,7 @@
                         required
                         autocomplete="current-password"
                         viewable
+                        autofocus
                     />
                     <flux:error name="password" />
                 </flux:field>

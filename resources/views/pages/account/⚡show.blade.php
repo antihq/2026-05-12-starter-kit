@@ -29,7 +29,7 @@ new #[Title('Account')] class extends Component
 
         if ($user instanceof MustVerifyEmail) {
             return $user->hasVerifiedEmail()
-                ? 'Verified ' . $user->email_verified_at->format('M j, Y')
+                ? 'Verified on ' . $user->email_verified_at->format('M j, Y')
                 : 'Not verified';
         }
 
@@ -70,7 +70,7 @@ new #[Title('Account')] class extends Component
         }
 
         if ($user->hasEnabledTwoFactorAuthentication() && $user->two_factor_confirmed_at) {
-            return 'Enabled ' . $user->two_factor_confirmed_at->format('M j, Y');
+            return 'Enabled on ' . $user->two_factor_confirmed_at->format('M j, Y');
         }
 
         if ($user->hasEnabledTwoFactorAuthentication()) {
@@ -129,13 +129,14 @@ new #[Title('Account')] class extends Component
         @if ($this->emailVerificationEnabled)
             <x-description.term>Email</x-description.term>
             <x-description.details>
-                {{ $this->emailVerifiedStatus }}
-                @if ($this->hasUnverifiedEmail)
-                    <br />
-                    <flux:link class="cursor-pointer" wire:click.prevent="resendVerificationNotification">
-                        Resend verification email.
-                    </flux:link>
-                @endif
+                <div class="flex items-center gap-x-4 gap-y-2 flex-wrap">
+                    {{ $this->emailVerifiedStatus }}
+                    @if ($this->hasUnverifiedEmail)
+                        <flux:button wire:click="resendVerificationNotification">
+                            Resend verification email
+                        </flux:button>
+                    @endif
+                </div>
             </x-description.details>
         @endif
 

@@ -40,7 +40,7 @@ new #[Title('Authenticator')] class extends Component
         $user = Auth::user();
 
         if ($user->hasEnabledTwoFactorAuthentication() && $user->two_factor_confirmed_at) {
-            return 'Enabled ' . $user->two_factor_confirmed_at->format('M j, Y');
+            return 'Enabled on ' . $user->two_factor_confirmed_at->format('M j, Y');
         }
 
         return 'Enabled';
