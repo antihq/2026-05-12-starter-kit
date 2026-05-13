@@ -25,7 +25,12 @@
 
             <flux:dropdown>
                 <button class="relative flex min-w-0 items-center gap-3 rounded-lg w-full px-2 py-2 text-start text-zinc-950 dark:text-white hover:text-zinc-950 dark:hover:text-white dark:hover:bg-white/5 hover:bg-zinc-950/5">
-                    <flux:avatar name="{{ Auth::user()->name }}" color="auto" color:seed="{{ Auth::user()->id }}" class="size-10" size="lg" square />
+                    <div class="relative flex-none isolate flex items-center justify-center size-10 rounded-lg after:absolute after:inset-0 after:inset-ring-[1px] after:inset-ring-black/7 dark:after:inset-ring-white/10 after:rounded-lg overflow-hidden">
+                        <img src="https://www.gravatar.com/avatar/{{ md5(strtolower(trim(Auth::user()->email))) }}?d=404"
+                             alt="{{ Auth::user()->name }}"
+                             class="rounded-lg size-full object-cover"
+                             onerror="this.onerror=null;this.src='https://avatars.laravel.cloud/{{ Auth::user()->email }}'" />
+                    </div>
                         <span class="min-w-0 flex-1">
                             <span class="block truncate text-sm/5 font-medium text-zinc-950 dark:text-white">{{ Auth::user()->name }}</span>
                             <span class="block truncate text-xs/5 font-normal text-zinc-500 dark:text-zinc-400">{{ Auth::user()->email }}</span>
