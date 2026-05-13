@@ -41,9 +41,10 @@ new #[Title('Create Team')] class extends Component {
     <flux:heading size="xl" level="1">Create a new team</flux:heading>
 
     <form wire:submit="createTeam" class="mt-6 space-y-8">
-        <div class="max-w-md">
-            <flux:input wire:model.live.debounce.300ms="name" label="Team name" type="text" required autofocus data-test="create-team-name" />
-        </div>
+        <flux:field class="max-w-md">
+            <flux:label>Team name</flux:label>
+            <flux:input wire:model.live.debounce.300ms="name" type="text" required autofocus data-test="create-team-name" />
+        </flux:field>
 
         <flux:button variant="primary" type="submit" data-test="create-team-submit">
             Create team

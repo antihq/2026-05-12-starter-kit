@@ -80,6 +80,7 @@ new class extends Component
                     <flux:select.option value="{{ $role['value'] }}">{{ $role['label'] }}</flux:select.option>
                 @endforeach
             </flux:select>
+            <flux:description>Admin can update team settings, send and cancel invitations. Member has no management permissions.</flux:description>
         </flux:field>
 
         <flux:button variant="primary" type="submit" data-test="member-role-save">

@@ -45,6 +45,7 @@
                         viewable
                     />
                     <flux:error name="password" />
+                    <flux:description>Minimum 8 characters, at least one uppercase letter, at least one lowercase letter, at least one number.</flux:description>
                 </flux:field>
 
                 <flux:field>
