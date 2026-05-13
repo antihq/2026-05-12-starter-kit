@@ -17,13 +17,13 @@
                 </flux:sidebar.item>
             </flux:navbar>
 
-            <flux:sidebar.spacer />
+            <flux:sidebar.spacer class="max-lg:hidden" />
 
-            <div class="-mx-4">
+            <div class="-mx-4 max-lg:hidden">
                 <flux:separator />
             </div>
 
-            <flux:dropdown>
+            <flux:dropdown class="max-lg:hidden">
                 <button class="relative flex min-w-0 items-center gap-3 rounded-lg w-full px-2 py-2 text-start text-zinc-950 dark:text-white hover:text-zinc-950 dark:hover:text-white dark:hover:bg-white/5 hover:bg-zinc-950/5">
                     <div class="relative flex-none isolate flex items-center justify-center size-10 rounded-lg after:absolute after:inset-0 after:inset-ring-[1px] after:inset-ring-black/7 dark:after:inset-ring-white/10 after:rounded-lg overflow-hidden">
                         <img src="https://www.gravatar.com/avatar/{{ md5(strtolower(trim(Auth::user()->email))) }}?d=404"
@@ -67,6 +67,44 @@
 
         <flux:header class="lg:hidden">
             <flux:sidebar.toggle class="lg:hidden" icon="bars-2" inset="left" />
+
+            <flux:spacer />
+
+            <flux:dropdown position="bottom end" class="-mr-1.5">
+                <button class="p-1.5 rounded-md hover:bg-zinc-950/5 dark:hover:bg-white/5">
+                    <div class="relative flex-none isolate flex items-center justify-center size-6 rounded-md after:absolute after:inset-0 after:inset-ring-[1px] after:inset-ring-black/7 dark:after:inset-ring-white/10 after:rounded-md overflow-hidden">
+                        <img src="https://www.gravatar.com/avatar/{{ md5(strtolower(trim(Auth::user()->email))) }}?d=404"
+                             alt="{{ Auth::user()->name }}"
+                             class="rounded-md size-full object-cover"
+                             onerror="this.onerror=null;this.src='https://avatars.laravel.cloud/{{ Auth::user()->email }}'" />
+                    </div>
+                </button>
+
+                <flux:menu class="min-w-64">
+                    <flux:menu.item href="{{ route('account.show') }}" wire:navigate>
+                        Account
+                    </flux:menu.item>
+                    <flux:menu.item href="{{ route('appearance.edit') }}" wire:navigate>
+                        Appearance
+                    </flux:menu.item>
+                    <flux:menu.item href="{{ route('password.edit') }}" wire:navigate>
+                        Password
+                    </flux:menu.item>
+                    <flux:menu.item href="{{ route('authenticator.show') }}" wire:navigate>
+                        Authenticator
+                    </flux:menu.item>
+                    <flux:menu.item href="{{ route('teams.index') }}" wire:navigate>
+                        Teams
+                    </flux:menu.item>
+                    <flux:menu.separator />
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <flux:menu.item type="submit">
+                            Sign out
+                        </flux:menu.item>
+                    </form>
+                </flux:menu>
+            </flux:dropdown>
         </flux:header>
 
         <flux:main container>
