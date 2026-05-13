@@ -31,37 +31,14 @@
                              class="rounded-lg size-full object-cover"
                              onerror="this.onerror=null;this.src='https://avatars.laravel.cloud/{{ Auth::user()->email }}'" />
                     </div>
-                        <span class="min-w-0 flex-1">
-                            <span class="block truncate text-sm/5 font-medium text-zinc-950 dark:text-white">{{ Auth::user()->name }}</span>
-                            <span class="block truncate text-xs/5 font-normal text-zinc-500 dark:text-zinc-400">{{ Auth::user()->email }}</span>
-                        </span>
-                        <flux:icon icon="chevron-up" variant="micro" class="size-5 sm:size-4 text-zinc-500 dark:text-zinc-400" />
+                    <span class="min-w-0 flex-1">
+                        <span class="block truncate text-sm/5 font-medium text-zinc-950 dark:text-white">{{ Auth::user()->name }}</span>
+                        <span class="block truncate text-xs/5 font-normal text-zinc-500 dark:text-zinc-400">{{ Auth::user()->email }}</span>
+                    </span>
+                    <flux:icon icon="chevron-up" variant="micro" class="size-5 sm:size-4 text-zinc-500 dark:text-zinc-400" />
                 </button>
 
-                <flux:menu class="min-w-64">
-                    <flux:menu.item href="{{ route('account.show') }}" wire:navigate>
-                        Account
-                    </flux:menu.item>
-                    <flux:menu.item href="{{ route('appearance.edit') }}" wire:navigate>
-                        Appearance
-                    </flux:menu.item>
-                    <flux:menu.item href="{{ route('password.edit') }}" wire:navigate>
-                        Password
-                    </flux:menu.item>
-                    <flux:menu.item href="{{ route('authenticator.show') }}" wire:navigate>
-                        Authenticator
-                    </flux:menu.item>
-                    <flux:menu.item href="{{ route('teams.index') }}" wire:navigate>
-                        Teams
-                    </flux:menu.item>
-                    <flux:menu.separator />
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <flux:menu.item type="submit">
-                            Sign out
-                        </flux:menu.item>
-                    </form>
-                </flux:menu>
+                @include('partials.account-menu')
             </flux:dropdown>
         </flux:sidebar>
 
@@ -80,30 +57,7 @@
                     </div>
                 </button>
 
-                <flux:menu class="min-w-64">
-                    <flux:menu.item href="{{ route('account.show') }}" wire:navigate>
-                        Account
-                    </flux:menu.item>
-                    <flux:menu.item href="{{ route('appearance.edit') }}" wire:navigate>
-                        Appearance
-                    </flux:menu.item>
-                    <flux:menu.item href="{{ route('password.edit') }}" wire:navigate>
-                        Password
-                    </flux:menu.item>
-                    <flux:menu.item href="{{ route('authenticator.show') }}" wire:navigate>
-                        Authenticator
-                    </flux:menu.item>
-                    <flux:menu.item href="{{ route('teams.index') }}" wire:navigate>
-                        Teams
-                    </flux:menu.item>
-                    <flux:menu.separator />
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <flux:menu.item type="submit">
-                            Sign out
-                        </flux:menu.item>
-                    </form>
-                </flux:menu>
+                @include('partials.account-menu')
             </flux:dropdown>
         </flux:header>
 
