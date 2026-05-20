@@ -13,36 +13,29 @@ beforeEach(function () {
     ]);
 });
 
-test('authenticator show page redirects to create when two factor disabled', function () {
+test('settings page shows enable authenticator button when two factor disabled', function () {
     $user = User::factory()->create();
 
-    $this->actingAs($user)
-        ->withSession(['auth.password_confirmed_at' => time()])
-        ->get(route('authenticator.show'))
-        ->assertRedirect(route('authenticator.create'));
+    $this->actingAs($user);
+
+    $component = Livewire::test('pages::settings.show');
+
+    $component->assertSet('twoFactorEnabled', false)
+        ->assertSee('Enable authenticator');
 });
 
-test('authenticator show page requires password confirmation when enabled', function () {
-    $user = User::factory()->create();
-
-    $this->actingAs($user)
-        ->get(route('authenticator.show'))
-        ->assertRedirect(route('password.confirm'));
-});
-
-test('authenticator show page renders without two factor when feature is disabled', function () {
+test('settings page hides two factor section when feature is disabled', function () {
     config(['fortify.features' => []]);
 
     $user = User::factory()->create();
 
     $this->actingAs($user)
-        ->withSession(['auth.password_confirmed_at' => time()])
-        ->get(route('authenticator.show'))
+        ->get(route('settings.show'))
         ->assertOk()
-        ->assertDontSeeHtml('data-test="enable-two-factor-button"');
+        ->assertDontSeeHtml('Enable authenticator');
 });
 
-test('authenticator disabled when confirmation abandoned between requests', function () {
+test('two factor disabled when confirmation abandoned between requests', function () {
     $user = User::factory()->create();
 
     $user->forceFill([
@@ -53,7 +46,7 @@ test('authenticator disabled when confirmation abandoned between requests', func
 
     $this->actingAs($user);
 
-    $component = Livewire::test('pages::authenticator.show');
+    $component = Livewire::test('pages::settings.show');
 
     $component->assertSet('twoFactorEnabled', false);
 
@@ -64,24 +57,24 @@ test('authenticator disabled when confirmation abandoned between requests', func
     ]);
 });
 
-test('authenticator show page shows disable and recovery codes buttons when two factor enabled', function () {
-    $user = User::factory()->withTwoFactor()->create();
-
-    $this->actingAs($user)
-        ->withSession(['auth.password_confirmed_at' => time()])
-        ->get(route('authenticator.show'))
-        ->assertOk()
-        ->assertSee('Disable')
-        ->assertSee('Recovery codes')
-        ->assertDontSeeHtml('data-test="enable-two-factor-button"');
-});
-
-test('authenticator show page shows recovery codes remaining when two factor enabled', function () {
+test('settings page shows disable and recovery codes buttons when two factor enabled', function () {
     $user = User::factory()->withTwoFactor()->create();
 
     $this->actingAs($user);
 
-    $component = Livewire::test('pages::authenticator.show');
+    $component = Livewire::test('pages::settings.show');
+
+    $component->assertSet('twoFactorEnabled', true)
+        ->assertSee('Disable')
+        ->assertSee('Show recovery codes');
+});
+
+test('settings page shows recovery codes remaining when two factor enabled', function () {
+    $user = User::factory()->withTwoFactor()->create();
+
+    $this->actingAs($user);
+
+    $component = Livewire::test('pages::settings.show');
 
     $component->assertSet('recoveryCodesRemaining', 1);
 });
