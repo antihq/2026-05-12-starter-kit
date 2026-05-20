@@ -88,13 +88,7 @@ new class extends Component {
 
     <flux:menu class="min-w-80 lg:min-w-64">
         <flux:menu.item href="{{ route('teams.show', ['team' => Auth::user()->currentTeam?->slug]) }}" wire:navigate>
-            Details
-        </flux:menu.item>
-        <flux:menu.item href="{{ route('teams.members', ['team' => Auth::user()->currentTeam?->slug]) }}" wire:navigate>
-            Members
-        </flux:menu.item>
-        <flux:menu.item href="{{ route('teams.invitations', ['team' => Auth::user()->currentTeam?->slug]) }}" wire:navigate>
-            Invitations
+            Team settings
         </flux:menu.item>
 
         <flux:menu.separator />

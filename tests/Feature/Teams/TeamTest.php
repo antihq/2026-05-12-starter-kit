@@ -72,30 +72,16 @@ test('teams can be updated by owners', function () {
 
     $this->actingAs($user);
 
-    Livewire::test('pages::teams.edit', ['team' => $team])
-        ->set('teamName', 'Updated Name')
-        ->call('updateTeam')
+    Livewire::test('pages::teams.show', ['team' => $team])
+        ->call('startEditingName')
+        ->set('teamForm.name', 'Updated Name')
+        ->call('updateTeamName')
         ->assertHasNoErrors();
 
     $this->assertDatabaseHas('teams', [
         'id' => $team->id,
         'name' => 'Updated Name',
     ]);
-});
-
-test('team update redirects to show page', function () {
-    $user = User::factory()->create();
-    $team = Team::factory()->create(['name' => 'Original Name']);
-
-    $team->members()->attach($user, ['role' => TeamRole::Owner->value]);
-
-    $this->actingAs($user);
-
-    Livewire::test('pages::teams.edit', ['team' => $team])
-        ->set('teamName', 'Updated Name')
-        ->call('updateTeam')
-        ->assertHasNoErrors()
-        ->assertRedirect(route('teams.show', Team::where('name', 'Updated Name')->first()->slug));
 });
 
 test('teams cannot be updated by members', function () {
@@ -108,9 +94,10 @@ test('teams cannot be updated by members', function () {
 
     $this->actingAs($member);
 
-    Livewire::test('pages::teams.edit', ['team' => $team])
-        ->set('teamName', 'Updated Name')
-        ->call('updateTeam')
+    Livewire::test('pages::teams.show', ['team' => $team])
+        ->call('startEditingName')
+        ->set('teamForm.name', 'Updated Name')
+        ->call('updateTeamName')
         ->assertForbidden();
 });
 
@@ -122,8 +109,9 @@ test('teams can be deleted by owners', function () {
 
     $this->actingAs($user);
 
-    Livewire::test('pages::teams.delete', ['team' => $team])
-        ->set('deleteTeamName', $team->name)
+    Livewire::test('pages::teams.show', ['team' => $team])
+        ->call('showDelete')
+        ->set('deleteForm.confirmName', $team->name)
         ->call('deleteTeam')
         ->assertHasNoErrors();
 
@@ -140,10 +128,11 @@ test('team deletion requires name confirmation', function () {
 
     $this->actingAs($user);
 
-    Livewire::test('pages::teams.delete', ['team' => $team])
-        ->set('deleteTeamName', 'Wrong Name')
+    Livewire::test('pages::teams.show', ['team' => $team])
+        ->call('showDelete')
+        ->set('deleteForm.confirmName', 'Wrong Name')
         ->call('deleteTeam')
-        ->assertHasErrors(['deleteTeamName']);
+        ->assertHasErrors(['deleteForm.confirmName']);
 
     $this->assertDatabaseHas('teams', [
         'id' => $team->id,
@@ -167,8 +156,9 @@ test('deleting current team switches to alphabetically first remaining team', fu
 
     $this->actingAs($user);
 
-    Livewire::test('pages::teams.delete', ['team' => $zuluTeam])
-        ->set('deleteTeamName', $zuluTeam->name)
+    Livewire::test('pages::teams.show', ['team' => $zuluTeam])
+        ->call('showDelete')
+        ->set('deleteForm.confirmName', $zuluTeam->name)
         ->call('deleteTeam')
         ->assertHasNoErrors();
 
@@ -189,8 +179,9 @@ test('deleting current team falls back to personal team when alphabetically firs
 
     $this->actingAs($user);
 
-    Livewire::test('pages::teams.delete', ['team' => $team])
-        ->set('deleteTeamName', $team->name)
+    Livewire::test('pages::teams.show', ['team' => $team])
+        ->call('showDelete')
+        ->set('deleteForm.confirmName', $team->name)
         ->call('deleteTeam')
         ->assertHasNoErrors();
 
@@ -211,8 +202,9 @@ test('deleting non current team leaves current team unchanged', function () {
 
     $this->actingAs($user);
 
-    Livewire::test('pages::teams.delete', ['team' => $team])
-        ->set('deleteTeamName', $team->name)
+    Livewire::test('pages::teams.show', ['team' => $team])
+        ->call('showDelete')
+        ->set('deleteForm.confirmName', $team->name)
         ->call('deleteTeam')
         ->assertHasNoErrors();
 
@@ -236,8 +228,9 @@ test('deleting team switches other affected users to their personal team', funct
 
     $this->actingAs($owner);
 
-    Livewire::test('pages::teams.delete', ['team' => $team])
-        ->set('deleteTeamName', $team->name)
+    Livewire::test('pages::teams.show', ['team' => $team])
+        ->call('showDelete')
+        ->set('deleteForm.confirmName', $team->name)
         ->call('deleteTeam')
         ->assertHasNoErrors();
 
@@ -251,8 +244,9 @@ test('personal teams cannot be deleted', function () {
 
     $this->actingAs($user);
 
-    Livewire::test('pages::teams.delete', ['team' => $personalTeam])
-        ->set('deleteTeamName', $personalTeam->name)
+    Livewire::test('pages::teams.show', ['team' => $personalTeam])
+        ->call('showDelete')
+        ->set('deleteForm.confirmName', $personalTeam->name)
         ->call('deleteTeam')
         ->assertForbidden();
 
@@ -272,8 +266,9 @@ test('teams cannot be deleted by non owners', function () {
 
     $this->actingAs($member);
 
-    Livewire::test('pages::teams.delete', ['team' => $team])
-        ->set('deleteTeamName', $team->name)
+    Livewire::test('pages::teams.show', ['team' => $team])
+        ->call('showDelete')
+        ->set('deleteForm.confirmName', $team->name)
         ->call('deleteTeam')
         ->assertForbidden();
 });
@@ -290,19 +285,6 @@ test('teams create page can be rendered', function () {
     $response = $this
         ->actingAs($user)
         ->get(route('teams.create'));
-
-    $response->assertOk();
-});
-
-test('team delete page can be rendered', function () {
-    $user = User::factory()->create();
-    $team = Team::factory()->create();
-
-    $team->members()->attach($user, ['role' => TeamRole::Owner->value]);
-
-    $response = $this
-        ->actingAs($user)
-        ->get(route('teams.delete', $team));
 
     $response->assertOk();
 });
