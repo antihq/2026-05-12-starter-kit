@@ -1,6 +1,6 @@
 <x-layouts::guest title="Two-factor authentication">
     <section class="w-full">
-        <div class="mx-auto max-w-md">
+        <div class="max-w-md">
             <div
                 class="relative w-full h-auto"
                 x-cloak
@@ -34,12 +34,12 @@
                     <flux:text class="mt-1">Enter one of your saved recovery codes.</flux:text>
                 </div>
 
-                <form method="POST" action="{{ route('two-factor.login.store') }}" class="mt-6 space-y-8">
+                <form method="POST" action="{{ route('two-factor.login.store') }}" class="mt-6 space-y-6">
                     @csrf
 
                     <div x-show="!showRecoveryInput">
                         <flux:field>
-                            <flux:label>Code</flux:label>
+                            <flux:label class="lowercase">Code</flux:label>
                             <flux:otp
                                 x-model="code"
                                 length="6"
@@ -51,7 +51,7 @@
 
                     <div x-show="showRecoveryInput">
                         <flux:field>
-                            <flux:label>Recovery code</flux:label>
+                            <flux:label class="lowercase">Recovery code</flux:label>
                             <flux:input
                                 type="text"
                                 name="recovery_code"
@@ -64,20 +64,23 @@
                         </flux:field>
                     </div>
 
-                    <flux:button variant="primary" type="submit">
-                        Verify
-                    </flux:button>
+                    <div class="flex">
+                        <flux:spacer />
+                        <flux:button variant="primary" type="submit" class="lowercase">
+                            Verify
+                        </flux:button>
+                    </div>
 
                     <flux:separator />
 
                     <div x-show="showRecoveryInput">
-                        <flux:button type="button" @click="toggleInput()">
+                        <flux:button type="button" @click="toggleInput()" class="lowercase">
                             Use an authenticator code instead
                         </flux:button>
                     </div>
 
                     <div x-show="!showRecoveryInput">
-                        <flux:button type="button" @click="toggleInput()">
+                        <flux:button type="button" @click="toggleInput()" class="lowercase">
                             Use a recovery code instead
                         </flux:button>
                     </div>
