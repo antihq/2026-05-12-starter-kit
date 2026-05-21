@@ -5,7 +5,7 @@
     </head>
     <body class="bg-white dark:bg-zinc-900 antialiased text-zinc-950 dark:text-white text-base/6 sm:text-sm/6">
         <header class="px-4 [grid-area:header] max-w-6xl mx-auto w-full">
-            <nav class="flex flex-wrap items-center gap-x-4 py-5 gap-y-2 border-b border-zinc-950/5 dark:border-white/10">
+            <nav class="flex flex-wrap items-center gap-x-4 py-5">
                 <div class="text-base/6 sm:text-sm/6 text-zinc-500">
                     <a href="{{ route('home') }}" wire:navigate>
                         {{ Str::of(config('app.name'))->explode('-', 4)->last() }}
@@ -13,6 +13,7 @@
                     </a>
                     (<a href="{{ route('dashboard') }}" class="text-blue-600 visited:text-purple-600 hover:underline" wire:navigate>{{ Auth::user()->currentTeam->name }}</a>)
                 </div>
+
                 <div class="flex gap-x-3">
                     <a href="{{ route('dashboard') }}" class="text-base/6 sm:text-sm/6 hover:underline text-blue-600 visited:text-purple-600 lowercase" wire:navigate>dashboard</a>
                     <a href="{{ route('teams.show', Auth::user()->currentTeam->slug) }}" class="text-base/6 sm:text-sm/6 hover:underline text-blue-600 visited:text-purple-600 lowercase" wire:navigate>team</a>
@@ -33,7 +34,7 @@
             </nav>
         </header>
 
-        <main class="p-4 w-full max-w-6xl mx-auto">
+        <main class="p-4 pt-0 w-full max-w-6xl mx-auto">
             {{ $slot }}
         </main>
 
