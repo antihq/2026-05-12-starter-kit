@@ -314,24 +314,24 @@ new #[Title('Settings')] class extends Component
     }
 }; ?>
 
-<section class="w-full">
-    <flux:heading size="xl" level="1">Settings</flux:heading>
+<section>
+    <flux:heading level="1">settings</flux:heading>
 
-    <div class="mt-8 flex flex-col md:flex-row gap-12">
+    <div class="flex flex-col md:flex-row gap-12">
         {{-- Main content --}}
-        <div class="flex-1 min-w-0 space-y-12">
-            <div>
-                <flux:heading size="lg" level="2">Account</flux:heading>
+        <div class="flex-1 min-w-0">
+            <div class="mt-4">
+                <flux:heading class="lowercase" level="2">Account</flux:heading>
 
-                <form wire:submit="updateProfile" class="mt-4 space-y-6 max-w-xl">
+                <form wire:submit="updateProfile" class="mt-4 space-y-5 max-w-xl">
                     <flux:field>
-                        <flux:label>Name</flux:label>
+                        <flux:label class="lowercase">Name</flux:label>
                         <flux:input wire:model="profileForm.name" type="text" required autofocus autocomplete="name" />
                         <flux:error name="profileForm.name" />
                     </flux:field>
 
                     <flux:field>
-                        <flux:label>Email</flux:label>
+                        <flux:label class="lowercase">Email</flux:label>
                         <flux:input wire:model="profileForm.email" type="email" required autocomplete="email" />
                         <flux:error name="profileForm.email" />
                         <flux:description>Each account requires a unique email address.</flux:description>
@@ -351,27 +351,25 @@ new #[Title('Settings')] class extends Component
 
                     <div class="flex">
                         <flux:spacer />
-                        <flux:button variant="primary" type="submit" data-test="update-profile-button">
-                            Save
+                        <flux:button type="submit" data-test="update-profile-button" class="lowercase">
+                            Update profile
                         </flux:button>
                     </div>
                 </form>
             </div>
 
-            <flux:separator />
+            <div class="mt-5">
+                <flux:heading class="lowercase" level="2">Password</flux:heading>
 
-            <div>
-                <flux:heading size="lg" level="2">Password</flux:heading>
-
-                <form wire:submit="updatePassword" class="mt-4 space-y-6 max-w-xl">
+                <form wire:submit="updatePassword" class="mt-4 space-y-5 max-w-xl">
                     <flux:field>
-                        <flux:label>Current password</flux:label>
+                        <flux:label class="lowercase">Current password</flux:label>
                         <flux:input wire:model="passwordForm.current_password" type="password" required autocomplete="current-password" viewable />
                         <flux:error name="passwordForm.current_password" />
                     </flux:field>
 
                     <flux:field>
-                        <flux:label>New password</flux:label>
+                        <flux:label class="lowercase">New password</flux:label>
                         <flux:input wire:model="passwordForm.password" type="password" required autocomplete="new-password" viewable />
                         <flux:error name="passwordForm.password" />
                         <flux:description>
@@ -380,32 +378,30 @@ new #[Title('Settings')] class extends Component
                     </flux:field>
 
                     <flux:field>
-                        <flux:label>Confirm password</flux:label>
+                        <flux:label class="lowercase">Confirm password</flux:label>
                         <flux:input wire:model="passwordForm.password_confirmation" type="password" required autocomplete="new-password" viewable />
                         <flux:error name="passwordForm.password_confirmation" />
                     </flux:field>
 
                     <div class="flex">
                         <flux:spacer />
-                        <flux:button variant="primary" type="submit" data-test="update-password-button">
-                            Save
+                        <flux:button type="submit" data-test="update-password-button" class="lowercase">
+                            Update password
                         </flux:button>
                     </div>
                 </form>
             </div>
 
             @if ($canManageTwoFactor)
-            <flux:separator />
-
-            <div>
-                <flux:heading size="lg" level="2">Two-factor authentication</flux:heading>
+            <div class="mt-5">
+                <flux:heading class="lowercase" level="2">Two-factor authentication</flux:heading>
 
                 @if ($twoFactorEnabled && ! $showQrCode)
-                    <x-description.list class="mt-4">
-                        <x-description.term>Status</x-description.term>
+                    <x-description.list class="mt-2">
+                        <x-description.term class="lowercase">Status</x-description.term>
                         <x-description.details>{{ $this->twoFactorStatus }}</x-description.details>
 
-                        <x-description.term>Recovery codes remaining</x-description.term>
+                        <x-description.term class="lowercase">Recovery codes remaining</x-description.term>
                         <x-description.details>
                             <span class="{{ $this->recoveryCodesRemaining <= 2 ? 'text-amber-600' : '' }}">
                                 {{ $this->recoveryCodesRemaining . ' of 8 codes' }}
@@ -428,9 +424,7 @@ new #[Title('Settings')] class extends Component
                                 @endforeach
                             </div>
 
-                            <flux:separator />
-
-                            <flux:button variant="danger" wire:click="regenerateRecoveryCodes">
+                            <flux:button variant="danger" wire:click="regenerateRecoveryCodes" class="lowercase">
                                 Regenerate codes
                             </flux:button>
                         @else
@@ -440,15 +434,13 @@ new #[Title('Settings')] class extends Component
                         @endif
                     </div>
 
-                    <flux:separator class="mt-6" />
-
-                    <flux:heading level="3" class="mt-6">Disable two-factor authentication</flux:heading>
+                    <flux:heading class="lowercase mt-5" level="3">Disable two-factor authentication</flux:heading>
 
                     <flux:text class="mt-2">This will also delete your recovery codes.</flux:text>
 
-                    <form wire:submit="disableTwoFactor" class="mt-4 space-y-6 max-w-xl">
+                    <form wire:submit="disableTwoFactor" class="mt-4 space-y-5 max-w-xl">
                         <flux:field>
-                            <flux:label>Password</flux:label>
+                            <flux:label class="lowercase">Password</flux:label>
                             <flux:input wire:model="disablePassword" type="password" required viewable />
                             <flux:error name="disablePassword" />
                         </flux:field>
@@ -466,7 +458,7 @@ new #[Title('Settings')] class extends Component
                             <flux:callout variant="danger" icon="x-circle" heading="{{ $message }}" />
                         @enderror
 
-                        <flux:heading level="3">
+                        <flux:heading level="3" class="lowercase">
                             Step 1 — Add your account
                         </flux:heading>
                         <flux:text class="mt-1">Scan the QR code below, or enter the setup key manually in your authenticator app.</flux:text>
@@ -488,20 +480,20 @@ new #[Title('Settings')] class extends Component
                         </div>
 
                         @if ($this->requiresTwoFactorConfirmation)
-                            <flux:heading level="3" class="mt-8">
+                            <flux:heading level="3" class="mt-8 lowercase">
                                 Step 2 — Confirm setup
                             </flux:heading>
                             <flux:text class="mt-1">Enter the 6-digit code from your authenticator app to complete setup.</flux:text>
 
                             <div class="mt-6 space-y-8">
                                 <flux:field>
-                                    <flux:label>Authentication code</flux:label>
+                                    <flux:label class="lowercase">Authentication code</flux:label>
                                     <flux:otp name="code" wire:model="code" length="6" />
                                     <flux:error name="code" />
                                 </flux:field>
 
                                 <div class="flex gap-3">
-                                    <flux:button variant="primary" wire:click="confirmTwoFactor" x-bind:disabled="$wire.code.length < 6">
+                                    <flux:button wire:click="confirmTwoFactor" x-bind:disabled="$wire.code.length < 6" class="lowercase">
                                         Confirm
                                     </flux:button>
                                     <flux:button variant="subtle" wire:click="cancelTwoFactorSetup" type="button">
@@ -511,7 +503,7 @@ new #[Title('Settings')] class extends Component
                             </div>
                         @else
                             <div class="mt-8 flex gap-3">
-                                <flux:button variant="primary" wire:click="confirmTwoFactor" :disabled="$errors->has('setupData')">
+                                <flux:button wire:click="confirmTwoFactor" :disabled="$errors->has('setupData')" class="lowercase">
                                     Enable
                                 </flux:button>
                                 <flux:button variant="subtle" wire:click="cancelTwoFactorSetup" type="button">
@@ -524,7 +516,7 @@ new #[Title('Settings')] class extends Component
                     <flux:text class="mt-2">Add an extra layer of security to your account by enabling two-factor authentication.</flux:text>
 
                     <div class="mt-4">
-                        <flux:button variant="primary" wire:click="enableTwoFactor">
+                        <flux:button wire:click="enableTwoFactor" class="lowercase">
                             Enable authenticator
                         </flux:button>
                     </div>
@@ -532,17 +524,15 @@ new #[Title('Settings')] class extends Component
             </div>
             @endif
 
-            <flux:separator />
-
-            <div>
-                <flux:heading size="lg" level="2" color="red">Delete account</flux:heading>
+            <div class="mt-5">
+                <flux:heading class="lowercase" level="2" color="red">Delete account</flux:heading>
 
                 @if ($this->showDeleteUser)
                     <flux:text class="mt-2">Once you delete your account, all of its resources and data will be permanently deleted.</flux:text>
 
-                    <form wire:submit="deleteAccount" class="mt-4 space-y-6 max-w-xl">
+                    <form wire:submit="deleteAccount" class="mt-4 space-y-5 max-w-xl">
                         <flux:field>
-                            <flux:label>Password</flux:label>
+                            <flux:label class="lowercase">Password</flux:label>
                             <flux:input wire:model="deleteForm.password" type="password" required viewable />
                             <flux:error name="deleteForm.password" />
                         </flux:field>
@@ -565,21 +555,21 @@ new #[Title('Settings')] class extends Component
         {{-- Right sidebar --}}
         <aside class="md:w-72 md:shrink-0 md:sticky md:top-24 md:self-start space-y-8">
             <div>
-                <flux:heading size="lg" level="2">Account details</flux:heading>
+                <flux:heading class="lowercase" level="2">Account details</flux:heading>
 
-                <x-description.list class="mt-4">
+                <x-description.list class="mt-2">
                     @if ($this->emailVerificationEnabled)
-                        <x-description.term>Email status</x-description.term>
+                        <x-description.term class="lowercase">Email status</x-description.term>
                         <x-description.details>{{ $this->emailVerifiedStatus }}</x-description.details>
                     @endif
 
-                    <x-description.term>Registered</x-description.term>
+                    <x-description.term class="lowercase">Registered</x-description.term>
                     <x-description.details>{{ $this->registeredAt }}</x-description.details>
 
-                    <x-description.term>Active sessions</x-description.term>
+                    <x-description.term class="lowercase">Active sessions</x-description.term>
                     <x-description.details>{{ $this->activeSessionsCount }} active</x-description.details>
 
-                    <x-description.term>Teams</x-description.term>
+                    <x-description.term class="lowercase">Teams</x-description.term>
                     <x-description.details>
                         <flux:link :accent="false" :href="route('teams.index')" wire:navigate>
                             {{ $this->teamCount }} {{ str()->plural('team', $this->teamCount) }}
@@ -587,7 +577,7 @@ new #[Title('Settings')] class extends Component
                     </x-description.details>
 
                     @if ($this->currentTeamName)
-                        <x-description.term>Current team</x-description.term>
+                        <x-description.term class="lowercase">Current team</x-description.term>
                         <x-description.details>
                             <flux:link :accent="false" :href="route('teams.show', $this->currentTeamSlug)" wire:navigate>
                                 {{ $this->currentTeamName }}
@@ -597,13 +587,11 @@ new #[Title('Settings')] class extends Component
                 </x-description.list>
             </div>
 
-            <flux:separator />
-
             <div x-data>
-                <flux:heading size="lg" level="2">Appearance</flux:heading>
+                <flux:heading class="lowercase" level="2">Appearance</flux:heading>
 
-                <flux:field class="mt-4">
-                    <flux:label>Theme</flux:label>
+                <flux:field class="mt-2">
+                    <flux:label class="lowercase">Theme</flux:label>
                     <flux:description>System follows the operating system preference.</flux:description>
                     <flux:radio.group variant="segmented" x-model="$flux.appearance" class="mt-2">
                         <flux:radio value="light" icon="sun">Light</flux:radio>
@@ -612,13 +600,13 @@ new #[Title('Settings')] class extends Component
                     </flux:radio.group>
                 </flux:field>
 
-                <x-description.list class="mt-4">
-                    <x-description.term>System preference</x-description.term>
+                <x-description.list class="mt-2">
+                    <x-description.term class="lowercase">System preference</x-description.term>
                     <x-description.details>
                         <span x-text="window.matchMedia('(prefers-color-scheme: dark)').matches ? 'Dark' : 'Light'"></span>
                     </x-description.details>
 
-                    <x-description.term>Resolved</x-description.term>
+                    <x-description.term class="lowercase">Resolved</x-description.term>
                     <x-description.details>
                         <span x-text="document.documentElement.classList.contains('dark') ? 'Dark' : 'Light'"></span>
                     </x-description.details>
