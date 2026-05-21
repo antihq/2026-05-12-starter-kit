@@ -95,8 +95,6 @@ new class extends Component
         $this->editingRole = '';
 
         $this->populateMembers();
-
-        Flux::toast(variant: 'success', text: 'Member role updated.');
     }
 
     public function removeMember(int $userId): void
@@ -212,29 +210,27 @@ new class extends Component
         <div class="lg:col-span-3">
             <flux:heading level="1">team settings</flux:heading>
 
-            <div class="mt-4">
-                <p class="lowercase font-medium!">Owner</p>
-                <p class="mt-1">{{ $this->ownerName }}</p>
+            <div class="mt-2">
+                <form wire:submit="updateTeamName" class="max-w-sm">
+                    <flux:field>
+                        <flux:label class="lowercase">Owner</flux:label>
+                        <flux:input :value="$this->ownerName" type="text" required variant="filled" readonly />
+                        <flux:error name="teamForm.name" />
+                    </flux:field>
+
+                    <flux:field class="mt-2">
+                        <flux:label class="lowercase">Team name</flux:label>
+                        <flux:input wire:model="teamForm.name" type="text" required data-test="team-name-input" :variant="!$this->permissions->canUpdateTeam ? 'filled' : null" :readonly="!$this->permissions->canUpdateTeam" />
+                        <flux:error name="teamForm.name" />
+                    </flux:field>
+
+                    <div class="mt-4">
+                        <flux:button type="submit" variant="primary" color="lime" data-test="team-save-button" class="lowercase" :disabled="!$this->permissions->canUpdateTeam">Update name</flux:button>
+                    </div>
+                </form>
             </div>
 
-            <div class="mt-5">
-                @if ($this->permissions->canUpdateTeam)
-                    <form wire:submit="updateTeamName" class="max-w-sm">
-                        <flux:field>
-                            <flux:label class="lowercase">Team name</flux:label>
-                            <flux:input wire:model="teamForm.name" type="text" required data-test="team-name-input" />
-                            <flux:error name="teamForm.name" />
-                        </flux:field>
-                        <div class="mt-4">
-                            <flux:button type="submit" variant="primary" color="lime" data-test="team-save-button" class="lowercase">Update name</flux:button>
-                        </div>
-                    </form>
-                @else
-                    <flux:heading size="xl" level="1">{{ $team->name }}</flux:heading>
-                @endif
-            </div>
-
-            <div class="mt-9">
+            <div class="mt-8">
                 <div class="flex items-center gap-2">
                     <flux:heading class="lowercase" level="2">Members</flux:heading>
                     <span class="text-zinc-500 dark:text-zinc-400 text-sm/5 sm:text-xs/5">{{ $this->memberCount }}</span>
@@ -243,48 +239,46 @@ new class extends Component
                 <ul role="list" class="divide-y divide-zinc-950/5 dark:divide-white/5">
                     @foreach ($members as $member)
                         <li class="py-2" data-test="member-row">
-                            <p>
-                                <span class="font-medium">{{ $member['name'] }}</span>
-                                <span class="text-sm/5 sm:text-xs/5">{{ $member['role'] }}</span>
-                            </p>
-                            <div class="flex flex-wrap items-center gap-x-3 text-sm/5 sm:text-xs/5">
-                                <span>{{ $member['email'] }}</span>
-                                @if (! $member['is_owner'] && $editingMemberId !== $member['id'] && ($this->permissions->canUpdateMember || $this->permissions->canRemoveMember))
-                                    @if ($this->permissions->canUpdateMember)
-                                        <button wire:click="editMember({{ $member['id'] }})" data-test="member-edit-button" class="text-zinc-500 dark:text-zinc-400 active:bg-yellow-100 lowercase">
-                                            Edit role
-                                        </button>
+                            <div class="flex flex-wrap gap-x-3 justify-between">
+                                <div class="flex gap-x-1.5 items-center">
+                                    <div>
+                                        <span class="font-semibold">{{ $member['name'] }}</span>
+                                        <flux:badge color="fuchsia">{{ $member['role'] }}</flux:badge>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex flex-wrap gap-x-3 justify-between">
+                                <div>
+                                    <span>{{ $member['email'] }}</span>
+                                </div>
+                                <div>
+                                    @if (! $member['is_owner'] && $editingMemberId !== $member['id'] && ($this->permissions->canUpdateMember || $this->permissions->canRemoveMember))
+                                        @if ($this->permissions->canUpdateMember)
+                                            <flux:badge as="button" wire:click="editMember({{ $member['id'] }})" data-test="member-edit-button" class="lowercase">Edit role</flux:badge>
+                                        @endif
+                                        @if ($this->permissions->canRemoveMember)
+                                            <flux:badge as="button" wire:click="removeMember({{ $member['id'] }})" wire:confirm="Remove {{ $member['name'] }} from this team?" data-test="member-remove-button" class="lowercase">
+                                                Remove
+                                            </flux:badge>
+                                        @endif
                                     @endif
-                                    @if ($this->permissions->canRemoveMember)
-                                        <button wire:click="removeMember({{ $member['id'] }})" wire:confirm="Remove {{ $member['name'] }} from this team?" data-test="member-remove-button" class="text-zinc-500 dark:text-zinc-400 active:bg-yellow-100 lowercase">
-                                            Remove
-                                        </button>
-                                    @endif
-                                @endif
+                                </div>
                             </div>
                             @if ($editingMemberId === $member['id'])
-                                <form wire:submit="updateMemberRole" class="mt-4 p-4 border border-zinc-950/10 dark:border-white/10 rounded-xl">
-                                    <div class="flex flex-wrap gap-4">
-                                        <div>
-                                            <flux:label class="lowercase">Role</flux:label>
-                                            <flux:select wire:model="editingRole" data-test="member-role-select" class="sm:w-fit lowercase mt-2">
-                                                @foreach ($this->availableRoles as $role)
-                                                    <flux:select.option value="{{ $role['value'] }}">{{ $role['label'] }}</flux:select.option>
-                                                @endforeach
-                                            </flux:select>
+                                <div class="mt-1 p-3 pt-2 border border-zinc-950/10 dark:border-white/10 ">
+                                    <form wire:submit="updateMemberRole" class="max-w-sm">
+                                        <flux:radio.group wire:model="editingRole" label="Role" class="lowercase">
+                                            @foreach ($this->availableRoles as $role)
+                                                <flux:radio value="{{ $role['value'] }}" label="{{ $role['label'] }}" description="{{ $role['description'] }}" />
+                                            @endforeach
+                                        </flux:radio.group>
+                                        <flux:error name="editingRole" />
+                                        <div class="mt-3">
+                                            <flux:button type="submit" variant="primary" color="lime" class="lowercase" data-test="member-role-save">Save</flux:button>
+                                            <flux:button type="button" variant="ghost" class="lowercase" wire:click="cancelEditMember">Cancel</flux:button>
                                         </div>
-                                        <div>
-                                            <flux:spacer class="h-8 max-sm:hidden" />
-                                            <flux:button type="submit" class="lowercase" data-test="member-role-save">Save</flux:button>
-                                        </div>
-                                        <div>
-                                            <flux:spacer class="h-8 max-sm:hidden" />
-                                            <flux:button type="button" class="lowercase" wire:click="cancelEditMember">Cancel</flux:button>
-                                        </div>
-                                    </div>
-
-                                    <flux:error name="editingRole" />
-                                </form>
+                                    </form>
+                                </div>
                             @endif
                         </li>
                     @endforeach
@@ -293,11 +287,10 @@ new class extends Component
         </div>
 
         {{-- Right column: invitations + delete --}}
-        <div class="lg:col-span-2 mt-5">
+        <div class="lg:col-span-2 mt-4">
             @if ($this->permissions->canCreateInvitation)
             <div>
                 <flux:heading class="lowercase" level="2">Invite member</flux:heading>
-                <p class="mt-1">Admin can update team settings and manage invitations. Members have no management permissions.</p>
 
                 <form wire:submit="createInvitation" class="mt-3">
                     <flux:field class="max-w-sm">
@@ -306,14 +299,13 @@ new class extends Component
                         <flux:error name="invitationForm.role" />
                     </flux:field>
 
-                     <flux:field class="mt-2">
+                    <flux:field class="mt-2">
                         <flux:label class="lowercase">Role</flux:label>
-                        <flux:select wire:model="invitationForm.role" data-test="invite-role" class="lowercase w-fit">
+                        <flux:radio.group wire:model="invitationForm.role" class="lowercase">
                             @foreach ($this->availableRoles as $role)
-                                <flux:select.option value="{{ $role['value'] }}">{{ $role['label'] }}</flux:select.option>
+                                <flux:radio value="{{ $role['value'] }}" label="{{ $role['label'] }}" description="{{ $role['description'] }}" />
                             @endforeach
-                        </flux:select>
-                        <flux:error name="invitationForm.email" />
+                        </flux:radio.group>
                     </flux:field>
 
                     <div class="flex mt-4">
@@ -329,7 +321,7 @@ new class extends Component
             @endif
 
             @if (filled($invitations) || $this->permissions->canCreateInvitation)
-            <div class="mt-9">
+            <div class="mt-8">
                 <div class="flex items-center gap-2">
                     <flux:heading class="lowercase" level="2">Pending invitations</flux:heading>
                     <span class="text-zinc-500 dark:text-zinc-400 text-sm/5 sm:text-xs/5">{{ $this->invitationCount }}</span>
@@ -340,15 +332,17 @@ new class extends Component
                         @foreach ($invitations as $invitation)
                             <li class="py-2" data-test="invitation-row">
                                 <p>
-                                    <span class="font-medium">{{ $invitation['email'] }}</span>
-                                    <span class="text-sm/5 sm:text-xs/5 lowercase">{{ $invitation['role_label'] }}</span>
+                                    <span class="font-semibold">{{ $invitation['email'] }}</span>
                                 </p>
-                                <div class="flex flex-wrap items-center gap-x-3 text-zinc-500 dark:text-zinc-400 text-sm/5 sm:text-xs/5">
-                                    <span class="lowercase">{{ $invitation['time_remaining'] }}</span>
+                                <div class="flex flex-wrap items-center gap-x-3 justify-between">
+                                    <div>
+                                        <span class="lowercase">{{ $invitation['role_label'] }}</span>
+                                        <span class="lowercase text-sm/5 sm:text-xs/5 ">{{ $invitation['time_remaining'] }}</span>
+                                    </div>
                                     @if ($this->permissions->canCancelInvitation && $invitation['is_pending'])
-                                        <button wire:click="cancelInvitation('{{ $invitation['code'] }}')" data-test="invitation-cancel-button" class="active:bg-yellow-100 lowercase">
+                                        <flux:badge as="button" wire:click="cancelInvitation('{{ $invitation['code'] }}')" data-test="invitation-cancel-button" class="lowercase">
                                             Cancel
-                                        </button>
+                                        </flux:badge>
                                     @endif
                                 </div>
                             </li>

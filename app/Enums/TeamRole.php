@@ -16,6 +16,15 @@ enum TeamRole: string
         return ucfirst($this->value);
     }
 
+    public function description(): string
+    {
+        return match ($this) {
+            self::Owner => 'Full control over the team, including billing and ownership transfer.',
+            self::Admin => 'Can update team settings and manage invitations.',
+            self::Member => 'No management permissions.',
+        };
+    }
+
     /**
      * Get all the permissions for this role.
      *
@@ -66,13 +75,13 @@ enum TeamRole: string
     /**
      * Get the roles that can be assigned to team members (excludes Owner).
      *
-     * @return array<array{value: string, label: string}>
+     * @return array<array{value: string, label: string, description: string}>
      */
     public static function assignable(): array
     {
         return collect(self::cases())
             ->filter(fn (self $role) => $role !== self::Owner)
-            ->map(fn (self $role) => ['value' => $role->value, 'label' => $role->label()])
+            ->map(fn (self $role) => ['value' => $role->value, 'label' => $role->label(), 'description' => $role->description()])
             ->values()
             ->toArray();
     }

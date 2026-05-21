@@ -15,7 +15,7 @@ $classes = Flux::classes()
         default => 'block',
         'bare' => '[:where(&)]:block',
         'inline' => [
-            'grid gap-x-3 gap-y-1.5',
+            'grid gap-x-2 gap-y-0',
             'has-[[data-flux-label]~[data-flux-control]]:grid-cols-[1fr_auto]',
             'has-[[data-flux-control]~[data-flux-label]]:grid-cols-[auto_1fr]',
             '[&>[data-flux-control]~[data-flux-description]]:row-start-2 [&>[data-flux-control]~[data-flux-description]]:col-start-2',
@@ -25,7 +25,7 @@ $classes = Flux::classes()
     })
     ->add(match ($variant) {
         default => [ // Adjust spacing around label...
-            '*:data-flux-label:mb-2 [&>[data-flux-label]:has(+[data-flux-description])]:mb-1',
+            '*:data-flux-label:mb-1 [&>[data-flux-label]:has(+[data-flux-description])]:mb-1',
         ],
         'bare' => '',
         'inline' => '',
@@ -33,8 +33,8 @@ $classes = Flux::classes()
     ->add(match ($variant) {
         default => [ // Adjust spacing around description...
             '[&>[data-flux-label]+[data-flux-description]]:mt-0',
-            '[&>[data-flux-label]+[data-flux-description]]:mb-2',
-            '[&>*:not([data-flux-label])+[data-flux-description]]:mt-2',
+            '[&>[data-flux-label]+[data-flux-description]]:mb-1',
+            '[&>*:not([data-flux-label])+[data-flux-description]]:mt-1',
         ],
         'bare' => '',
         'inline' => '',

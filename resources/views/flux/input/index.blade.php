@@ -121,7 +121,7 @@ $classes = Flux::classes()
     })
     ->add(match ($variant) { // Border...
         'outline' => 'shadow-xs border-zinc-300/80 border-b-zinc-400/60 dark:border-white/10 dark:disabled:border-white/5',
-        'filled'  => 'border-0',
+        'filled'  => 'shadow-xs border-zinc-300/80 border-b-zinc-400/60 dark:border-white/10 dark:disabled:border-white/5',
     })
     ->add(match ($variant) { // Invalid...
         'outline' => 'data-invalid:shadow-none data-invalid:border-red-500 dark:data-invalid:border-red-500 disabled:data-invalid:border-red-500 dark:disabled:data-invalid:border-red-500',

@@ -11,27 +11,25 @@
                         {{ Str::of(config('app.name'))->explode('-', 4)->last() }}
                         <sup>{{ Str::of(config('app.name'))->explode('-', 4)->take(3)->join('-') }}</sup>
                     </a>
-                    <span class="text-zinc-500 dark:text-zinc-400">(<a href="{{ route('dashboard') }}" class="text-sky-500 visited:text-violet-600 hover:underline" wire:navigate>{{ Auth::user()->currentTeam->name }}</a>)</span>
+                    <span class="text-zinc-500 dark:text-zinc-400">(<a href="{{ route('dashboard') }}" class="text-sky-700 visited:text-purple-700 hover:underline" wire:navigate>{{ Auth::user()->currentTeam->name }}</a>)</span>
                 </div>
 
                 <div class="flex-1 flex-wrap flex px-4">
                     <div class="flex gap-x-3">
-                        <a href="{{ route('dashboard') }}" class="text-base/6 sm:text-sm/6 hover:underline text-sky-500 visited:text-violet-600 lowercase" wire:navigate>dashboard</a>
-                        <a href="{{ route('teams.show', Auth::user()->currentTeam->slug) }}" class="text-base/6 sm:text-sm/6 hover:underline text-sky-500 visited:text-violet-600 lowercase" wire:navigate>team</a>
-                        <a href="{{ route('settings.show') }}" class="text-base/6 sm:text-sm/6 hover:underline text-sky-500 visited:text-violet-600 lowercase" wire:navigate>settings</a>
+                        <a href="{{ route('dashboard') }}" class="text-base/6 sm:text-sm/6 hover:underline text-sky-700 visited:text-purple-700 lowercase" wire:navigate>dashboard</a>
+                        <a href="{{ route('teams.show', Auth::user()->currentTeam->slug) }}" class="text-base/6 sm:text-sm/6 hover:underline text-sky-700 visited:text-purple-700 lowercase" wire:navigate>team settings</a>
+                        <a href="{{ route('settings.show') }}" class="text-base/6 sm:text-sm/6 hover:underline text-sky-700 visited:text-purple-700 lowercase" wire:navigate>profile</a>
+                        <a href="{{ route('teams.index') }}" class="text-base/6 sm:text-sm/6 hover:underline text-sky-700 visited:text-purple-700 lowercase" wire:navigate>teams</a>
                     </div>
 
                     <div aria-hidden="true" class="flex-1"></div>
 
-                    <div class="flex gap-x-3">
-                        <span class="text-base/6 sm:text-sm/6">logged in as {{ Auth::user()->email }}
-                            <span class="text-zinc-500">[</span>
-                            <form method="POST" action="{{ route('logout') }}" class="inline">
-                                @csrf
-                                <button type="submit" class="text-sky-500 active:bg-yellow-100 lowercase">logout</button>
-                            </form>
-                            <span class="text-zinc-500">]</span>
-                        </span>
+                    <div>
+                        logged in as {{ Auth::user()->email }}
+                        <form method="POST" action="{{ route('logout') }}" class="inline">
+                            @csrf
+                            <flux:badge as="button" type="submit" class="lowercase">logout</flux:badge>
+                        </form>
                     </div>
                 </div>
             </nav>

@@ -39,7 +39,7 @@ $classes = Flux::classes()
     })
     ->add(match ($rounded) {
         true => 'rounded-full px-2',
-        default => 'rounded-md px-1.5',
+        default => 'px-1.5',
     })
     /**
      * We can't compile classes for each color because of variants color to color and Tailwind's JIT compiler.
