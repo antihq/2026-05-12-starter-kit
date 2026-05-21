@@ -4,38 +4,45 @@
         @include('partials.head')
     </head>
     <body class="bg-white dark:bg-zinc-900 antialiased text-zinc-950 dark:text-white text-base/6 sm:text-sm/6">
-        <header class="px-4 [grid-area:header] max-w-6xl mx-auto w-full">
-            <nav class="flex flex-wrap items-center gap-x-4 py-5">
-                <div class="text-base/6 sm:text-sm/6 text-zinc-500">
-                    <a href="{{ route('home') }}" wire:navigate>
+        <header>
+            <nav class="flex items-end flex-wrap py-5">
+                <div class="lg:w-64 lg:justify-end px-4 flex gap-x-1 flex-wrap">
+                    <a href="{{ route('home') }}" class="text-zinc-500 dark:text-zinc-400" wire:navigate>
                         {{ Str::of(config('app.name'))->explode('-', 4)->last() }}
                         <sup>{{ Str::of(config('app.name'))->explode('-', 4)->take(3)->join('-') }}</sup>
                     </a>
-                    (<a href="{{ route('dashboard') }}" class="text-blue-600 visited:text-purple-600 hover:underline" wire:navigate>{{ Auth::user()->currentTeam->name }}</a>)
+                    <span class="text-zinc-500 dark:text-zinc-400">(<a href="{{ route('dashboard') }}" class="text-sky-500 visited:text-violet-600 hover:underline" wire:navigate>{{ Auth::user()->currentTeam->name }}</a>)</span>
                 </div>
 
-                <div class="flex gap-x-3">
-                    <a href="{{ route('dashboard') }}" class="text-base/6 sm:text-sm/6 hover:underline text-blue-600 visited:text-purple-600 lowercase" wire:navigate>dashboard</a>
-                    <a href="{{ route('teams.show', Auth::user()->currentTeam->slug) }}" class="text-base/6 sm:text-sm/6 hover:underline text-blue-600 visited:text-purple-600 lowercase" wire:navigate>team</a>
-                    <a href="{{ route('settings.show') }}" class="text-base/6 sm:text-sm/6 hover:underline text-blue-600 visited:text-purple-600 lowercase" wire:navigate>settings</a>
-                </div>
+                <div class="flex-1 flex-wrap flex px-4">
+                    <div class="flex gap-x-3">
+                        <a href="{{ route('dashboard') }}" class="text-base/6 sm:text-sm/6 hover:underline text-sky-500 visited:text-violet-600 lowercase" wire:navigate>dashboard</a>
+                        <a href="{{ route('teams.show', Auth::user()->currentTeam->slug) }}" class="text-base/6 sm:text-sm/6 hover:underline text-sky-500 visited:text-violet-600 lowercase" wire:navigate>team</a>
+                        <a href="{{ route('settings.show') }}" class="text-base/6 sm:text-sm/6 hover:underline text-sky-500 visited:text-violet-600 lowercase" wire:navigate>settings</a>
+                    </div>
 
-                <div aria-hidden="true" class="-ml-4 flex-1"></div>
-                <div class="flex gap-x-3">
-                    <span class="text-base/6 sm:text-sm/6">logged in as {{ Auth::user()->email }}
-                        <span class="text-zinc-500">[</span>
-                        <form method="POST" action="{{ route('logout') }}" class="inline">
-                            @csrf
-                            <button type="submit" class="text-blue-600 active:bg-yellow-100 lowercase">logout</button>
-                        </form>
-                        <span class="text-zinc-500">]</span>
-                    </span>
+                    <div aria-hidden="true" class="flex-1"></div>
+
+                    <div class="flex gap-x-3">
+                        <span class="text-base/6 sm:text-sm/6">logged in as {{ Auth::user()->email }}
+                            <span class="text-zinc-500">[</span>
+                            <form method="POST" action="{{ route('logout') }}" class="inline">
+                                @csrf
+                                <button type="submit" class="text-sky-500 active:bg-yellow-100 lowercase">logout</button>
+                            </form>
+                            <span class="text-zinc-500">]</span>
+                        </span>
+                    </div>
                 </div>
             </nav>
         </header>
 
-        <main class="p-4 pt-0 w-full max-w-6xl mx-auto">
-            {{ $slot }}
+        <main class="lg:pl-64">
+            <div class="p-4 pt-0">
+                <div class="w-full max-w-6xl">
+                    {{ $slot }}
+                </div>
+            </div>
         </main>
 
         @persist('toast')
