@@ -333,12 +333,12 @@ new class extends Component
             @else
             <div>
                 <flux:heading class="lowercase" level="2">Invite member</flux:heading>
-                <flux:text class="mt-2 text-zinc-500">Contact a team admin to invite new members.</flux:text>
+                <p class="mt-1 text-zinc-500 dark:text-zinc-400 ">Contact a team admin to invite new members.</p>
             </div>
             @endif
 
             @if (filled($invitations) || $this->permissions->canCreateInvitation)
-            <div class="@if ($this->permissions->canCreateInvitation) mt-5 @endif">
+            <div class="mt-5">
                 <div class="flex items-center gap-2">
                     <flux:heading class="lowercase" level="2">Pending invitations</flux:heading>
                     <span class="text-zinc-500 dark:text-zinc-400 text-sm/5 sm:text-xs/5">{{ $this->invitationCount }}</span>
@@ -379,7 +379,7 @@ new class extends Component
 
                 <form wire:submit="deleteTeam" class="mt-4">
                     <div class="space-y-2">
-                        <flux:label class="lowercase">Type "{{ $team->name }}" to confirm</flux:label>
+                        <flux:label class="lowercase">Type "<span class="normal-case">{{ $team->name }}</span>" to confirm</flux:label>
                         <div class="flex flex-wrap gap-4">
                             <div class="sm:flex-1 w-full">
                                 <flux:input wire:model="deleteForm.confirmName" type="text" required data-test="delete-team-name" />
