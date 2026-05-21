@@ -375,26 +375,20 @@ new class extends Component
 
             @if ($this->permissions->canDeleteTeam && ! $team->is_personal)
             <div class="mt-5">
-                <flux:separator />
+                <flux:heading class="lowercase" level="2" color="red">Delete team</flux:heading>
 
-                <div class="mt-5">
-                    <flux:heading class="lowercase" level="2" color="red">Delete team</flux:heading>
-
-                    <form wire:submit="deleteTeam" class="mt-4 space-y-5">
-                        <flux:field>
-                            <flux:label class="lowercase">Type "{{ $team->name }}" to confirm</flux:label>
-                            <flux:input wire:model="deleteForm.confirmName" type="text" required data-test="delete-team-name" />
-                            <flux:error name="deleteForm.confirmName" />
-                        </flux:field>
-
-                        <div class="flex gap-3">
-                            <flux:spacer />
-                            <flux:button variant="danger" type="submit" data-test="delete-team-button">
-                                Delete team
-                            </flux:button>
+                <form wire:submit="deleteTeam" class="mt-4">
+                    <div class="space-y-2">
+                        <flux:label class="lowercase">Type "{{ $team->name }}" to confirm</flux:label>
+                        <div class="flex flex-wrap gap-4">
+                            <div class="sm:flex-1 w-full">
+                                <flux:input wire:model="deleteForm.confirmName" type="text" required data-test="delete-team-name" />
+                                <flux:error name="deleteForm.confirmName" />
+                            </div>
+                            <flux:button type="submit" data-test="delete-team-button">Delete team</flux:button>
                         </div>
-                    </form>
-                </div>
+                    </div>
+                </form>
             </div>
             @endif
         </div>
