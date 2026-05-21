@@ -13,15 +13,12 @@ beforeEach(function () {
     ]);
 });
 
-test('recovery codes can be shown when two factor enabled', function () {
+test('recovery codes are shown when two factor enabled', function () {
     $user = User::factory()->withTwoFactor()->create();
 
     $this->actingAs($user);
 
-    $component = Livewire::test('pages::settings.show')
-        ->call('toggleRecoveryCodes');
-
-    $component->assertSet('showRecoveryCodes', true);
+    $component = Livewire::test('pages::settings.show');
 
     $codes = $component->get('recoveryCodes');
     expect($codes)->not->toBeEmpty();
@@ -32,8 +29,7 @@ test('recovery codes can be regenerated', function () {
 
     $this->actingAs($user);
 
-    $component = Livewire::test('pages::settings.show')
-        ->call('toggleRecoveryCodes');
+    $component = Livewire::test('pages::settings.show');
 
     $originalCodes = $component->get('recoveryCodes');
     expect($originalCodes)->not->toBeEmpty();
@@ -44,16 +40,4 @@ test('recovery codes can be regenerated', function () {
 
     expect($newCodes)->not->toBeEmpty()
         ->and($newCodes)->not->toEqual($originalCodes);
-});
-
-test('recovery codes can be hidden', function () {
-    $user = User::factory()->withTwoFactor()->create();
-
-    $this->actingAs($user);
-
-    $component = Livewire::test('pages::settings.show')
-        ->call('toggleRecoveryCodes')
-        ->assertSet('showRecoveryCodes', true)
-        ->call('toggleRecoveryCodes')
-        ->assertSet('showRecoveryCodes', false);
 });

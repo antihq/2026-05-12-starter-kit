@@ -18,7 +18,6 @@ test('team invitations can be created', function () {
     $this->actingAs($owner);
 
     Livewire::test('pages::teams.show', ['team' => $team])
-        ->call('showInviteMemberForm')
         ->set('invitationForm.email', 'invited@example.com')
         ->set('invitationForm.role', TeamRole::Member->value)
         ->call('createInvitation')
@@ -42,7 +41,6 @@ test('team invitations cannot be created by members', function () {
     $this->actingAs($member);
 
     Livewire::test('pages::teams.show', ['team' => $team])
-        ->call('showInviteMemberForm')
         ->set('invitationForm.email', 'invited@example.com')
         ->set('invitationForm.role', TeamRole::Member->value)
         ->call('createInvitation')
@@ -240,5 +238,34 @@ test('invitation table shows cancel button for pending invitations', function ()
     $this->actingAs($owner)
         ->get(route('teams.show', $team))
         ->assertOk()
-        ->assertSee('Cancel invitation');
+        ->assertSee('Cancel');
+});
+
+test('team show page shows invite form for owners', function () {
+    $owner = User::factory()->create();
+    $team = Team::factory()->create();
+
+    $team->members()->attach($owner, ['role' => TeamRole::Owner->value]);
+
+    $this->actingAs($owner)
+        ->get(route('teams.show', $team))
+        ->assertOk()
+        ->assertSee('invite-email')
+        ->assertSee('invite-role')
+        ->assertSee('Send invitation');
+});
+
+test('team show page hides invite form for members', function () {
+    $owner = User::factory()->create();
+    $member = User::factory()->create();
+    $team = Team::factory()->create();
+
+    $team->members()->attach($owner, ['role' => TeamRole::Owner->value]);
+    $team->members()->attach($member, ['role' => TeamRole::Member->value]);
+
+    $this->actingAs($member)
+        ->get(route('teams.show', $team))
+        ->assertOk()
+        ->assertDontSee('invite-email')
+        ->assertDontSee('Send invitation');
 });

@@ -57,7 +57,7 @@ test('two factor disabled when confirmation abandoned between requests', functio
     ]);
 });
 
-test('settings page shows disable and recovery codes buttons when two factor enabled', function () {
+test('settings page shows disable form and recovery codes when two factor enabled', function () {
     $user = User::factory()->withTwoFactor()->create();
 
     $this->actingAs($user);
@@ -65,8 +65,8 @@ test('settings page shows disable and recovery codes buttons when two factor ena
     $component = Livewire::test('pages::settings.show');
 
     $component->assertSet('twoFactorEnabled', true)
-        ->assertSee('Disable')
-        ->assertSee('Show recovery codes');
+        ->assertSee('Disable authenticator')
+        ->assertSee('Recovery codes');
 });
 
 test('settings page shows recovery codes remaining when two factor enabled', function () {
@@ -77,4 +77,16 @@ test('settings page shows recovery codes remaining when two factor enabled', fun
     $component = Livewire::test('pages::settings.show');
 
     $component->assertSet('recoveryCodesRemaining', 1);
+});
+
+test('settings page does not show recovery codes when two factor disabled', function () {
+    $user = User::factory()->create();
+
+    $this->actingAs($user);
+
+    Livewire::test('pages::settings.show')
+        ->assertSet('twoFactorEnabled', false)
+        ->assertSet('recoveryCodes', [])
+        ->assertDontSee('Regenerate codes')
+        ->assertDontSee('Disable authenticator');
 });

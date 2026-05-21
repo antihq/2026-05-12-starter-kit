@@ -73,7 +73,6 @@ test('teams can be updated by owners', function () {
     $this->actingAs($user);
 
     Livewire::test('pages::teams.show', ['team' => $team])
-        ->call('startEditingName')
         ->set('teamForm.name', 'Updated Name')
         ->call('updateTeamName')
         ->assertHasNoErrors();
@@ -95,7 +94,6 @@ test('teams cannot be updated by members', function () {
     $this->actingAs($member);
 
     Livewire::test('pages::teams.show', ['team' => $team])
-        ->call('startEditingName')
         ->set('teamForm.name', 'Updated Name')
         ->call('updateTeamName')
         ->assertForbidden();
@@ -110,7 +108,6 @@ test('teams can be deleted by owners', function () {
     $this->actingAs($user);
 
     Livewire::test('pages::teams.show', ['team' => $team])
-        ->call('showDelete')
         ->set('deleteForm.confirmName', $team->name)
         ->call('deleteTeam')
         ->assertHasNoErrors();
@@ -129,7 +126,6 @@ test('team deletion requires name confirmation', function () {
     $this->actingAs($user);
 
     Livewire::test('pages::teams.show', ['team' => $team])
-        ->call('showDelete')
         ->set('deleteForm.confirmName', 'Wrong Name')
         ->call('deleteTeam')
         ->assertHasErrors(['deleteForm.confirmName']);
@@ -157,7 +153,7 @@ test('deleting current team switches to alphabetically first remaining team', fu
     $this->actingAs($user);
 
     Livewire::test('pages::teams.show', ['team' => $zuluTeam])
-        ->call('showDelete')
+
         ->set('deleteForm.confirmName', $zuluTeam->name)
         ->call('deleteTeam')
         ->assertHasNoErrors();
@@ -180,7 +176,7 @@ test('deleting current team falls back to personal team when alphabetically firs
     $this->actingAs($user);
 
     Livewire::test('pages::teams.show', ['team' => $team])
-        ->call('showDelete')
+
         ->set('deleteForm.confirmName', $team->name)
         ->call('deleteTeam')
         ->assertHasNoErrors();
@@ -203,7 +199,7 @@ test('deleting non current team leaves current team unchanged', function () {
     $this->actingAs($user);
 
     Livewire::test('pages::teams.show', ['team' => $team])
-        ->call('showDelete')
+
         ->set('deleteForm.confirmName', $team->name)
         ->call('deleteTeam')
         ->assertHasNoErrors();
@@ -229,7 +225,7 @@ test('deleting team switches other affected users to their personal team', funct
     $this->actingAs($owner);
 
     Livewire::test('pages::teams.show', ['team' => $team])
-        ->call('showDelete')
+
         ->set('deleteForm.confirmName', $team->name)
         ->call('deleteTeam')
         ->assertHasNoErrors();
@@ -245,7 +241,7 @@ test('personal teams cannot be deleted', function () {
     $this->actingAs($user);
 
     Livewire::test('pages::teams.show', ['team' => $personalTeam])
-        ->call('showDelete')
+
         ->set('deleteForm.confirmName', $personalTeam->name)
         ->call('deleteTeam')
         ->assertForbidden();
@@ -267,7 +263,7 @@ test('teams cannot be deleted by non owners', function () {
     $this->actingAs($member);
 
     Livewire::test('pages::teams.show', ['team' => $team])
-        ->call('showDelete')
+
         ->set('deleteForm.confirmName', $team->name)
         ->call('deleteTeam')
         ->assertForbidden();
@@ -289,15 +285,46 @@ test('teams create page can be rendered', function () {
     $response->assertOk();
 });
 
-test('team show page shows delete button for non-personal teams', function () {
+test('team show page shows team name form for owners', function () {
     $user = User::factory()->create();
-    $team = Team::factory()->create();
+    $team = Team::factory()->create(['name' => 'My Team']);
 
     $team->members()->attach($user, ['role' => TeamRole::Owner->value]);
 
     $this->actingAs($user)
         ->get(route('teams.show', $team))
         ->assertOk()
+        ->assertSee('team-name-input')
+        ->assertSee('team-save-button')
+        ->assertSee($team->name);
+});
+
+test('team show page shows team name heading for members without form', function () {
+    $owner = User::factory()->create();
+    $member = User::factory()->create();
+    $team = Team::factory()->create(['name' => 'My Team']);
+
+    $team->members()->attach($owner, ['role' => TeamRole::Owner->value]);
+    $team->members()->attach($member, ['role' => TeamRole::Member->value]);
+
+    $this->actingAs($member)
+        ->get(route('teams.show', $team))
+        ->assertOk()
+        ->assertSee($team->name)
+        ->assertDontSee('team-name-input')
+        ->assertDontSee('team-save-button');
+});
+
+test('team show page shows delete form directly for non-personal teams', function () {
+    $user = User::factory()->create();
+    $team = Team::factory()->create(['name' => 'Deletable']);
+
+    $team->members()->attach($user, ['role' => TeamRole::Owner->value]);
+
+    $this->actingAs($user)
+        ->get(route('teams.show', $team))
+        ->assertOk()
+        ->assertSee('delete-team-name')
         ->assertSee('Delete team');
 });
 

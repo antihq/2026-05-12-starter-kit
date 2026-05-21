@@ -32,10 +32,6 @@ new #[Title('Settings')] class extends Component
 
     public bool $showQrCode = false;
 
-    public bool $showDisableForm = false;
-
-    public bool $showRecoveryCodes = false;
-
     #[Locked]
     public string $qrCodeSvg = '';
 
@@ -64,6 +60,10 @@ new #[Title('Settings')] class extends Component
             }
 
             $this->twoFactorEnabled = $user->hasEnabledTwoFactorAuthentication();
+
+            if ($this->twoFactorEnabled) {
+                $this->loadRecoveryCodes();
+            }
         }
     }
 
@@ -146,17 +146,6 @@ new #[Title('Settings')] class extends Component
         $this->code = '';
     }
 
-    public function showDisableTwoFactorForm(): void
-    {
-        $this->showDisableForm = true;
-    }
-
-    public function cancelDisableTwoFactor(): void
-    {
-        $this->showDisableForm = false;
-        $this->disablePassword = '';
-    }
-
     public function disableTwoFactor(DisableTwoFactorAuthentication $disableTwoFactorAuthentication): void
     {
         $this->validate([
@@ -166,25 +155,10 @@ new #[Title('Settings')] class extends Component
         $disableTwoFactorAuthentication(Auth::user());
 
         $this->twoFactorEnabled = false;
-        $this->showDisableForm = false;
         $this->disablePassword = '';
-        $this->showRecoveryCodes = false;
         $this->recoveryCodes = [];
 
         Flux::toast(variant: 'success', text: 'Two-factor authentication disabled.');
-    }
-
-    public function toggleRecoveryCodes(): void
-    {
-        if ($this->showRecoveryCodes) {
-            $this->showRecoveryCodes = false;
-            $this->recoveryCodes = [];
-
-            return;
-        }
-
-        $this->loadRecoveryCodes();
-        $this->showRecoveryCodes = true;
     }
 
     public function regenerateRecoveryCodes(GenerateNewRecoveryCodes $generateNewRecoveryCodes): void
@@ -439,67 +413,53 @@ new #[Title('Settings')] class extends Component
                         </x-description.details>
                     </x-description.list>
 
-                    @if (! $showDisableForm && ! $showRecoveryCodes)
-                        <div class="mt-4 flex gap-3">
-                            <flux:button wire:click="toggleRecoveryCodes">
-                                Show recovery codes
-                            </flux:button>
-                            <flux:button variant="danger" wire:click="showDisableTwoFactorForm">
-                                Disable
-                            </flux:button>
-                        </div>
-                    @endif
+                    <div class="mt-6 space-y-4">
+                        @error('recoveryCodes')
+                            <flux:callout variant="danger" icon="x-circle" heading="{{ $message }}" />
+                        @enderror
 
-                    @if ($showRecoveryCodes)
-                        <div class="mt-6 space-y-4">
-                            @error('recoveryCodes')
-                                <flux:callout variant="danger" icon="x-circle" heading="{{ $message }}" />
-                            @enderror
-
-                            @if (filled($recoveryCodes))
-                                <flux:text>Each code can only be used once.</flux:text>
-                                <div class="grid grid-cols-2 gap-x-8 gap-y-1 font-mono text-sm" role="list" aria-label="Recovery codes">
-                                    @foreach($recoveryCodes as $recoveryCode)
-                                        <div role="listitem" class="select-text" wire:loading.class="opacity-50 animate-pulse">
-                                            {{ $recoveryCode }}
-                                        </div>
-                                    @endforeach
-                                </div>
-
-                                <flux:separator />
-
-                                <flux:button variant="danger" wire:click="regenerateRecoveryCodes">
-                                    Regenerate codes
-                                </flux:button>
-                            @else
-                                <flux:callout variant="warning" icon="exclamation-triangle" heading="No recovery codes">
-                                    No recovery codes were found.
-                                </flux:callout>
-                            @endif
-                        </div>
-                    @endif
-
-                    @if ($showDisableForm)
-                        <flux:text class="mt-4">This will also delete your recovery codes.</flux:text>
-
-                        <form wire:submit="disableTwoFactor" class="mt-4 space-y-6 max-w-xl">
-                            <flux:field>
-                                <flux:label>Password</flux:label>
-                                <flux:input wire:model="disablePassword" type="password" required viewable />
-                                <flux:error name="disablePassword" />
-                            </flux:field>
-
-                            <div class="flex gap-3">
-                                <flux:spacer />
-                                <flux:button variant="danger" type="submit" data-test="disable-two-factor-button">
-                                    Disable authenticator
-                                </flux:button>
-                                <flux:button variant="subtle" wire:click="cancelDisableTwoFactor" type="button">
-                                    Cancel
-                                </flux:button>
+                        @if (filled($recoveryCodes))
+                            <flux:text>Each code can only be used once.</flux:text>
+                            <div class="grid grid-cols-2 gap-x-8 gap-y-1 font-mono text-sm" role="list" aria-label="Recovery codes">
+                                @foreach($recoveryCodes as $recoveryCode)
+                                    <div role="listitem" class="select-text" wire:loading.class="opacity-50 animate-pulse">
+                                        {{ $recoveryCode }}
+                                    </div>
+                                @endforeach
                             </div>
-                        </form>
-                    @endif
+
+                            <flux:separator />
+
+                            <flux:button variant="danger" wire:click="regenerateRecoveryCodes">
+                                Regenerate codes
+                            </flux:button>
+                        @else
+                            <flux:callout variant="warning" icon="exclamation-triangle" heading="No recovery codes">
+                                No recovery codes were found.
+                            </flux:callout>
+                        @endif
+                    </div>
+
+                    <flux:separator class="mt-6" />
+
+                    <flux:heading level="3" class="mt-6">Disable two-factor authentication</flux:heading>
+
+                    <flux:text class="mt-2">This will also delete your recovery codes.</flux:text>
+
+                    <form wire:submit="disableTwoFactor" class="mt-4 space-y-6 max-w-xl">
+                        <flux:field>
+                            <flux:label>Password</flux:label>
+                            <flux:input wire:model="disablePassword" type="password" required viewable />
+                            <flux:error name="disablePassword" />
+                        </flux:field>
+
+                        <div class="flex">
+                            <flux:spacer />
+                            <flux:button variant="danger" type="submit" data-test="disable-two-factor-button">
+                                Disable authenticator
+                            </flux:button>
+                        </div>
+                    </form>
                 @elseif ($showQrCode)
                     <div class="mt-4">
                         @error('setupData')

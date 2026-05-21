@@ -3,9 +3,9 @@
     <head>
         @include('partials.head')
     </head>
-    <body class="bg-white dark:bg-zinc-900 antialiased text-zinc-950 dark:text-white">
-        <header class="px-6 lg:px-10 [grid-area:header] max-w-6xl mx-auto w-full">
-            <nav class="flex flex-wrap items-center gap-x-4 py-6 lg:py-10 gap-y-2 border-b border-zinc-950/5 dark:border-white/10">
+    <body class="bg-white dark:bg-zinc-900 antialiased text-zinc-950 dark:text-white text-base/6 sm:text-sm/6">
+        <header class="px-4 [grid-area:header] max-w-6xl mx-auto w-full">
+            <nav class="flex flex-wrap items-center gap-x-4 py-5 gap-y-2 border-b border-zinc-950/5 dark:border-white/10">
                 <div class="text-base/6 sm:text-sm/6 text-zinc-500">
                     <a href="{{ route('home') }}" wire:navigate>
                         {{ Str::of(config('app.name'))->explode('-', 4)->last() }}
@@ -33,12 +33,12 @@
             </nav>
         </header>
 
-        <flux:main container>
+        <main class="p-4 w-full max-w-6xl mx-auto">
             {{ $slot }}
-        </flux:main>
+        </main>
 
         @persist('toast')
-            <flux:toast.group>
+            <flux:toast.group position="bottom center">
                 <flux:toast />
             </flux:toast.group>
         @endpersist
