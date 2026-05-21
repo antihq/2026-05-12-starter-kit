@@ -292,7 +292,7 @@ new class extends Component
             <div>
                 <flux:heading class="lowercase" level="2">Invite member</flux:heading>
 
-                <form wire:submit="createInvitation" class="mt-3">
+                <form wire:submit="createInvitation" class="mt-2">
                     <flux:field class="max-w-sm">
                         <flux:label class="lowercase">Email address</flux:label>
                         <flux:input wire:model="invitationForm.email" type="email" required autocomplete="email" data-test="invite-email" />

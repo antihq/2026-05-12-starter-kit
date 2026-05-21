@@ -24,9 +24,9 @@
 
                     <div aria-hidden="true" class="flex-1"></div>
 
-                    <div>
+                    <div class="flex gap-x-1.5">
                         logged in as {{ Auth::user()->email }}
-                        <form method="POST" action="{{ route('logout') }}" class="inline">
+                        <form method="POST" action="{{ route('logout') }}" class="inline-flex">
                             @csrf
                             <flux:badge as="button" type="submit" class="lowercase">logout</flux:badge>
                         </form>
