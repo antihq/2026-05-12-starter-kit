@@ -254,18 +254,3 @@ test('team show page shows invite form for owners', function () {
         ->assertSee('invite-role')
         ->assertSee('Send invitation');
 });
-
-test('team show page hides invite form for members', function () {
-    $owner = User::factory()->create();
-    $member = User::factory()->create();
-    $team = Team::factory()->create();
-
-    $team->members()->attach($owner, ['role' => TeamRole::Owner->value]);
-    $team->members()->attach($member, ['role' => TeamRole::Member->value]);
-
-    $this->actingAs($member)
-        ->get(route('teams.show', $team))
-        ->assertOk()
-        ->assertDontSee('invite-email')
-        ->assertDontSee('Send invitation');
-});

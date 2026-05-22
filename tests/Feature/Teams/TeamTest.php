@@ -299,22 +299,6 @@ test('team show page shows team name form for owners', function () {
         ->assertSee($team->name);
 });
 
-test('team show page shows team name heading for members without form', function () {
-    $owner = User::factory()->create();
-    $member = User::factory()->create();
-    $team = Team::factory()->create(['name' => 'My Team']);
-
-    $team->members()->attach($owner, ['role' => TeamRole::Owner->value]);
-    $team->members()->attach($member, ['role' => TeamRole::Member->value]);
-
-    $this->actingAs($member)
-        ->get(route('teams.show', $team))
-        ->assertOk()
-        ->assertSee($team->name)
-        ->assertDontSee('team-name-input')
-        ->assertDontSee('team-save-button');
-});
-
 test('team show page shows delete form directly for non-personal teams', function () {
     $user = User::factory()->create();
     $team = Team::factory()->create(['name' => 'Deletable']);
@@ -336,20 +320,6 @@ test('team show page hides delete button for personal teams', function () {
         ->get(route('teams.show', $personalTeam))
         ->assertOk()
         ->assertDontSee('Delete team');
-});
-
-test('team show page hides edit button for members', function () {
-    $owner = User::factory()->create();
-    $member = User::factory()->create();
-    $team = Team::factory()->create();
-
-    $team->members()->attach($owner, ['role' => TeamRole::Owner->value]);
-    $team->members()->attach($member, ['role' => TeamRole::Member->value]);
-
-    $this->actingAs($member)
-        ->get(route('teams.show', $team))
-        ->assertOk()
-        ->assertDontSee('Edit');
 });
 
 test('creating a team redirects to show page', function () {

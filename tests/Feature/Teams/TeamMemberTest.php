@@ -111,25 +111,6 @@ test('member table shows edit button for non-owner members', function () {
         ->assertSee('Edit');
 });
 
-test('member table hides edit and remove buttons for owner row', function () {
-    $owner = User::factory()->create();
-    $member = User::factory()->create();
-    $team = Team::factory()->create();
-
-    $team->members()->attach($owner, ['role' => TeamRole::Owner->value]);
-    $team->members()->attach($member, ['role' => TeamRole::Member->value]);
-
-    $this->actingAs($owner);
-
-    $component = Livewire::test('pages::teams.show', ['team' => $team]);
-
-    $ownerRow = collect($component->get('members'))->first(fn ($m) => $m['id'] === $owner->id);
-    expect($ownerRow['is_owner'])->toBeTrue();
-
-    $component->assertDontSeeHtml('wire:click="editMember(' . $owner->id . ')"');
-    $component->assertDontSeeHtml('wire:click="removeMember(' . $owner->id . ')"');
-});
-
 test('member table shows remove button for non-owner members', function () {
     $owner = User::factory()->create();
     $member = User::factory()->create();

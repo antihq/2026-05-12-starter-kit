@@ -234,7 +234,7 @@ new class extends Component
 
             <flux:field class="mt-2">
                 <flux:label class="lowercase">Role</flux:label>
-                <flux:radio.group wire:model="invitationForm.role" class="lowercase">
+                <flux:radio.group wire:model="invitationForm.role" class="lowercase" data-test="invite-role">
                     @foreach ($this->availableRoles as $role)
                         <flux:radio value="{{ $role['value'] }}" label="{{ $role['label'] }}" description="{{ $role['description'] }}" />
                     @endforeach
