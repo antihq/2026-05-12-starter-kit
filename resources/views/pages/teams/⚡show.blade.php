@@ -180,8 +180,8 @@ new class extends Component
             <div class="flex flex-wrap gap-x-3 justify-between">
                 <p>{{ $member->email }}</p>
                 <div class="flex items-center gap-1">
-                <flux:badge as="button" wire:click="editMember({{ $member->id }})" data-test="member-edit-button" class="lowercase" :disabled="!$this->permissions->canUpdateMember">Edit role</flux:badge>
-                <flux:badge as="button" wire:click="removeMember({{ $member->id }})" wire:confirm="Remove {{ $member->name }} from this team?" data-test="member-remove-button" :disabled="!$this->permissions->canRemoveMember" class="lowercase">
+                <flux:badge as="button" wire:click="editMember({{ $member->id }})" data-test="member-edit-button" class="lowercase" :disabled="!$this->permissions->canUpdateMember || $member->pivot->role === \App\Enums\TeamRole::Owner">Edit role</flux:badge>
+                <flux:badge as="button" wire:click="removeMember({{ $member->id }})" wire:confirm="Remove {{ $member->name }} from this team?" data-test="member-remove-button" :disabled="!$this->permissions->canRemoveMember || $member->pivot->role === \App\Enums\TeamRole::Owner" class="lowercase">
                     Remove
                 </flux:badge>
                 </div>
