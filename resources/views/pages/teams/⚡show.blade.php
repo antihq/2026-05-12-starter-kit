@@ -260,16 +260,17 @@ new class extends Component
     @endif
     @endif
 
-    @if ($this->permissions->canDeleteTeam && ! $team->is_personal)
-    <flux:heading class="lowercase mt-8" level="2">Delete team</flux:heading>
+    <form wire:submit="deleteTeam" class="mt-8">
+        <flux:fieldset :disabled="! $this->permissions->canDeleteTeam || $team->is_personal">
+            <flux:legend class="lowercase" level="2">Delete team</flux:legend>
 
-    <form wire:submit="deleteTeam" class="mt-2">
-        <flux:field class="max-w-sm">
-            <flux:label class="lowercase">Type "<span class="normal-case">{{ $team->name }}</span>" to confirm</flux:label>
-            <flux:input wire:model="deleteForm.confirmName" type="text" required data-test="delete-team-name" />
-            <flux:error name="deleteForm.confirmName" />
-        </flux:field>
-        <flux:button type="submit" variant="danger" class="mt-4 lowercase" data-test="delete-team-button">Delete team</flux:button>
+            <flux:field class="max-w-sm">
+                <flux:label class="lowercase">Type "<span class="normal-case">{{ $team->name }}</span>" to confirm</flux:label>
+                <flux:input wire:model="deleteForm.confirmName" type="text" required data-test="delete-team-name" />
+                <flux:error name="deleteForm.confirmName" />
+            </flux:field>
+        </flux:fieldset>
+
+        <flux:button type="submit" variant="danger" class="mt-4 lowercase" data-test="delete-team-button" :disabled="! $this->permissions->canDeleteTeam || $team->is_personal">Delete team</flux:button>
     </form>
-    @endif
 </section>

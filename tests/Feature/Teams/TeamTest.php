@@ -279,16 +279,6 @@ test('team show page shows delete form directly for non-personal teams', functio
         ->assertSee('Delete team');
 });
 
-test('team show page hides delete button for personal teams', function () {
-    $user = User::factory()->create();
-    $personalTeam = $user->personalTeam();
-
-    $this->actingAs($user)
-        ->get(route('teams.show', $personalTeam))
-        ->assertOk()
-        ->assertDontSee('Delete team');
-});
-
 test('toUserTeams includes member count', function () {
     $user = User::factory()->create();
     $team = Team::factory()->create();

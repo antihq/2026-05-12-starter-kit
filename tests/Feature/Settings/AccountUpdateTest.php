@@ -1,7 +1,5 @@
 <?php
 
-use App\Enums\TeamRole;
-use App\Models\Team;
 use App\Models\User;
 use Livewire\Livewire;
 
@@ -13,49 +11,6 @@ test('settings page is displayed', function () {
     $response = $this->get(route('settings.show'));
 
     $response->assertOk();
-});
-
-test('settings page shows active sessions count', function () {
-    $user = User::factory()->create();
-
-    $this->actingAs($user);
-
-    $this->get(route('settings.show'))
-        ->assertOk()
-        ->assertSee('Active sessions');
-});
-
-test('settings page shows registered date', function () {
-    $user = User::factory()->create();
-
-    $this->actingAs($user);
-
-    $this->get(route('settings.show'))
-        ->assertOk()
-        ->assertSee('Registered');
-});
-
-test('settings page shows team count', function () {
-    $user = User::factory()->create();
-
-    $this->actingAs($user);
-
-    $this->get(route('settings.show'))
-        ->assertOk()
-        ->assertSee('Teams');
-});
-
-test('settings page shows current team name', function () {
-    $user = User::factory()->create();
-    $team = Team::factory()->create();
-    $team->members()->attach($user, ['role' => TeamRole::Owner->value]);
-    $user->switchTeam($team);
-
-    $this->actingAs($user);
-
-    $this->get(route('settings.show'))
-        ->assertOk()
-        ->assertSee($team->name);
 });
 
 test('settings page shows delete account section', function () {

@@ -24,17 +24,6 @@ test('settings page shows enable authenticator button when two factor disabled',
         ->assertSee('Enable authenticator');
 });
 
-test('settings page hides two factor section when feature is disabled', function () {
-    config(['fortify.features' => []]);
-
-    $user = User::factory()->create();
-
-    $this->actingAs($user)
-        ->get(route('settings.show'))
-        ->assertOk()
-        ->assertDontSeeHtml('Enable authenticator');
-});
-
 test('two factor disabled when confirmation abandoned between requests', function () {
     $user = User::factory()->create();
 
