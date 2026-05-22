@@ -1,4 +1,4 @@
-<x-layouts::guest title="Welcome">
+<x-layouts::auth title="Welcome">
     <div class="grid lg:grid-cols-[1fr_320px] gap-12 lg:gap-16">
         <div>
             <flux:heading level="1" size="xl">Anti Starter Kit</flux:heading>
@@ -52,4 +52,4 @@
             </div>
         @endguest
     </div>
-</x-layouts::guest>
+</x-layouts::auth>

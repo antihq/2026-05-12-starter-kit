@@ -1,4 +1,4 @@
-<x-layouts::guest title="Create account">
+<x-layouts::auth title="Create account">
     <section class="w-full">
         <div class="max-w-md">
             <flux:heading size="xl" level="1">Create an account</flux:heading>
@@ -70,4 +70,4 @@
 
         </div>
     </section>
-</x-layouts::guest>
+</x-layouts::auth>

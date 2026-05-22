@@ -1,4 +1,4 @@
-<x-layouts::guest title="Email verification">
+<x-layouts::auth title="Email verification">
     <section class="w-full">
         <div class="max-w-md">
             <flux:heading size="xl" level="1">Verify your email</flux:heading>
@@ -36,4 +36,4 @@
             </div>
         </div>
     </section>
-</x-layouts::guest>
+</x-layouts::auth>

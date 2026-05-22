@@ -1,4 +1,4 @@
-<x-layouts::guest title="Reset password">
+<x-layouts::auth title="Reset password">
     <section class="w-full">
         <div class="max-w-md">
             <flux:heading size="xl" level="1">Reset password</flux:heading>
@@ -59,4 +59,4 @@
             </form>
         </div>
     </section>
-</x-layouts::guest>
+</x-layouts::auth>

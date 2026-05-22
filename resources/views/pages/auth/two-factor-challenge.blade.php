@@ -1,4 +1,4 @@
-<x-layouts::guest title="Two-factor authentication">
+<x-layouts::auth title="Two-factor authentication">
     <section class="w-full">
         <div class="max-w-md">
             <div
@@ -88,4 +88,4 @@
             </div>
         </div>
     </section>
-</x-layouts::guest>
+</x-layouts::auth>
