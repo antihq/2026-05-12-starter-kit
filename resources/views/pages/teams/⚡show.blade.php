@@ -32,6 +32,7 @@ new class extends Component
         $this->teamForm->setTeam($team);
         $this->deleteForm->setTeam($team);
         $this->invitationForm->setTeam($team);
+        $this->memberRoleForm->setTeam($team);
     }
 
     public function updateTeamName(): void
