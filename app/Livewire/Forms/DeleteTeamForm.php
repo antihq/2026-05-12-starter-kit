@@ -27,7 +27,7 @@ class DeleteTeamForm extends Form
         ];
     }
 
-    public function delete(): void
+    public function delete(): bool
     {
         Gate::authorize('delete', $this->team);
 
@@ -36,7 +36,7 @@ class DeleteTeamForm extends Form
         if ($this->confirmName !== $this->team->name) {
             $this->addError('confirmName', 'The team name does not match.');
 
-            return;
+            return false;
         }
 
         $user = Auth::user();
@@ -58,5 +58,7 @@ class DeleteTeamForm extends Form
         if ($fallbackTeam) {
             $user->switchTeam($fallbackTeam);
         }
+
+        return true;
     }
 }

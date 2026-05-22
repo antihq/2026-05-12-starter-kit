@@ -45,7 +45,9 @@ new class extends Component
 
     public function deleteTeam(): void
     {
-        $this->deleteForm->delete();
+        if (! $this->deleteForm->delete()) {
+            return;
+        }
 
         $this->redirectRoute('teams.index', navigate: true);
     }
