@@ -25,12 +25,12 @@
         >
             <div x-show="!showRecoveryInput">
                 <flux:heading level="1" class="lowercase">authentication code</flux:heading>
-                <p class="mt-1">Enter the 6-digit code from your authenticator app.</p>
+                <p class="mt-1 lowercase">Enter the 6-digit code from your authenticator app.</p>
             </div>
 
             <div x-show="showRecoveryInput">
                 <flux:heading level="1" class="lowercase">recovery code</flux:heading>
-                <p class="mt-1">Enter one of your saved recovery codes.</p>
+                <p class="mt-1 lowercase">Enter one of your saved recovery codes.</p>
             </div>
 
             <form method="POST" action="{{ route('two-factor.login.store') }}" class="mt-2">
@@ -69,15 +69,13 @@
                     </flux:button>
                 </div>
 
-                <flux:separator />
-
-                <div x-show="showRecoveryInput">
+                <div x-show="showRecoveryInput" class="mt-8">
                     <flux:button type="button" @click="toggleInput()" class="lowercase">
                         Use an authenticator code instead
                     </flux:button>
                 </div>
 
-                <div x-show="!showRecoveryInput">
+                <div x-show="!showRecoveryInput" class="mt-8">
                     <flux:button type="button" @click="toggleInput()" class="lowercase">
                         Use a recovery code instead
                     </flux:button>
