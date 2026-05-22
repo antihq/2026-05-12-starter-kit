@@ -288,7 +288,6 @@ new #[Layout('layouts.account'), Title('Settings')] class extends Component
                 <flux:label class="lowercase">Email</flux:label>
                 <flux:input wire:model="profileForm.email" type="email" required autocomplete="email" />
                 <flux:error name="profileForm.email" />
-                <flux:description>Each account requires a unique email address.</flux:description>
 
                 @if ($this->hasUnverifiedEmail)
                     <flux:button wire:click="resendVerificationNotification" variant="subtle" class="mt-2">
@@ -367,7 +366,6 @@ new #[Layout('layouts.account'), Title('Settings')] class extends Component
                     @enderror
 
                     @if (filled($recoveryCodes))
-                        <p>Each code can only be used once.</p>
                         <div class="grid grid-cols-2 gap-x-8 gap-y-1 font-mono text-sm" role="list" aria-label="Recovery codes">
                             @foreach($recoveryCodes as $recoveryCode)
                                 <div role="listitem" class="select-text" wire:loading.class="opacity-50 animate-pulse">
@@ -380,19 +378,16 @@ new #[Layout('layouts.account'), Title('Settings')] class extends Component
                             Regenerate codes
                         </flux:button>
                     @else
-                        <flux:callout variant="warning" icon="exclamation-triangle" heading="No recovery codes">
-                            No recovery codes were found.
-                        </flux:callout>
+                        <flux:callout variant="warning" icon="exclamation-triangle" heading="No recovery codes found" />
                     @endif
                 </div>
 
                 <form wire:submit="disableTwoFactor" class="mt-6">
                     <flux:fieldset>
                         <flux:legend class="lowercase" level="3">Disable two-factor authentication</flux:legend>
-                        <p class="mt-1">This will also delete your recovery codes.</p>
 
                         <flux:field class="mt-2 max-w-sm">
-                            <flux:label class="lowercase">Password</flux:label>
+                            <flux:label class="lowercase">Current password</flux:label>
                             <flux:input wire:model="disablePassword" type="password" required viewable />
                             <flux:error name="disablePassword" />
                         </flux:field>
@@ -400,77 +395,58 @@ new #[Layout('layouts.account'), Title('Settings')] class extends Component
 
                     <div class="mt-4">
                         <flux:button variant="danger" type="submit" data-test="disable-two-factor-button" class="lowercase">
-                            Disable authenticator
+                            Disable
                         </flux:button>
                     </div>
                 </form>
             @elseif ($showQrCode)
-                <div class="mt-4">
+                <div class="mt-2">
                     @error('setupData')
                         <flux:callout variant="danger" icon="x-circle" heading="{{ $message }}" />
                     @enderror
 
-                    <flux:heading level="3" class="lowercase">
-                        Step 1 — Add your account
-                    </flux:heading>
-                    <p class="mt-1">Scan the QR code below, or enter the setup key manually in your authenticator app.</p>
-
-                    <div class="mt-6 space-y-8">
-                        <div>
-                            {!! $qrCodeSvg !!}
-                        </div>
-
-                        <flux:field>
-                            <flux:label class="lowercase">Manual setup key</flux:label>
-                            <flux:input
-                                :value="$manualSetupKey"
-                                readonly
-                                variant="filled"
-                                copyable
-                                input:class="font-mono"
-                            />
-                        </flux:field>
+                    <div>
+                        {!! $qrCodeSvg !!}
                     </div>
 
+                    <flux:field class="mt-2 max-w-sm">
+                        <flux:label class="lowercase">Setup key</flux:label>
+                        <flux:input
+                            :value="$manualSetupKey"
+                            readonly
+                            variant="filled"
+                            copyable
+                            input:class="font-mono"
+                        />
+                    </flux:field>
+
                     @if ($this->requiresTwoFactorConfirmation)
-                        <flux:heading level="3" class="mt-8 lowercase">
-                            Step 2 — Confirm setup
-                        </flux:heading>
-                        <p class="mt-1">Enter the 6-digit code from your authenticator app to complete setup.</p>
+                        <flux:field class="mt-2">
+                            <flux:label class="lowercase">Code</flux:label>
+                            <flux:otp name="code" wire:model="code" length="6" />
+                            <flux:error name="code" />
+                        </flux:field>
 
-                        <div class="mt-6 space-y-8">
-                            <flux:field>
-                                <flux:label class="lowercase">Authentication code</flux:label>
-                                <flux:otp name="code" wire:model="code" length="6" />
-                                <flux:error name="code" />
-                            </flux:field>
-
-                            <div class="flex gap-3">
-                                <flux:button wire:click="confirmTwoFactor" variant="primary" color="lime" x-bind:disabled="$wire.code.length < 6" class="lowercase">
-                                    Confirm
-                                </flux:button>
-                                <flux:button variant="subtle" wire:click="cancelTwoFactorSetup" type="button">
-                                    Cancel
-                                </flux:button>
-                            </div>
+                        <div class="mt-4 gap-1">
+                            <flux:button wire:click="confirmTwoFactor" variant="primary" color="lime" class="lowercase">
+                                Confirm
+                            </flux:button>
+                            <flux:button variant="subtle" wire:click="cancelTwoFactorSetup" type="button">
+                                Cancel
+                            </flux:button>
                         </div>
                     @else
                         <div class="mt-8 flex gap-3">
                             <flux:button wire:click="confirmTwoFactor" variant="primary" color="lime" :disabled="$errors->has('setupData')" class="lowercase">
                                 Enable
                             </flux:button>
-                            <flux:button variant="subtle" wire:click="cancelTwoFactorSetup" type="button">
-                                Cancel
-                            </flux:button>
                         </div>
                     @endif
                 </div>
             @else
-                <p>Add an extra layer of security to your account by enabling two-factor authentication.</p>
-
-                <div class="mt-4">
+                <div class="mt-2">
                     <flux:button wire:click="enableTwoFactor" variant="primary" color="lime" class="lowercase">
-                        Enable authenticator
+                        Enable two-factor
                     </flux:button>
                 </div>
             @endif
@@ -479,7 +455,7 @@ new #[Layout('layouts.account'), Title('Settings')] class extends Component
 
     <div class="mt-8" x-data>
         <flux:heading class="lowercase" level="2">Appearance</flux:heading>
-        <flux:radio.group x-model="$flux.appearance" class="mt-2">
+        <flux:radio.group x-model="$flux.appearance" class="mt-2 lowercase">
             <flux:radio value="light" label="Light" />
             <flux:radio value="dark" label="Dark" />
             <flux:radio value="system" label="System" description="Follows your operating system preference" />
@@ -490,8 +466,6 @@ new #[Layout('layouts.account'), Title('Settings')] class extends Component
         <flux:fieldset :disabled="!$this->showDeleteUser">
             <flux:legend class="lowercase" level="2">Delete account</flux:legend>
 
-            <p>Once you delete your account, all of its resources and data will be permanently deleted.</p>
-
             @if (! $this->showDeleteUser)
                 <p class="text-amber-600 dark:text-amber-400 mt-2">
                     Email verification required to delete your account.
@@ -499,7 +473,7 @@ new #[Layout('layouts.account'), Title('Settings')] class extends Component
             @endif
 
             <flux:field class="mt-2 max-w-sm">
-                <flux:label class="lowercase">Password</flux:label>
+                <flux:label class="lowercase">Current password</flux:label>
                 <flux:input wire:model="deleteForm.password" type="password" required viewable />
                 <flux:error name="deleteForm.password" />
             </flux:field>
