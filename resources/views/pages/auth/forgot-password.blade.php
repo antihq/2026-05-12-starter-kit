@@ -1,30 +1,31 @@
 <x-layouts::auth title="Forgot password">
-    <section class="w-full max-w-md">
-        <flux:heading size="xl" level="1">Reset password</flux:heading>
-        <flux:text class="mt-1">Enter your email. If an account exists, you'll receive a reset link.</flux:text>
+    <section class="max-w-2xl">
+        <flux:heading level="1" class="lowercase">reset password</flux:heading>
+        <p class="mt-1">Enter your email. If an account exists, you'll receive a reset link.</p>
 
         @if (session('status'))
-            <flux:text color="green" class="mt-4 font-medium">{{ session('status') }}</flux:text>
+            <p class="mt-1">{{ session('status') }}</p>
         @endif
 
-        <form method="POST" action="{{ route('password.email') }}" class="mt-6 space-y-6">
+        <form method="POST" action="{{ route('password.email') }}" class="mt-2">
             @csrf
-         <flux:field>
+
+            <flux:field class="max-w-sm">
                 <flux:label class="lowercase">Email address</flux:label>
-                    <flux:input
-                        name="email"
-                        type="email"
-                        required
-                        autofocus
-                    />
+                <flux:input
+                    name="email"
+                    type="email"
+                    required
+                    autofocus
+                />
                 <flux:error name="email" />
             </flux:field>
-             <div class="flex">
-                    <flux:spacer />
-                    <flux:button variant="primary" type="submit" data-test="email-password-reset-link-button" class="lowercase">
-                        Send reset link
-                    </flux:button>
-                </div>
+
+            <div class="mt-4">
+                <flux:button type="submit" variant="primary" color="lime" data-test="email-password-reset-link-button" class="lowercase">
+                    Send reset link
+                </flux:button>
+            </div>
         </form>
     </section>
 </x-layouts::auth>
