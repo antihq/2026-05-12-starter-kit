@@ -94,7 +94,7 @@ $classes = Flux::classes()
         'primary' => 'bg-[var(--color-accent)] hover:bg-[color-mix(in_oklab,_var(--color-accent),_transparent_10%)]',
         'filled' => 'bg-zinc-800/5 hover:bg-zinc-800/10 dark:bg-white/10 dark:hover:bg-white/20',
         'outline' => 'bg-white hover:bg-zinc-50 dark:bg-zinc-700 dark:hover:bg-zinc-600/75',
-        'danger' => 'bg-red-600 hover:bg-red-500 dark:bg-red-600 dark:hover:bg-red-500',
+        'danger' => 'bg-red-500/10 hover:bg-red-500/25 dark:bg-red-500/10',
         'ghost' => 'bg-transparent hover:bg-zinc-950/5 dark:hover:bg-white/10',
         'subtle' => 'bg-transparent hover:bg-zinc-800/5 dark:hover:bg-white/15',
     })
@@ -102,7 +102,7 @@ $classes = Flux::classes()
         'primary' => 'text-[var(--color-accent-foreground)]',
         'filled' => 'text-zinc-800 dark:text-white',
         'outline' => 'text-zinc-800 dark:text-white',
-        'danger' => 'text-white',
+        'danger' => 'text-red-700 dark:text-red-400',
         'ghost' => 'text-zinc-950 dark:text-white',
         'subtle' => 'text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-white',
     })
@@ -113,7 +113,7 @@ $classes = Flux::classes()
     })
     ->add(match ($variant) { // Shadows...
         'primary' => 'shadow-[inset_0px_1px_--theme(--color-white/.2)]',
-        'danger' => 'shadow-[inset_0px_1px_var(--color-red-600),inset_0px_2px_--theme(--color-white/.15)] dark:shadow-none',
+        'danger' => '',
         'outline' => match ($size) {
             'base' => 'shadow-xs',
             'sm' => 'shadow-xs',

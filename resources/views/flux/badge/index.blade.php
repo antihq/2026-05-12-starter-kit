@@ -30,6 +30,7 @@ $iconClasses = Flux::classes()
 
 $classes = Flux::classes()
     ->add('inline-flex items-center font-medium whitespace-nowrap')
+    ->add('[&:is(button)]:disabled:opacity-50 [&:is(button)]:disabled:cursor-default [&:is(button)]:disabled:pointer-events-none')
     ->add($insetClasses)
     ->add('[print-color-adjust:exact]')
     ->add(match ($size) {
