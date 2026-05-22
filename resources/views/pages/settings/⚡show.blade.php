@@ -13,12 +13,13 @@ use Laravel\Fortify\Actions\GenerateNewRecoveryCodes;
 use Laravel\Fortify\Features;
 use Laravel\Fortify\Fortify;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\Layout;
 use Livewire\Attributes\Locked;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 
-new #[Title('Settings')] class extends Component
+new #[Layout('layouts.account'), Title('Settings')] class extends Component
 {
     public UpdateProfileForm $profileForm;
 
@@ -571,7 +572,7 @@ new #[Title('Settings')] class extends Component
 
                     <x-description.term class="lowercase">Teams</x-description.term>
                     <x-description.details>
-                        <flux:link :accent="false" :href="route('teams.index')" wire:navigate>
+                        <flux:link :accent="false" :href="route('teams.switch')" wire:navigate>
                             {{ $this->teamCount }} {{ str()->plural('team', $this->teamCount) }}
                         </flux:link>
                     </x-description.details>

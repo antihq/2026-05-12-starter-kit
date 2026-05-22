@@ -98,11 +98,5 @@ new class extends Component {
                 <flux:menu.radio value="{{ $team->slug }}">{{ $team->name }}</flux:menu.radio>
             @endforeach
         </flux:menu.radio.group>
-
-        <flux:menu.separator />
-
-        <flux:menu.item href="{{ route('teams.create') }}">
-            New team
-        </flux:menu.item>
     </flux:menu>
 </flux:dropdown>

@@ -11,16 +11,9 @@
                         {{ Str::of(config('app.name'))->explode('-', 4)->last() }}
                         <sup>{{ Str::of(config('app.name'))->explode('-', 4)->take(3)->join('-') }}</sup>
                     </a>
-                    <a href="{{ route('dashboard') }}" class="text-blue-700 visited:text-purple-700 hover:underline" wire:navigate>{{ Auth::user()->currentTeam->name }}</a>
-                    <a href="{{ route('teams.switch') }}" class="text-blue-700 visited:text-purple-700 hover:underline" wire:navigate>switch team</a>
                 </div>
 
                 <div class="flex-1 flex-wrap flex px-4">
-                    <div class="flex gap-x-3">
-                        <a href="{{ route('dashboard') }}" class="text-base/6 sm:text-sm/6 hover:underline text-blue-700 visited:text-purple-700 lowercase" wire:navigate>dashboard</a>
-                        <a href="{{ route('teams.show', Auth::user()->currentTeam->slug) }}" class="text-base/6 sm:text-sm/6 hover:underline text-blue-700 visited:text-purple-700 lowercase" wire:navigate>settings</a>
-                    </div>
-
                     <div aria-hidden="true" class="flex-1"></div>
 
                     <div class="flex gap-x-1.5">

@@ -41,6 +41,8 @@ new class extends Component
         $this->team = $team;
 
         Flux::toast(variant: 'success', text: 'Team updated.');
+
+        $this->redirectRoute('teams.show', ['team' => $team->fresh()->slug], navigate: true);
     }
 
     public function deleteTeam(): void
@@ -49,7 +51,7 @@ new class extends Component
             return;
         }
 
-        $this->redirectRoute('teams.index', navigate: true);
+        $this->redirectRoute('teams.switch', navigate: true);
     }
 
     public function editMember(int $userId): void

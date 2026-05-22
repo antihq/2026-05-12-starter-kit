@@ -2,7 +2,7 @@
     <flux:menu.item href="{{ route('settings.show') }}" wire:navigate>
         Settings
     </flux:menu.item>
-    <flux:menu.item href="{{ route('teams.index') }}" wire:navigate>
+    <flux:menu.item href="{{ route('teams.switch') }}" wire:navigate>
         Teams
     </flux:menu.item>
     <flux:menu.separator />

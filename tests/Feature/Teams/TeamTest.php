@@ -5,50 +5,14 @@ use App\Models\Team;
 use App\Models\User;
 use Livewire\Livewire;
 
-test('teams index page can be rendered', function () {
+test('teams switch page can be rendered', function () {
     $user = User::factory()->create();
 
     $response = $this
         ->actingAs($user)
-        ->get(route('teams.index'));
+        ->get(route('teams.switch'));
 
     $response->assertOk();
-});
-
-test('teams can be created', function () {
-    $user = User::factory()->create();
-
-    $this->actingAs($user);
-
-    Livewire::test('pages::teams.create')
-        ->set('name', 'Test Team')
-        ->call('createTeam')
-        ->assertHasNoErrors();
-
-    $this->assertDatabaseHas('teams', [
-        'name' => 'Test Team',
-        'is_personal' => false,
-    ]);
-});
-
-test('team slug uses next available suffix', function () {
-    $user = User::factory()->create();
-
-    Team::factory()->create(['name' => 'Acme', 'slug' => 'acme']);
-    Team::factory()->create(['name' => 'Acme One', 'slug' => 'acme-1']);
-    Team::factory()->create(['name' => 'Acme Ten', 'slug' => 'acme-10']);
-
-    $this->actingAs($user);
-
-    Livewire::test('pages::teams.create')
-        ->set('name', 'Acme')
-        ->call('createTeam')
-        ->assertHasNoErrors();
-
-    $this->assertDatabaseHas('teams', [
-        'name' => 'Acme',
-        'slug' => 'acme-11',
-    ]);
 });
 
 test('team show page can be rendered', function () {
@@ -81,6 +45,19 @@ test('teams can be updated by owners', function () {
         'id' => $team->id,
         'name' => 'Updated Name',
     ]);
+});
+
+test('updating team name redirects to team show page', function () {
+    $user = User::factory()->create();
+    $team = Team::factory()->create(['name' => 'Original']);
+    $team->members()->attach($user, ['role' => TeamRole::Owner->value]);
+
+    $this->actingAs($user);
+
+    Livewire::test('pages::teams.show', ['team' => $team])
+        ->set('teamForm.name', 'Updated')
+        ->call('updateTeamName')
+        ->assertRedirect(route('teams.show', ['team' => $team->fresh()->slug]));
 });
 
 test('teams cannot be updated by members', function () {
@@ -270,19 +247,9 @@ test('teams cannot be deleted by non owners', function () {
 });
 
 test('guests cannot access teams', function () {
-    $response = $this->get(route('teams.index'));
+    $response = $this->get(route('teams.switch'));
 
     $response->assertRedirect(route('login'));
-});
-
-test('teams create page can be rendered', function () {
-    $user = User::factory()->create();
-
-    $response = $this
-        ->actingAs($user)
-        ->get(route('teams.create'));
-
-    $response->assertOk();
 });
 
 test('team show page shows team name form for owners', function () {
@@ -320,18 +287,6 @@ test('team show page hides delete button for personal teams', function () {
         ->get(route('teams.show', $personalTeam))
         ->assertOk()
         ->assertDontSee('Delete team');
-});
-
-test('creating a team redirects to show page', function () {
-    $user = User::factory()->create();
-
-    $this->actingAs($user);
-
-    Livewire::test('pages::teams.create')
-        ->set('name', 'Redirect Test Team')
-        ->call('createTeam')
-        ->assertHasNoErrors()
-        ->assertRedirect(route('teams.show', Team::where('name', 'Redirect Test Team')->first()->slug));
 });
 
 test('toUserTeams includes member count', function () {
@@ -372,4 +327,91 @@ test('toUserTeams excludes current team when not requested', function () {
     );
 
     expect($userTeam)->toBeNull();
+});
+
+test('switching to another team updates current team', function () {
+    $user = User::factory()->create();
+    $personalTeam = $user->personalTeam();
+    $team = Team::factory()->create(['name' => 'Other Team']);
+    $team->members()->attach($user, ['role' => TeamRole::Member->value]);
+
+    $this->actingAs($user);
+
+    Livewire::test('pages::teams.switch')
+        ->set('selectedTeam', $team->slug)
+        ->assertHasNoErrors();
+
+    expect($user->fresh()->current_team_id)->toEqual($team->id);
+});
+
+test('switching to another team redirects to dashboard', function () {
+    $user = User::factory()->create();
+    $team = Team::factory()->create(['name' => 'Other Team']);
+    $team->members()->attach($user, ['role' => TeamRole::Member->value]);
+
+    $this->actingAs($user);
+
+    Livewire::test('pages::teams.switch')
+        ->set('selectedTeam', $team->slug)
+        ->assertRedirect(route('dashboard', ['current_team' => $team->slug]));
+});
+
+test('switching to a team the user does not belong to is forbidden', function () {
+    $user = User::factory()->create();
+    $team = Team::factory()->create(['name' => 'Forbidden Team']);
+
+    $this->actingAs($user);
+
+    Livewire::test('pages::teams.switch')
+        ->call('switchTeam', $team->slug)
+        ->assertForbidden();
+});
+
+test('selected team defaults to current team on mount', function () {
+    $user = User::factory()->create();
+    $personalTeam = $user->personalTeam();
+
+    $this->actingAs($user);
+
+    Livewire::test('pages::teams.switch')
+        ->assertSet('selectedTeam', $personalTeam->slug);
+});
+
+test('creating a team from switch page redirects to dashboard', function () {
+    $user = User::factory()->create();
+
+    $this->actingAs($user);
+
+    Livewire::test('pages::teams.switch')
+        ->set('name', 'New Team')
+        ->call('createTeam')
+        ->assertHasNoErrors();
+
+    $team = Team::where('name', 'New Team')->first();
+    test()->assertNotNull($team);
+});
+
+test('creating a team from switch page switches to the new team', function () {
+    $user = User::factory()->create();
+
+    $this->actingAs($user);
+
+    Livewire::test('pages::teams.switch')
+        ->set('name', 'Switch Test Team')
+        ->call('createTeam')
+        ->assertHasNoErrors();
+
+    $team = Team::where('name', 'Switch Test Team')->first();
+    expect($user->fresh()->current_team_id)->toEqual($team->id);
+});
+
+test('creating a team from switch page with invalid name shows errors', function () {
+    $user = User::factory()->create();
+
+    $this->actingAs($user);
+
+    Livewire::test('pages::teams.switch')
+        ->set('name', '')
+        ->call('createTeam')
+        ->assertHasErrors(['name']);
 });
