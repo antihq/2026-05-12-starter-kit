@@ -11,20 +11,20 @@
                         {{ Str::of(config('app.name'))->explode('-', 4)->last() }}
                         <sup>{{ Str::of(config('app.name'))->explode('-', 4)->take(3)->join('-') }}</sup>
                     </a>
-                    <a href="{{ route('dashboard') }}" class="text-blue-700 visited:text-purple-700 hover:underline" wire:navigate>{{ Auth::user()->currentTeam->name }}</a>
-                    <a href="{{ route('teams.switch') }}" class="text-blue-700 visited:text-purple-700 hover:underline" wire:navigate>switch team</a>
+                    <a href="{{ route('dashboard') }}" class="text-blue-700 visited:text-purple-700 dark:text-blue-400 dark:visited:text-purple-400 hover:underline" wire:navigate>{{ Auth::user()->currentTeam->name }}</a>
+                    <a href="{{ route('teams.switch') }}" class="text-blue-700 visited:text-purple-700 dark:text-blue-400 dark:visited:text-purple-400 hover:underline" wire:navigate>switch team</a>
                 </div>
 
                 <div class="flex-1 flex-wrap flex px-4">
                     <div class="flex gap-x-3">
-                        <a href="{{ route('dashboard') }}" class="text-base/6 sm:text-sm/6 hover:underline text-blue-700 visited:text-purple-700 lowercase" wire:navigate>dashboard</a>
-                        <a href="{{ route('teams.show', Auth::user()->currentTeam->slug) }}" class="text-base/6 sm:text-sm/6 hover:underline text-blue-700 visited:text-purple-700 lowercase" wire:navigate>settings</a>
+                        <a href="{{ route('dashboard') }}" class="text-base/6 sm:text-sm/6 hover:underline text-blue-700 visited:text-purple-700 dark:text-blue-400 dark:visited:text-purple-400 lowercase" wire:navigate>dashboard</a>
+                        <a href="{{ route('teams.show', Auth::user()->currentTeam->slug) }}" class="text-base/6 sm:text-sm/6 hover:underline text-blue-700 visited:text-purple-700 dark:text-blue-400 dark:visited:text-purple-400 lowercase" wire:navigate>settings</a>
                     </div>
 
                     <div aria-hidden="true" class="flex-1"></div>
 
                     <div class="flex gap-x-1.5">
-                        logged in as <a href="{{ route('settings.show') }}" class="hover:underline text-blue-700 visited:text-purple-700 lowercase" wire:navigate>{{ Auth::user()->email }}</a>
+                        logged in as <a href="{{ route('settings.show') }}" class="hover:underline text-blue-700 visited:text-purple-700 dark:text-blue-400 dark:visited:text-purple-400 lowercase" wire:navigate>{{ Auth::user()->email }}</a>
                         <form method="POST" action="{{ route('logout') }}" class="inline-flex">
                             @csrf
                             <flux:badge as="button" type="submit" class="lowercase">logout</flux:badge>
