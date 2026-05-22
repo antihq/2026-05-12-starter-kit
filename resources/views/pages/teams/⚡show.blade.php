@@ -26,13 +26,12 @@ new class extends Component
 
     public UpdateMemberRoleForm $memberRoleForm;
 
-    public function mount(Team $team): void
+    public function mount(): void
     {
-        $this->team = $team;
-        $this->teamForm->setTeam($team);
-        $this->deleteForm->setTeam($team);
-        $this->invitationForm->setTeam($team);
-        $this->memberRoleForm->setTeam($team);
+        $this->teamForm->setTeam($this->team);
+        $this->deleteForm->setTeam($this->team);
+        $this->invitationForm->setTeam($this->team);
+        $this->memberRoleForm->setTeam($this->team);
     }
 
     public function updateTeamName(): void
