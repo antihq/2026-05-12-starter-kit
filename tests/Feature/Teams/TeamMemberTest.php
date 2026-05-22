@@ -17,7 +17,7 @@ test('team member role can be updated by owner', function () {
 
     Livewire::test('pages::teams.show', ['team' => $team])
         ->call('editMember', $member->id)
-        ->set('editingRole', TeamRole::Admin->value)
+        ->set('memberRoleForm.role', TeamRole::Admin->value)
         ->call('updateMemberRole')
         ->assertHasNoErrors();
 
@@ -38,7 +38,7 @@ test('team member role cannot be updated by non owner', function () {
 
     Livewire::test('pages::teams.show', ['team' => $team])
         ->call('editMember', $member->id)
-        ->set('editingRole', TeamRole::Admin->value)
+        ->set('memberRoleForm.role', TeamRole::Admin->value)
         ->call('updateMemberRole')
         ->assertForbidden();
 });

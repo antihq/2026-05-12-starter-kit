@@ -3,6 +3,7 @@
 use App\Enums\TeamRole;
 use App\Livewire\Forms\CreateInvitationForm;
 use App\Livewire\Forms\DeleteTeamForm;
+use App\Livewire\Forms\UpdateMemberRoleForm;
 use App\Livewire\Forms\UpdateTeamForm;
 use App\Models\Team;
 use App\Models\User;
@@ -10,7 +11,6 @@ use App\Support\TeamPermissions;
 use Flux\Flux;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Validation\Rule;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 
@@ -24,9 +24,7 @@ new class extends Component
 
     public CreateInvitationForm $invitationForm;
 
-    public ?int $editingMemberId = null;
-
-    public string $editingRole = '';
+    public UpdateMemberRoleForm $memberRoleForm;
 
     public function mount(Team $team): void
     {
@@ -60,32 +58,17 @@ new class extends Component
             return;
         }
 
-        $this->editingMemberId = $userId;
-        $this->editingRole = $member->pivot->role->value;
+        $this->memberRoleForm->setMember($userId, $member->pivot->role->value);
     }
 
     public function cancelEditMember(): void
     {
-        $this->editingMemberId = null;
-        $this->editingRole = '';
+        $this->memberRoleForm->reset('memberId', 'role');
     }
 
     public function updateMemberRole(): void
     {
-        Gate::authorize('updateMember', $this->team);
-
-        $validated = validator(
-            ['role' => $this->editingRole],
-            ['role' => ['required', 'string', Rule::enum(TeamRole::class)]],
-        )->validate();
-
-        $this->team->memberships()
-            ->where('user_id', $this->editingMemberId)
-            ->firstOrFail()
-            ->update(['role' => TeamRole::from($validated['role'])]);
-
-        $this->editingMemberId = null;
-        $this->editingRole = '';
+        $this->memberRoleForm->save();
     }
 
     public function removeMember(int $userId): void
@@ -199,17 +182,17 @@ new class extends Component
                 </flux:badge>
                 </div>
             </div>
-            @if ($editingMemberId === $member->id)
+            @if ($this->memberRoleForm->memberId === $member->id)
             <div class="mt-1 p-3 pt-2 border border-zinc-950/10 dark:border-white/10 ">
                 <form wire:submit="updateMemberRole">
                     <flux:field>
                         <flux:label class="lowercase">Role</flux:label>
-                        <flux:radio.group wire:model="editingRole" class="lowercase">
+                        <flux:radio.group wire:model="memberRoleForm.role" class="lowercase">
                             @foreach ($this->availableRoles as $role)
                                 <flux:radio value="{{ $role['value'] }}" label="{{ $role['label'] }}" description="{{ $role['description'] }}" />
                             @endforeach
                         </flux:radio.group>
-                        <flux:error name="editingRole" />
+                        <flux:error name="memberRoleForm.role" />
                     </flux:field>
                     <div class="mt-4 flex gap-1">
                         <flux:button type="submit" variant="primary" color="lime" class="lowercase" data-test="member-role-save">Save</flux:button>
