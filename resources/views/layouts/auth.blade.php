@@ -23,11 +23,11 @@
                     <div class="flex gap-x-3">
                         @guest
                             @if (Route::has('login'))
-                                <a href="{{ route('login') }}" class="hover:underline text-blue-700 visited:text-purple-700 dark:text-blue-400 dark:visited:text-purple-400 lowercase" wire:navigate>Sign in</a>
+                                <a href="{{ route('login') }}" class="whitespace-nowrap hover:underline text-blue-700 visited:text-purple-700 dark:text-blue-400 dark:visited:text-purple-400 lowercase" wire:navigate>Sign in</a>
                             @endif
 
                             @if (Route::has('register'))
-                                <a href="{{ route('register') }}" class="hover:underline text-blue-700 visited:text-purple-700 dark:text-blue-400 dark:visited:text-purple-400 lowercase" wire:navigate>Create account</a>
+                                <a href="{{ route('register') }}" class="whitespace-nowrap hover:underline text-blue-700 visited:text-purple-700 dark:text-blue-400 dark:visited:text-purple-400 lowercase" wire:navigate>Create account</a>
                             @endif
                         @endguest
 

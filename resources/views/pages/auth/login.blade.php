@@ -29,7 +29,6 @@
                     type="password"
                     required
                     autocomplete="current-password"
-                    viewable
                 />
                 <flux:error name="password" />
             </flux:field>
@@ -45,7 +44,7 @@
             </div>
         </form>
 
-        <div class="mt-8">
+        <div class="mt-2">
             @if (Route::has('password.request'))
                 <a href="{{ route('password.request') }}" class="hover:underline text-blue-700 visited:text-purple-700 dark:text-blue-400 dark:visited:text-purple-400 lowercase" wire:navigate>Reset password</a>
             @endif
