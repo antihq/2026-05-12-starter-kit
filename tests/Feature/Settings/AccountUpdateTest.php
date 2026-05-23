@@ -8,7 +8,7 @@ test('settings page is displayed', function () {
 
     $this->actingAs($user);
 
-    $response = $this->get(route('settings.show'));
+    $response = $this->get(route('settings'));
 
     $response->assertOk();
 });
@@ -18,7 +18,7 @@ test('settings page shows delete account section', function () {
 
     $this->actingAs($user);
 
-    $this->get(route('settings.show'))
+    $this->get(route('settings'))
         ->assertOk()
         ->assertSee('Delete account');
 });
@@ -28,7 +28,7 @@ test('account information can be updated', function () {
 
     $this->actingAs($user);
 
-    $response = Livewire::test('pages::settings.show')
+    $response = Livewire::test('pages::settings')
         ->set('profileForm.name', 'Test User')
         ->set('profileForm.email', 'test@example.com')
         ->call('updateProfile');
@@ -47,7 +47,7 @@ test('email verification status is unchanged when email address is unchanged', f
 
     $this->actingAs($user);
 
-    $response = Livewire::test('pages::settings.show')
+    $response = Livewire::test('pages::settings')
         ->set('profileForm.name', 'Test User')
         ->set('profileForm.email', $user->email)
         ->call('updateProfile');
@@ -62,7 +62,7 @@ test('user can delete their account', function () {
 
     $this->actingAs($user);
 
-    $response = Livewire::test('pages::settings.show')
+    $response = Livewire::test('pages::settings')
         ->set('deleteForm.password', 'password')
         ->call('deleteAccount');
 
@@ -79,7 +79,7 @@ test('correct password must be provided to delete account', function () {
 
     $this->actingAs($user);
 
-    $response = Livewire::test('pages::settings.show')
+    $response = Livewire::test('pages::settings')
         ->set('deleteForm.password', 'wrong-password')
         ->call('deleteAccount');
 

@@ -18,7 +18,7 @@ test('authenticator can be disabled with correct password', function () {
 
     $this->actingAs($user);
 
-    $component = Livewire::test('pages::settings.show')
+    $component = Livewire::test('pages::settings')
         ->set('disablePassword', 'password')
         ->call('disableTwoFactor');
 
@@ -33,7 +33,7 @@ test('authenticator disable fails with wrong password', function () {
 
     $this->actingAs($user);
 
-    $component = Livewire::test('pages::settings.show')
+    $component = Livewire::test('pages::settings')
         ->set('disablePassword', 'wrong-password')
         ->call('disableTwoFactor');
 
@@ -47,7 +47,7 @@ test('disabling two factor clears recovery codes', function () {
 
     $this->actingAs($user);
 
-    $component = Livewire::test('pages::settings.show');
+    $component = Livewire::test('pages::settings');
 
     $component->assertSet('twoFactorEnabled', true)
         ->assertSet('recoveryCodes', fn ($codes) => ! empty($codes));

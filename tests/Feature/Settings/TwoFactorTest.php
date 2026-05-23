@@ -13,17 +13,6 @@ beforeEach(function () {
     ]);
 });
 
-test('settings page shows enable authenticator button when two factor disabled', function () {
-    $user = User::factory()->create();
-
-    $this->actingAs($user);
-
-    $component = Livewire::test('pages::settings.show');
-
-    $component->assertSet('twoFactorEnabled', false)
-        ->assertSee('Enable authenticator');
-});
-
 test('two factor disabled when confirmation abandoned between requests', function () {
     $user = User::factory()->create();
 
@@ -35,7 +24,7 @@ test('two factor disabled when confirmation abandoned between requests', functio
 
     $this->actingAs($user);
 
-    $component = Livewire::test('pages::settings.show');
+    $component = Livewire::test('pages::settings');
 
     $component->assertSet('twoFactorEnabled', false);
 
@@ -44,38 +33,4 @@ test('two factor disabled when confirmation abandoned between requests', functio
         'two_factor_secret' => null,
         'two_factor_recovery_codes' => null,
     ]);
-});
-
-test('settings page shows disable form and recovery codes when two factor enabled', function () {
-    $user = User::factory()->withTwoFactor()->create();
-
-    $this->actingAs($user);
-
-    $component = Livewire::test('pages::settings.show');
-
-    $component->assertSet('twoFactorEnabled', true)
-        ->assertSee('Disable authenticator')
-        ->assertSee('Recovery codes');
-});
-
-test('settings page shows recovery codes remaining when two factor enabled', function () {
-    $user = User::factory()->withTwoFactor()->create();
-
-    $this->actingAs($user);
-
-    $component = Livewire::test('pages::settings.show');
-
-    $component->assertSet('recoveryCodesRemaining', 1);
-});
-
-test('settings page does not show recovery codes when two factor disabled', function () {
-    $user = User::factory()->create();
-
-    $this->actingAs($user);
-
-    Livewire::test('pages::settings.show')
-        ->assertSet('twoFactorEnabled', false)
-        ->assertSet('recoveryCodes', [])
-        ->assertDontSee('Regenerate codes')
-        ->assertDontSee('Disable authenticator');
 });

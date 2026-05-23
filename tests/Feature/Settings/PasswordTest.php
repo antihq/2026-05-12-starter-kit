@@ -8,7 +8,7 @@ test('settings page shows password section', function () {
     $user = User::factory()->create();
 
     $this->actingAs($user)
-        ->get(route('settings.show'))
+        ->get(route('settings'))
         ->assertOk()
         ->assertSee('Current password')
         ->assertSee('New password')
@@ -22,7 +22,7 @@ test('password can be updated', function () {
 
     $this->actingAs($user);
 
-    $response = Livewire::test('pages::settings.show')
+    $response = Livewire::test('pages::settings')
         ->set('passwordForm.current_password', 'password')
         ->set('passwordForm.password', 'new-password')
         ->set('passwordForm.password_confirmation', 'new-password')
@@ -40,7 +40,7 @@ test('correct password must be provided to update password', function () {
 
     $this->actingAs($user);
 
-    $response = Livewire::test('pages::settings.show')
+    $response = Livewire::test('pages::settings')
         ->set('passwordForm.current_password', 'wrong-password')
         ->set('passwordForm.password', 'new-password')
         ->set('passwordForm.password_confirmation', 'new-password')

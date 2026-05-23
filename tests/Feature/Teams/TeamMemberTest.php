@@ -15,7 +15,7 @@ test('team member role can be updated by owner', function () {
 
     $this->actingAs($owner);
 
-    Livewire::test('pages::teams.show', ['team' => $team])
+    Livewire::test('pages::teams.settings', ['team' => $team])
         ->call('editMember', $member->id)
         ->set('memberRoleForm.role', TeamRole::Admin->value)
         ->call('updateMemberRole')
@@ -36,7 +36,7 @@ test('team member role cannot be updated by non owner', function () {
 
     $this->actingAs($admin);
 
-    Livewire::test('pages::teams.show', ['team' => $team])
+    Livewire::test('pages::teams.settings', ['team' => $team])
         ->call('editMember', $member->id)
         ->set('memberRoleForm.role', TeamRole::Admin->value)
         ->call('updateMemberRole')
@@ -53,7 +53,7 @@ test('team member can be removed by owner', function () {
 
     $this->actingAs($owner);
 
-    Livewire::test('pages::teams.show', ['team' => $team])
+    Livewire::test('pages::teams.settings', ['team' => $team])
         ->call('removeMember', $member->id)
         ->assertHasNoErrors();
 
@@ -72,7 +72,7 @@ test('team member cannot be removed by non owners', function () {
 
     $this->actingAs($admin);
 
-    Livewire::test('pages::teams.show', ['team' => $team])
+    Livewire::test('pages::teams.settings', ['team' => $team])
         ->call('removeMember', $member->id)
         ->assertForbidden();
 });
@@ -90,7 +90,7 @@ test('removed members current team is set to personal team', function () {
 
     $this->actingAs($owner);
 
-    Livewire::test('pages::teams.show', ['team' => $team])
+    Livewire::test('pages::teams.settings', ['team' => $team])
         ->call('removeMember', $member->id)
         ->assertHasNoErrors();
 
@@ -106,7 +106,7 @@ test('member table shows edit button for non-owner members', function () {
     $team->members()->attach($member, ['role' => TeamRole::Member->value]);
 
     $this->actingAs($owner)
-        ->get(route('teams.show', $team))
+        ->get(route('teams.settings', $team))
         ->assertOk()
         ->assertSee('Edit');
 });
@@ -120,7 +120,7 @@ test('member table shows remove button for non-owner members', function () {
     $team->members()->attach($member, ['role' => TeamRole::Member->value]);
 
     $this->actingAs($owner)
-        ->get(route('teams.show', $team))
+        ->get(route('teams.settings', $team))
         ->assertOk()
         ->assertSee('Remove');
 });

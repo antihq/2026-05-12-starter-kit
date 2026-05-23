@@ -18,7 +18,7 @@ test('recovery codes are shown when two factor enabled', function () {
 
     $this->actingAs($user);
 
-    $component = Livewire::test('pages::settings.show');
+    $component = Livewire::test('pages::settings');
 
     $codes = $component->get('recoveryCodes');
     expect($codes)->not->toBeEmpty();
@@ -29,7 +29,7 @@ test('recovery codes can be regenerated', function () {
 
     $this->actingAs($user);
 
-    $component = Livewire::test('pages::settings.show');
+    $component = Livewire::test('pages::settings');
 
     $originalCodes = $component->get('recoveryCodes');
     expect($originalCodes)->not->toBeEmpty();

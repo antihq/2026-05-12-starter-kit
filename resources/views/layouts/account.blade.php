@@ -14,10 +14,14 @@
                 </div>
 
                 <div class="flex-1 flex-wrap flex px-4">
+                    <div class="flex gap-x-3">
+                        <a href="{{ route('dashboard') }}" class="text-base/6 sm:text-sm/6 hover:underline text-blue-700 visited:text-purple-700 dark:text-blue-400 dark:visited:text-purple-400 lowercase" wire:navigate>dashboard</a>
+                    </div>
+
                     <div aria-hidden="true" class="flex-1"></div>
 
                     <div class="flex gap-x-1.5">
-                        logged in as <a href="{{ route('settings.show') }}" class="hover:underline text-blue-700 visited:text-purple-700 dark:text-blue-400 dark:visited:text-purple-400 lowercase" wire:navigate>{{ Auth::user()->email }}</a>
+                        logged in as <a href="{{ route('settings') }}" class="hover:underline text-blue-700 visited:text-purple-700 dark:text-blue-400 dark:visited:text-purple-400 lowercase" wire:navigate>{{ Auth::user()->email }}</a>
                         <form method="POST" action="{{ route('logout') }}" class="inline-flex">
                             @csrf
                             <flux:badge as="button" type="submit" class="lowercase">logout</flux:badge>

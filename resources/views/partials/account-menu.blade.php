@@ -1,5 +1,5 @@
 <flux:menu class="min-w-64">
-    <flux:menu.item href="{{ route('settings.show') }}" wire:navigate>
+    <flux:menu.item href="{{ route('settings') }}" wire:navigate>
         Settings
     </flux:menu.item>
     <flux:menu.item href="{{ route('teams.switch') }}" wire:navigate>

@@ -17,7 +17,7 @@ test('team invitations can be created', function () {
 
     $this->actingAs($owner);
 
-    Livewire::test('pages::teams.show', ['team' => $team])
+    Livewire::test('pages::teams.settings', ['team' => $team])
         ->set('invitationForm.email', 'invited@example.com')
         ->set('invitationForm.role', TeamRole::Member->value)
         ->call('createInvitation')
@@ -40,7 +40,7 @@ test('team invitations cannot be created by members', function () {
 
     $this->actingAs($member);
 
-    Livewire::test('pages::teams.show', ['team' => $team])
+    Livewire::test('pages::teams.settings', ['team' => $team])
         ->set('invitationForm.email', 'invited@example.com')
         ->set('invitationForm.role', TeamRole::Member->value)
         ->call('createInvitation')
@@ -60,7 +60,7 @@ test('team invitations can be cancelled by owner', function () {
 
     $this->actingAs($owner);
 
-    Livewire::test('pages::teams.show', ['team' => $team])
+    Livewire::test('pages::teams.settings', ['team' => $team])
         ->call('cancelInvitation', $invitation->code)
         ->assertHasNoErrors();
 
@@ -84,7 +84,7 @@ test('team invitations cannot be cancelled by members', function () {
 
     $this->actingAs($member);
 
-    Livewire::test('pages::teams.show', ['team' => $team])
+    Livewire::test('pages::teams.settings', ['team' => $team])
         ->call('cancelInvitation', $invitation->code)
         ->assertForbidden();
 
@@ -236,7 +236,7 @@ test('invitation table shows cancel button for pending invitations', function ()
     ]);
 
     $this->actingAs($owner)
-        ->get(route('teams.show', $team))
+        ->get(route('teams.settings', $team))
         ->assertOk()
         ->assertSee('Cancel');
 });
@@ -248,7 +248,7 @@ test('team show page shows invite form for owners', function () {
     $team->members()->attach($owner, ['role' => TeamRole::Owner->value]);
 
     $this->actingAs($owner)
-        ->get(route('teams.show', $team))
+        ->get(route('teams.settings', $team))
         ->assertOk()
         ->assertSee('invite-email')
         ->assertSee('invite-role')

@@ -22,7 +22,7 @@ test('team show page can be rendered', function () {
 
     $response = $this
         ->actingAs($user)
-        ->get(route('teams.show', $team));
+        ->get(route('teams.settings', $team));
 
     $response->assertOk();
     $response->assertSee($user->name);
@@ -36,7 +36,7 @@ test('teams can be updated by owners', function () {
 
     $this->actingAs($user);
 
-    Livewire::test('pages::teams.show', ['team' => $team])
+    Livewire::test('pages::teams.settings', ['team' => $team])
         ->set('teamForm.name', 'Updated Name')
         ->call('updateTeamName')
         ->assertHasNoErrors();
@@ -54,10 +54,10 @@ test('updating team name redirects to team show page', function () {
 
     $this->actingAs($user);
 
-    Livewire::test('pages::teams.show', ['team' => $team])
+    Livewire::test('pages::teams.settings', ['team' => $team])
         ->set('teamForm.name', 'Updated')
         ->call('updateTeamName')
-        ->assertRedirect(route('teams.show', ['team' => $team->fresh()->slug]));
+        ->assertRedirect(route('teams.settings', ['team' => $team->fresh()->slug]));
 });
 
 test('teams cannot be updated by members', function () {
@@ -70,7 +70,7 @@ test('teams cannot be updated by members', function () {
 
     $this->actingAs($member);
 
-    Livewire::test('pages::teams.show', ['team' => $team])
+    Livewire::test('pages::teams.settings', ['team' => $team])
         ->set('teamForm.name', 'Updated Name')
         ->call('updateTeamName')
         ->assertForbidden();
@@ -84,7 +84,7 @@ test('teams can be deleted by owners', function () {
 
     $this->actingAs($user);
 
-    Livewire::test('pages::teams.show', ['team' => $team])
+    Livewire::test('pages::teams.settings', ['team' => $team])
         ->set('deleteForm.confirmName', $team->name)
         ->call('deleteTeam')
         ->assertHasNoErrors();
@@ -102,7 +102,7 @@ test('team deletion requires name confirmation', function () {
 
     $this->actingAs($user);
 
-    Livewire::test('pages::teams.show', ['team' => $team])
+    Livewire::test('pages::teams.settings', ['team' => $team])
         ->set('deleteForm.confirmName', 'Wrong Name')
         ->call('deleteTeam')
         ->assertHasErrors(['deleteForm.confirmName']);
@@ -129,7 +129,7 @@ test('deleting current team switches to alphabetically first remaining team', fu
 
     $this->actingAs($user);
 
-    Livewire::test('pages::teams.show', ['team' => $zuluTeam])
+    Livewire::test('pages::teams.settings', ['team' => $zuluTeam])
 
         ->set('deleteForm.confirmName', $zuluTeam->name)
         ->call('deleteTeam')
@@ -152,7 +152,7 @@ test('deleting current team falls back to personal team when alphabetically firs
 
     $this->actingAs($user);
 
-    Livewire::test('pages::teams.show', ['team' => $team])
+    Livewire::test('pages::teams.settings', ['team' => $team])
 
         ->set('deleteForm.confirmName', $team->name)
         ->call('deleteTeam')
@@ -175,7 +175,7 @@ test('deleting non current team leaves current team unchanged', function () {
 
     $this->actingAs($user);
 
-    Livewire::test('pages::teams.show', ['team' => $team])
+    Livewire::test('pages::teams.settings', ['team' => $team])
 
         ->set('deleteForm.confirmName', $team->name)
         ->call('deleteTeam')
@@ -201,7 +201,7 @@ test('deleting team switches other affected users to their personal team', funct
 
     $this->actingAs($owner);
 
-    Livewire::test('pages::teams.show', ['team' => $team])
+    Livewire::test('pages::teams.settings', ['team' => $team])
 
         ->set('deleteForm.confirmName', $team->name)
         ->call('deleteTeam')
@@ -217,7 +217,7 @@ test('personal teams cannot be deleted', function () {
 
     $this->actingAs($user);
 
-    Livewire::test('pages::teams.show', ['team' => $personalTeam])
+    Livewire::test('pages::teams.settings', ['team' => $personalTeam])
 
         ->set('deleteForm.confirmName', $personalTeam->name)
         ->call('deleteTeam')
@@ -239,7 +239,7 @@ test('teams cannot be deleted by non owners', function () {
 
     $this->actingAs($member);
 
-    Livewire::test('pages::teams.show', ['team' => $team])
+    Livewire::test('pages::teams.settings', ['team' => $team])
 
         ->set('deleteForm.confirmName', $team->name)
         ->call('deleteTeam')
@@ -259,7 +259,7 @@ test('team show page shows team name form for owners', function () {
     $team->members()->attach($user, ['role' => TeamRole::Owner->value]);
 
     $this->actingAs($user)
-        ->get(route('teams.show', $team))
+        ->get(route('teams.settings', $team))
         ->assertOk()
         ->assertSee('team-name-input')
         ->assertSee('team-save-button')
@@ -273,7 +273,7 @@ test('team show page shows delete form directly for non-personal teams', functio
     $team->members()->attach($user, ['role' => TeamRole::Owner->value]);
 
     $this->actingAs($user)
-        ->get(route('teams.show', $team))
+        ->get(route('teams.settings', $team))
         ->assertOk()
         ->assertSee('delete-team-name')
         ->assertSee('Delete team');

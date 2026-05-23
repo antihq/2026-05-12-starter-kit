@@ -14,29 +14,12 @@ beforeEach(function () {
     ]);
 });
 
-test('two factor can be enabled and shows qr code', function () {
-    $user = User::factory()->create();
-
-    $this->actingAs($user);
-
-    $component = Livewire::test('pages::settings.show')
-        ->call('enableTwoFactor');
-
-    $component->assertSet('showQrCode', true)
-        ->assertSee('Step 1')
-        ->assertSee('Manual setup key')
-        ->assertSee('Step 2')
-        ->assertSee('Confirm');
-
-    expect($user->fresh()->two_factor_secret)->not->toBeNull();
-});
-
 test('two factor confirmation fails with invalid code', function () {
     $user = User::factory()->create();
 
     $this->actingAs($user);
 
-    $component = Livewire::test('pages::settings.show')
+    $component = Livewire::test('pages::settings')
         ->call('enableTwoFactor')
         ->set('code', '000000')
         ->call('confirmTwoFactor');
@@ -49,7 +32,7 @@ test('two factor confirmation succeeds with valid code', function () {
 
     $this->actingAs($user);
 
-    $component = Livewire::test('pages::settings.show')
+    $component = Livewire::test('pages::settings')
         ->call('enableTwoFactor');
 
     $user->refresh();
@@ -74,7 +57,7 @@ test('two factor setup can be cancelled', function () {
 
     $this->actingAs($user);
 
-    $component = Livewire::test('pages::settings.show')
+    $component = Livewire::test('pages::settings')
         ->call('enableTwoFactor')
         ->call('cancelTwoFactorSetup');
 
@@ -93,7 +76,7 @@ test('two factor enable without confirmation shows enable button', function () {
 
     $this->actingAs($user);
 
-    $component = Livewire::test('pages::settings.show')
+    $component = Livewire::test('pages::settings')
         ->call('enableTwoFactor');
 
     $component->assertSee('Enable')

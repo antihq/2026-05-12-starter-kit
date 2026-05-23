@@ -42,7 +42,7 @@ new class extends Component
 
         Flux::toast(variant: 'success', text: 'Team updated.');
 
-        $this->redirectRoute('teams.show', ['team' => $team->fresh()->slug], navigate: true);
+        $this->redirectRoute('teams.settings', ['team' => $team->fresh()->slug], navigate: true);
     }
 
     public function deleteTeam(): void
