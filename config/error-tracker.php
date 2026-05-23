@@ -1,5 +1,11 @@
 <?php
 
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Auth\AuthenticationException;
+use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+
 return [
 
     'enabled' => env('ERROR_TRACKER_ENABLED', ! in_array(env('APP_ENV'), ['local', 'testing'])),
@@ -7,11 +13,11 @@ return [
     'url' => env('ERROR_TRACKER_URL'),
 
     'excluded_exceptions' => [
-        \Symfony\Component\HttpKernel\Exception\NotFoundHttpException::class,
-        \Symfony\Component\HttpKernel\Exception\HttpException::class,
-        \Illuminate\Validation\ValidationException::class,
-        \Illuminate\Auth\AuthenticationException::class,
-        \Illuminate\Auth\Access\AuthorizationException::class,
+        NotFoundHttpException::class,
+        HttpException::class,
+        ValidationException::class,
+        AuthenticationException::class,
+        AuthorizationException::class,
     ],
 
 ];

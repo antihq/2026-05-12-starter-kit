@@ -1,6 +1,7 @@
 <?php
 
 use App\Services\ErrorTracker;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
@@ -139,7 +140,7 @@ test('flush clears queue after sending', function () {
 });
 
 test('flush logs warning on http failure', function () {
-    Http::fake(fn () => throw new Illuminate\Http\Client\ConnectionException('Timeout'));
+    Http::fake(fn () => throw new ConnectionException('Timeout'));
     Log::shouldReceive('warning')->once()->withArgs(fn ($msg) => str_contains($msg, 'Error tracker flush failed'));
 
     $tracker = new ErrorTracker;
@@ -153,8 +154,9 @@ test('flush continues posting after a failure', function () {
     Http::fake(function () use (&$callCount) {
         $callCount++;
         if ($callCount === 1) {
-            throw new Illuminate\Http\Client\ConnectionException('Timeout');
+            throw new ConnectionException('Timeout');
         }
+
         return Http::response([], 200);
     });
     Log::shouldReceive('warning')->once();

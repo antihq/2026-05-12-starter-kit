@@ -3,7 +3,6 @@
 namespace App\Livewire\Forms;
 
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Livewire\Form;
 
