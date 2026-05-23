@@ -14,7 +14,7 @@ if (! isset($name)) {
 }
 
 $classes = Flux::classes()
-    ->add('flex size-[1.125rem] rounded-[.3rem] mt-[3px] outline-offset-2')
+    ->add('flex size-[1.125rem] rounded-none mt-[3px] outline-offset-2')
     ;
 @endphp
 
