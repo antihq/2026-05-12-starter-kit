@@ -180,10 +180,10 @@ new class extends Component
             <div class="flex flex-wrap gap-x-3 justify-between">
                 <p>{{ $member->email }}</p>
                 <div class="flex items-center gap-1">
-                <flux:badge as="button" wire:click="editMember({{ $member->id }})" data-test="member-edit-button" class="lowercase" :disabled="!$this->permissions->canUpdateMember || $member->pivot->role === \App\Enums\TeamRole::Owner">Edit role</flux:badge>
-                <flux:badge as="button" wire:click="removeMember({{ $member->id }})" wire:confirm="Remove {{ $member->name }} from this team?" data-test="member-remove-button" :disabled="!$this->permissions->canRemoveMember || $member->pivot->role === \App\Enums\TeamRole::Owner" class="lowercase">
+                <flux:button size="xs" variant="filled" wire:click="editMember({{ $member->id }})" data-test="member-edit-button" class="lowercase" :disabled="!$this->permissions->canUpdateMember || $member->pivot->role === \App\Enums\TeamRole::Owner">Edit role</flux:button>
+                <flux:button size="xs" variant="filled" wire:click="removeMember({{ $member->id }})" wire:confirm="Remove {{ $member->name }} from this team?" data-test="member-remove-button" :disabled="!$this->permissions->canRemoveMember || $member->pivot->role === \App\Enums\TeamRole::Owner" class="lowercase">
                     Remove
-                </flux:badge>
+                </flux:button>
                 </div>
             </div>
             @if ($this->memberRoleForm->memberId === $member->id)
@@ -250,9 +250,9 @@ new class extends Component
                         <span class="lowercase">{{ $invitation->role->label() }}</span>
                         <span class="lowercase text-sm/5 sm:text-xs/5 ">@if($invitation->expires_at) @if($invitation->isExpired()) Expired {{ $invitation->expires_at->diffForHumans() }} @else Expires {{ $invitation->expires_at->diffForHumans() }} @endif @endif</span>
                     </div>
-                    <flux:badge as="button" wire:click="cancelInvitation('{{ $invitation->code }}')" data-test="invitation-cancel-button" class="lowercase" :disabled="!$this->permissions->canCancelInvitation">
+                    <flux:button size="xs" variant="filled" wire:click="cancelInvitation('{{ $invitation->code }}')" data-test="invitation-cancel-button" class="lowercase" :disabled="!$this->permissions->canCancelInvitation">
                         Cancel
-                    </flux:badge>
+                    </flux:button>
                 </div>
             </li>
         @endforeach

@@ -24,7 +24,7 @@
                         logged in as <a href="{{ route('settings') }}" class="hover:underline text-blue-700 visited:text-purple-700 dark:text-blue-400 dark:visited:text-purple-400 lowercase" wire:navigate>{{ Auth::user()->email }}</a>
                         <form method="POST" action="{{ route('logout') }}" class="inline-flex">
                             @csrf
-                            <flux:badge as="button" type="submit" class="lowercase">logout</flux:badge>
+                            <flux:button size="xs" variant="filled" type="submit" class="lowercase">logout</flux:button>
                         </form>
                     </div>
                 </div>
