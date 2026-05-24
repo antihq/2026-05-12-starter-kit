@@ -76,7 +76,7 @@ $classes = Flux::classes()
                 : ($iconLeading && $iconLeading !== '' ? 'ps-3 sm:ps-2.5' : 'ps-3.5 sm:ps-3') . ' ' . ($iconTrailing && $iconTrailing !== '' ? 'pe-3 sm:pe-2.5' : 'pe-3.5 sm:pe-3')
         ),
         'sm' => 'h-8 text-sm' . ' ' . ($square ? 'w-8' : 'px-3'),
-        'xs' => 'h-6 text-xs' . ' ' . ($square ? 'w-6' : 'px-2'),
+        'xs' => 'h-6 text-sm/5 sm:text-xs/5' . ' ' . ($square ? 'w-6' : 'px-1.5'),
     })
     ->add('inline-flex') // Buttons are inline by default but links are blocks, so inline-flex is needed here to ensure link-buttons are displayed the same as buttons...
     ->add($inset ? match ($size) { // Inset...
@@ -92,7 +92,7 @@ $classes = Flux::classes()
     } : '')
     ->add(match ($variant) { // Background color...
         'primary' => 'bg-[var(--color-accent)] hover:bg-[color-mix(in_oklab,_var(--color-accent),_transparent_10%)]',
-        'filled' => 'bg-zinc-800/5 hover:bg-zinc-800/10 dark:bg-white/10 dark:hover:bg-white/20',
+        'filled' => 'bg-zinc-600/10 hover:bg-zinc-600/20 dark:bg-white/5 dark:hover:bg-white/10',
         'outline' => 'bg-white hover:bg-zinc-50 dark:bg-zinc-700 dark:hover:bg-zinc-600/75',
         'danger' => 'bg-red-500/10 hover:bg-red-500/25 dark:bg-red-500/10',
         'ghost' => 'bg-transparent hover:bg-zinc-950/5 dark:hover:bg-white/10',
@@ -100,7 +100,7 @@ $classes = Flux::classes()
     })
     ->add(match ($variant) { // Text color...
         'primary' => 'text-[var(--color-accent-foreground)]',
-        'filled' => 'text-zinc-800 dark:text-white',
+        'filled' => 'text-zinc-700 dark:text-zinc-400',
         'outline' => 'text-zinc-800 dark:text-white',
         'danger' => 'text-red-700 dark:text-red-400',
         'ghost' => 'text-zinc-950 dark:text-white',
